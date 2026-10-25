@@ -103,6 +103,39 @@ npx power-monitor-lab</code></pre>
           </details>
         </section>
 
+        <section class="history-panel panel" aria-labelledby="history-heading">
+          <div class="panel-heading history-heading">
+            <div>
+              <p class="eyebrow" data-i18n="historyEyebrow">LỊCH SỬ TỰ ĐỘNG</p>
+              <h2 id="history-heading" data-i18n="historyHeading">Lịch sử công suất</h2>
+              <p class="history-caption" data-i18n="historyCaption">Ứng dụng tự lưu số đo khi đang chạy.</p>
+            </div>
+            <div class="history-actions">
+              <label class="sr-only" for="history-range" data-i18n="historyRangeLabel">Khoảng thời gian</label>
+              <div class="select-wrap">
+                <select id="history-range" name="history-range">
+                  <option value="1h" data-i18n="historyRange1h">1 giờ</option>
+                  <option value="6h" data-i18n="historyRange6h">6 giờ</option>
+                  <option value="24h" data-i18n="historyRange24h">24 giờ</option>
+                  <option value="7d" data-i18n="historyRange7d">7 ngày</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="history-body">
+            <p id="history-note" class="history-note" data-i18n="historyNote">Mỗi đường là một kênh cảm biến riêng; không cộng các kênh CPU/RAM/GPU thành tổng PC.</p>
+            <div class="history-plot">
+              <svg id="history-chart" class="history-chart" viewBox="0 0 760 260" role="img" aria-label="Biểu đồ lịch sử công suất"></svg>
+              <p id="history-empty" class="history-empty" data-i18n="historyEmpty">Lịch sử sẽ tự xuất hiện khi có số đo cảm biến.</p>
+            </div>
+            <div id="history-legend" class="chart-legend" aria-label="Các kênh trên biểu đồ"></div>
+          </div>
+          <footer class="history-footer">
+            <span id="history-retention">Lưu cục bộ trong 7 ngày</span>
+            <span id="history-sample-rate">Tự ghi mỗi 30 giây</span>
+          </footer>
+        </section>
+
         <footer class="page-footer">
           <span data-i18n="footerLeft">POWER MONITOR LAB · LƯU CỤC BỘ</span>
           <span data-i18n="privateBody">Dữ liệu chỉ được lưu cục bộ trên máy tính.</span>

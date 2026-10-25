@@ -166,6 +166,15 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .history-heading { padding: 20px; }
 .history-caption { margin: 5px 0 0; color: #637168; font-size: 13px; }
 .history-actions { display: flex; align-items: center; gap: 8px; }
+.history-actions select { min-width: 130px; min-height: 38px; padding: 0 28px 0 10px; color: #37483d; background: #fff; border: 1px solid #d9e2dc; border-radius: 7px; cursor: pointer; font-size: 13px; }
+.history-body { padding: 0 20px 8px; }
+.history-note { margin: 0; color: #637168; font-size: 12px; line-height: 1.5; }
+.history-plot { position: relative; min-height: 190px; margin: 8px 0 0; }
+.history-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.history-gridline { stroke: #e4ebe6; stroke-width: 1; }
+.history-axis-label { fill: #748078; font-size: 12px; }
+.history-series { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.history-plot .history-empty { position: absolute; inset: 12px 0; min-height: 150px; }
 .clear-history-button { min-height: 36px; padding: 0 10px; color: #8a453c; background: #fff; border: 1px solid #ecd9d6; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 650; }
 .clear-history-button:hover { background: #fff6f4; border-color: #dfbfba; }
 .clear-history-button[hidden] { display: none; }
@@ -240,6 +249,10 @@ td.meter-cell { color: #304237; font-weight: 650; }
   .chart-heading { align-items: flex-start; flex-direction: column; }
   .chart-controls { width: 100%; justify-content: flex-start; }
   .chart-controls .select-wrap, .chart-controls select { flex: 1; min-width: 0; width: 100%; }
+  .history-actions, .history-actions .select-wrap, .history-actions select { width: 100%; }
+  .history-heading { align-items: flex-start; flex-direction: column; }
+  .history-body { padding: 0 15px 8px; }
+  .history-footer { align-items: flex-start; flex-direction: column; justify-content: center; gap: 4px; padding: 9px 15px; }
   .chart-wrap { height: 220px; }
   .history-heading { align-items: flex-start; flex-direction: column; padding: 17px; }
   .history-actions { width: 100%; flex-wrap: wrap; }

@@ -85,6 +85,21 @@ const translations = {
     estimateDetails: "Estimate details · not measured",
     technicalSources: "Sensor sources and details",
     sensorLhmHint: "LibreHardwareMonitor can add any additional live power channels this PC exposes.",
+    historyEyebrow: "AUTOMATIC HISTORY",
+    historyHeading: "Power history",
+    historyCaption: "Sensor readings are saved automatically while the app runs.",
+    historyRangeLabel: "History period",
+    historyRange1h: "1 hour",
+    historyRange6h: "6 hours",
+    historyRange24h: "24 hours",
+    historyRange7d: "7 days",
+    historyNote: "Each line is a separate sensor channel. CPU, memory, and GPU channels do not add up to whole-PC input power.",
+    historyEmpty: "History appears automatically when supported sensors report watts.",
+    historyError: "Could not load local sensor history.",
+    historyRetention: "Kept on this PC for {days} days",
+    historySampleRate: "Saved every {seconds} seconds",
+    historyChartLabel: "Automatic sensor power history in watts",
+    historyLegendLabel: "Sensor channels in the chart",
     none: "—"
   },
   vi: {
@@ -173,6 +188,21 @@ const translations = {
     estimateDetails: "Chi tiết ước tính · không phải số đo",
     technicalSources: "Nguồn cảm biến và chi tiết",
     sensorLhmHint: "LibreHardwareMonitor có thể bổ sung các kênh công suất trực tiếp mà PC này hỗ trợ.",
+    historyEyebrow: "LỊCH SỬ TỰ ĐỘNG",
+    historyHeading: "Lịch sử công suất",
+    historyCaption: "Ứng dụng tự lưu số đo cảm biến khi đang chạy.",
+    historyRangeLabel: "Khoảng thời gian",
+    historyRange1h: "1 giờ",
+    historyRange6h: "6 giờ",
+    historyRange24h: "24 giờ",
+    historyRange7d: "7 ngày",
+    historyNote: "Mỗi đường là một kênh cảm biến riêng. Kênh CPU, RAM và GPU không cộng thành điện đầu vào của cả PC.",
+    historyEmpty: "Lịch sử tự xuất hiện khi cảm biến được hỗ trợ báo watt.",
+    historyError: "Không tải được lịch sử cảm biến cục bộ.",
+    historyRetention: "Lưu trên máy này trong {days} ngày",
+    historySampleRate: "Tự lưu mỗi {seconds} giây",
+    historyChartLabel: "Biểu đồ lịch sử watt tự động từ cảm biến",
+    historyLegendLabel: "Các kênh cảm biến trên biểu đồ",
     none: "—"
   }
 };
@@ -246,7 +276,7 @@ function getSavedLanguage() {
     return "vi";
   }
 }
-const state = { language: getSavedLanguage(), sensors: null };
+const state = { language: getSavedLanguage(), sensors: null, history: null, historyRange: "1h" };
 const $ = (selector) => document.querySelector(selector);
 
 function tr(key, values = {}) {
@@ -270,6 +300,7 @@ function applyLanguage() {
     button.setAttribute("aria-pressed", String(active));
   });
   renderSensors();
+  renderHistory();
 }
 
 async function requestJson(path, options = {}) {
@@ -298,6 +329,150 @@ async function refreshSensors() {
       ? tr("sensorUpdatedAt", { time: formatTime(new Date(sampledAt)) })
       : tr("autoRefresh");
   }
+}
+
+async function refreshHistory() {
+  try {
+    state.history = await requestJson(`/api/history?range=${encodeURIComponent(state.historyRange)}`);
+  } catch {
+    state.history = { samples: [], error: true };
+  }
+  renderHistory();
+}
+
+function renderHistory() {
+  const chart = $("#history-chart");
+  const empty = $("#history-empty");
+  const legend = $("#history-legend");
+  if (!chart || !empty || !legend) return;
+
+  const samples = (Array.isArray(state.history?.samples) ? state.history.samples : [])
+    .filter((sample) => Number.isFinite(sample.watts) && Number.isFinite(Date.parse(sample.sampledAtUtc)));
+  $("#history-note").textContent = tr("historyNote");
+  $("#history-retention").textContent = tr("historyRetention", {
+    days: state.history?.retentionDays ?? 7
+  });
+  $("#history-sample-rate").textContent = tr("historySampleRate", {
+    seconds: state.history?.sampleIntervalSeconds ?? 30
+  });
+  chart.setAttribute("aria-label", tr("historyChartLabel"));
+  legend.setAttribute("aria-label", tr("historyLegendLabel"));
+  chart.replaceChildren();
+  legend.replaceChildren();
+
+  if (samples.length === 0) {
+    chart.hidden = true;
+    empty.hidden = false;
+    empty.textContent = state.history?.error ? tr("historyError") : tr("historyEmpty");
+    return;
+  }
+
+  chart.hidden = false;
+  empty.hidden = true;
+  const svgNamespace = "http://www.w3.org/2000/svg";
+  const width = 760;
+  const height = 260;
+  const padding = { top: 16, right: 16, bottom: 35, left: 54 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const sampleBounds = samples.reduce((bounds, sample) => {
+    const timestamp = Date.parse(sample.sampledAtUtc);
+    return {
+      from: Math.min(bounds.from, timestamp),
+      to: Math.max(bounds.to, timestamp),
+      peak: Math.max(bounds.peak, sample.watts)
+    };
+  }, { from: Number.POSITIVE_INFINITY, to: Number.NEGATIVE_INFINITY, peak: 0 });
+  const from = Date.parse(state.history?.fromUtc ?? "") || sampleBounds.from;
+  const to = Date.parse(state.history?.toUtc ?? "") || sampleBounds.to;
+  const timeSpan = Math.max(1, to - from);
+  const maxWatts = Math.max(10, Math.ceil(sampleBounds.peak / 10) * 10);
+  const pointX = (sample) => padding.left + ((Date.parse(sample.sampledAtUtc) - from) / timeSpan) * plotWidth;
+  const pointY = (watts) => padding.top + (1 - Math.min(watts, maxWatts) / maxWatts) * plotHeight;
+
+  for (let tick = 0; tick <= 2; tick += 1) {
+    const watts = maxWatts * (1 - tick / 2);
+    const y = padding.top + (tick / 2) * plotHeight;
+    const line = document.createElementNS(svgNamespace, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("class", "history-gridline");
+    chart.append(line);
+
+    const label = document.createElementNS(svgNamespace, "text");
+    label.setAttribute("x", String(padding.left - 9));
+    label.setAttribute("y", String(y + 4));
+    label.setAttribute("text-anchor", "end");
+    label.setAttribute("class", "history-axis-label");
+    label.textContent = `${formatPower(watts)} W`;
+    chart.append(label);
+  }
+
+  const leftTime = document.createElementNS(svgNamespace, "text");
+  leftTime.setAttribute("x", String(padding.left));
+  leftTime.setAttribute("y", String(height - 8));
+  leftTime.setAttribute("class", "history-axis-label");
+  leftTime.textContent = formatHistoryTime(from, state.historyRange);
+  chart.append(leftTime);
+
+  const rightTime = document.createElementNS(svgNamespace, "text");
+  rightTime.setAttribute("x", String(width - padding.right));
+  rightTime.setAttribute("y", String(height - 8));
+  rightTime.setAttribute("text-anchor", "end");
+  rightTime.setAttribute("class", "history-axis-label");
+  rightTime.textContent = formatHistoryTime(to, state.historyRange);
+  chart.append(rightTime);
+
+  const bySensor = new Map();
+  for (const sample of samples) {
+    const series = bySensor.get(sample.sensorId) ?? [];
+    series.push(sample);
+    bySensor.set(sample.sensorId, series);
+  }
+  const colors = ["#21825d", "#d88b31", "#667ca8", "#bd6265", "#8061a0", "#318b91"];
+  [...bySensor.values()].forEach((unsampledSeries, index) => {
+    const series = unsampledSeries.sort((left, right) => Date.parse(left.sampledAtUtc) - Date.parse(right.sampledAtUtc));
+    const points = downsampleHistory(series);
+    const color = colors[index % colors.length];
+    const path = document.createElementNS(svgNamespace, "path");
+    path.setAttribute("class", "history-series");
+    path.setAttribute("stroke", color);
+    path.setAttribute("d", points.map((sample, pointIndex) =>
+      `${pointIndex === 0 ? "M" : "L"}${pointX(sample).toFixed(1)} ${pointY(sample.watts).toFixed(1)}`
+    ).join(" "));
+    const title = document.createElementNS(svgNamespace, "title");
+    title.textContent = `${sensorLabel(series[0])} · ${series[0].source}`;
+    path.append(title);
+    chart.append(path);
+
+    const legendItem = document.createElement("span");
+    legendItem.className = "chart-legend-item";
+    const swatch = document.createElement("span");
+    swatch.className = "chart-legend-swatch";
+    swatch.style.backgroundColor = color;
+    const label = document.createElement("span");
+    label.textContent = sensorLabel(series[0]);
+    legendItem.append(swatch, label);
+    legend.append(legendItem);
+  });
+}
+
+function formatHistoryTime(timestamp, range) {
+  const options = { hour: "2-digit", minute: "2-digit" };
+  if (range === "7d") {
+    options.month = "short";
+    options.day = "numeric";
+  }
+  return new Intl.DateTimeFormat(state.language === "vi" ? "vi-VN" : "en-US", options)
+    .format(new Date(timestamp));
+}
+
+function downsampleHistory(samples, limit = 500) {
+  if (samples.length <= limit) return samples;
+  const step = (samples.length - 1) / (limit - 1);
+  return Array.from({ length: limit }, (_, index) => samples[Math.round(index * step)]);
 }
 
 function sensorLabel(reading) {
@@ -699,6 +874,12 @@ document.querySelectorAll("[data-language]").forEach((button) => button.addEvent
   } catch {}
   applyLanguage();
 }));
+$("#history-range").addEventListener("change", (event) => {
+  state.historyRange = event.currentTarget.value;
+  void refreshHistory();
+});
 applyLanguage();
 refreshSensors();
+refreshHistory();
 setInterval(refreshSensors, 3000);
+setInterval(refreshHistory, 30000);
