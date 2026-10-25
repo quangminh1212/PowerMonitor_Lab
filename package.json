@@ -4,7 +4,7 @@
   "description": "A local-first PC power monitor with a localhost web interface and Windows hardware sensing.",
   "type": "module",
   "bin": {
-    "power-monitor-lab": "./cli/power-monitor-lab.js"
+    "power-monitor-lab": "cli/power-monitor-lab.js"
   },
   "files": [
     "cli/",
