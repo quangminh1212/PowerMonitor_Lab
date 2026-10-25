@@ -54,6 +54,8 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 The app polls only `GET http://127.0.0.1:8085/data.json`; it imports finite sensors whose type is `Power` and never calls LibreHardwareMonitor's control endpoints. To enable it, install and run [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), then choose **Options → Remote Web Server → Run**. If you use another local port, set `POWER_MONITOR_LHM_PORT` before starting the app. The app does not install a sensor driver or elevate itself; some motherboard sensors require LibreHardwareMonitor to run with administrator rights. Only power sensors the hardware/driver exposes appear, and a shared CPU/DRAM channel still does not measure each DIMM or USB HID device. On this PC, LibreHardwareMonitor is not installed or running, so this optional provider currently contributes no readings.
 Sensor energy is observed only while this local app process is running. It resets when the server stops and is kept separate from manually logged readings. If a device or driver does not expose live power, the app labels it as detected without a watt sensor instead of estimating a value.
 
+On Windows, the detected hardware inventory refreshes every 15 seconds so devices added or removed while the app is open appear without restarting it.
+
 ## Local data and privacy
 
 The server binds only to IPv4 loopback (`127.0.0.1`) on an OS-assigned port by default. It checks the request host and the origin of state-changing requests, limits JSON request size, serves only the bundled UI files, and sends a restrictive content security policy. When the optional LibreHardwareMonitor integration is available, the Windows sensor process makes bounded read-only requests to the loopback service at `127.0.0.1:8085` (or the configured local port); the app makes no internet requests.
@@ -99,6 +101,8 @@ Yêu cầu Node.js 22 trở lên. Máy chủ tự chọn cổng local, in địa
 Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng cũng có thể đọc thêm cảm biến `Power` từ máy chủ web cục bộ của LibreHardwareMonitor. Ứng dụng liệt kê các thiết bị Windows nhận diện được, gồm CPU, card đồ họa, RAM, ổ đĩa, màn hình, bàn phím, chuột và thiết bị USB; thiết bị không có cảm biến watt sẽ được ghi rõ.
 
 **Giới hạn đo:** kênh DRAM là miền bộ nhớ dùng chung, không đo riêng từng thanh RAM. Thiết bị chỉ được đánh dấu có số đo khi dữ liệu cảm biến gắn được với đúng thiết bị. Kênh EMI có thể chồng lấp nên được hiển thị riêng, không cộng thành tổng công suất toàn PC. `nvidia-smi` báo công suất card đồ họa tại lần đo gần nhất, không phải điện đầu vào tại ổ cắm. Windows không cung cấp số watt trực tiếp cho mọi chuột, bàn phím, ổ đĩa, quạt, màn hình hoặc bo mạch. Cần đồng hồ đo ở ổ cắm để đo tổng máy và đồng hồ USB nối tiếp để đo riêng thiết bị USB. Trên macOS/Linux, ứng dụng vẫn cho nhập số thủ công nhưng chưa có đọc cảm biến tự động.
+
+Danh sách thiết bị Windows được dò lại mỗi 15 giây để nhận thiết bị vừa cắm hoặc rút mà không cần khởi động lại ứng dụng.
 
 ### Cách đo theo từng phần
 

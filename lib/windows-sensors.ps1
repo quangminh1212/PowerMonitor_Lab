@@ -376,9 +376,19 @@ function Get-NvidiaPowerReadings {
 }
 
 $inventory = if ($IncludeInventory) { Get-ComputerInventory } else { $null }
+$inventoryRefreshInterval = [TimeSpan]::FromSeconds(15)
+$lastInventoryRefreshUtc = [DateTime]::UtcNow
 Write-SensorDebug "sensor helper ready"
 while ($true) {
     try {
+        if ($IncludeInventory -and ([DateTime]::UtcNow - $lastInventoryRefreshUtc) -ge $inventoryRefreshInterval) {
+            $lastInventoryRefreshUtc = [DateTime]::UtcNow
+            try {
+                $inventory = Get-ComputerInventory
+            } catch {
+                Write-SensorDebug "inventory refresh failed; keeping last known devices"
+            }
+        }
         $readings = [System.Collections.Generic.List[object]]::new()
         Write-SensorDebug "enumerating EMI"
         foreach ($reading in [PowerMonitorWindowsEmi]::ReadChannels()) { $readings.Add($reading) }
