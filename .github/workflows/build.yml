@@ -1,0 +1,32 @@
+name: Windows build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build .\PowerMonitorLab.sln --configuration Release
+      - name: Publish self-contained Windows app
+        run: dotnet publish .\src\PowerMonitorLab\PowerMonitorLab.csproj --configuration Release --runtime win-x64 --self-contained true --output .\artifacts\PowerMonitorLab-win-x64
+      - name: Upload publish folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: PowerMonitorLab-win-x64
+          path: artifacts/PowerMonitorLab-win-x64/
+          if-no-files-found: error
+          retention-days: 14
