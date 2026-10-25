@@ -1,7 +1,7 @@
 {
   "name": "power-monitor-lab",
   "version": "0.1.0",
-  "description": "A local-first power-reading notebook with a localhost web interface.",
+  "description": "A local-first PC power monitor with a localhost web interface and Windows hardware sensing.",
   "type": "module",
   "bin": {
     "power-monitor-lab": "./cli/power-monitor-lab.js"
@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "start": "node ./cli/power-monitor-lab.js",
-    "check": "node --check cli/power-monitor-lab.js && node --check lib/server.js && node --check lib/store.js && node --check lib/metrics.js && node --check web/app.js",
+    "check": "node --check cli/power-monitor-lab.js && node --check lib/server.js && node --check lib/store.js && node --check lib/metrics.js && node --check lib/sensors.js && node --check web/app.js",
     "pack:check": "npm pack --dry-run"
   },
   "engines": {

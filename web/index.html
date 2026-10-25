@@ -90,8 +90,23 @@
 
         <section class="notice" role="status" aria-live="polite">
           <span class="notice-symbol" aria-hidden="true">i</span>
-          <p><strong data-i18n="manualOnlyTitle">Manual readings only.</strong> <span data-i18n="manualOnlyBody">This MVP has no automatic sensor integration. Enter readings from an external meter; the app does not invent live watt values.</span></p>
-          <span class="notice-tag" data-i18n="honestData">HONEST DATA</span>
+          <p><strong data-i18n="sensorNoticeTitle">Automatic hardware readings are available.</strong> <span data-i18n="sensorNoticeBody">The app shows only watts exposed by this PC's sensors. Manual meter entries stay separate.</span></p>
+          <span class="notice-tag" data-i18n="sensorNoticeTag">LIVE SENSORS</span>
+        </section>
+
+        <section class="panel sensor-panel" aria-labelledby="sensor-heading">
+          <div class="panel-heading sensor-heading">
+            <div><p class="eyebrow" data-i18n="sensorEyebrow">AUTOMATIC HARDWARE DISCOVERY</p><h2 id="sensor-heading" data-i18n="sensorHeading">Live sensors and detected devices</h2></div>
+            <span id="sensor-status" class="sensor-status" data-state="starting" data-i18n="sensorStatusStarting">Discovering</span>
+          </div>
+          <p id="sensor-description" class="sensor-description" data-i18n="sensorIntro">Looking for power readings exposed by this computer.</p>
+          <h3 class="sensor-subheading" data-i18n="sensorReadingsHeading">Current measured power</h3>
+          <div id="sensor-reading-grid" class="sensor-reading-grid" aria-live="polite"></div>
+          <div class="sensor-total-note"><strong data-i18n="sensorTotalTitle">Whole PC total</strong><span data-i18n="sensorTotalBody">Sensor channels can overlap, so they are shown separately. A wall outlet power meter is required to measure the full PC input.</span></div>
+          <div class="hardware-inventory">
+            <div class="inventory-heading"><h3 data-i18n="sensorInventoryHeading">Detected computer devices</h3><span data-i18n="sensorInventoryScope">This PC only</span></div>
+            <div id="hardware-device-list" class="hardware-device-list"></div>
+          </div>
         </section>
 
         <section class="metrics-grid" aria-label="Power summary">

@@ -5,6 +5,9 @@ const translations = {
     measurementNotebook: "MEASUREMENT NOTEBOOK", title: "Power, with context.", subtitle: "A local notebook for power readings and energy estimates.",
     filterMeter: "Filter by meter", allMeters: "All meters", timeRange: "Time range", last24Hours: "Last 24 hours", last7Days: "Last 7 days", last30Days: "Last 30 days", exportCsv: "Export CSV",
     manualOnlyTitle: "Manual readings only.", manualOnlyBody: "This MVP has no automatic sensor integration. Enter readings from an external meter; the app does not invent live watt values.", honestData: "HONEST DATA",
+    sensorNoticeTitle: "Automatic hardware discovery is enabled.", sensorNoticeBody: "Live readings appear only when local sensors provide real watts. Manual meter entries stay separate.", sensorNoticeTag: "HARDWARE STATUS",
+    sensorEyebrow: "AUTOMATIC HARDWARE DISCOVERY", sensorHeading: "Live sensors and detected devices", sensorStatusStarting: "Discovering", sensorStatusAvailable: "Live readings", sensorStatusPartial: "Partial", sensorStatusUnavailable: "Unavailable", sensorStatusUnsupported: "Windows only",
+    sensorIntro: "Looking for power readings exposed by this computer.", sensorAvailableMessage: "Live readings are available for the hardware channels exposed by this PC.", sensorPartialMessage: "Devices were detected, but Windows did not expose a live watt sensor for them.", sensorUnavailableMessage: "No supported live hardware power sensors were found on this PC.", sensorUnsupportedMessage: "Automatic hardware readings are currently supported on Windows.", sensorReadingsHeading: "Current measured power", sensorWaiting: "Waiting for the next sensor sample", sensorSource: "Source", sensorMethod: "Measurement", sensorSessionEnergy: "Energy observed since the app started", sensorTotalTitle: "Whole PC total", sensorTotalBody: "Sensor channels may overlap, so each is shown separately. A wall outlet power meter is needed to measure the full PC input.", sensorInventoryHeading: "Detected computer devices", sensorInventoryScope: "This PC only", sensorMeasured: "Live watts available", sensorNoLivePower: "No live watt sensor", sensorNeedsUsbMeter: "Requires an inline USB meter", sensorCoverage: "Sensor channels: {channels}", sensorNoDevices: "No devices were returned by Windows hardware inventory.", sensorNoReadings: "No live sensor readings are available yet.", sensorLabelPackage: "CPU package", sensorLabelCores: "CPU cores", sensorLabelDram: "Memory domain (DRAM)", sensorLabelGraphicsDomain: "Graphics domain (PP1)", sensorLabelGpu: "Graphics card", sensorLabelOther: "Energy channel", sensorKindProcessor: "Processor", sensorKindGraphics: "Graphics", sensorKindMemory: "Memory", sensorKindStorage: "Storage", sensorKindKeyboard: "Keyboard", sensorKindMouse: "Mouse / pointing device", sensorKindMonitor: "Monitor", sensorKindUsb: "USB device", sensorKindUsbHub: "USB hub", sensorKindUsbController: "USB controller", sensorKindBattery: "Battery", sensorKindMotherboard: "Motherboard", sensorKindCooling: "Fans / cooling", sensorKindPowerSupply: "Power supply", sensorKindOther: "Device",
     latestLoggedPower: "LATEST LOGGED POWER", noReadings: "No readings yet", manualEntry: "MANUALLY RECORDED", estimatedEnergy: "ESTIMATED ENERGY", needTwoReadings: "Add two close readings to calculate energy", calculatedFromReadings: "CALCULATED FROM READINGS", loggedReadings: "LOGGED READINGS", entries: "entries", metersConfigured: "{count} meters tracked", savedOnDevice: "SAVED ON THIS DEVICE",
     powerTrend: "POWER TREND", readingsOverTime: "Readings over time", chartEmptyTitle: "Your trend starts with a reading", chartEmptyBody: "Record two readings to see a power trend.", loggedPower: "Logged power", wattsOverSelectedPeriod: "Watts · selected period",
     addToNotebook: "ADD TO NOTEBOOK", logReading: "Log a reading", formIntro: "Enter a value shown by your external power meter.", meterOrDevice: "Meter or device", powerReading: "Power reading", noteOptional: "Note", optional: "OPTIONAL", saveReading: "Save reading", savedLocally: "Saved locally · No account needed",
@@ -18,6 +21,9 @@ const translations = {
     measurementNotebook: "SỔ THEO DÕI SỐ ĐO", title: "Công suất, có ngữ cảnh.", subtitle: "Sổ ghi cục bộ cho số đo công suất và năng lượng ước tính.",
     filterMeter: "Lọc theo đồng hồ", allMeters: "Tất cả đồng hồ", timeRange: "Khoảng thời gian", last24Hours: "24 giờ qua", last7Days: "7 ngày qua", last30Days: "30 ngày qua", exportCsv: "Xuất CSV",
     manualOnlyTitle: "Chỉ ghi số đo thủ công.", manualOnlyBody: "Phiên bản này chưa tích hợp cảm biến tự động. Hãy nhập số từ đồng hồ ngoài; ứng dụng không tự tạo số watt trực tiếp.", honestData: "SỐ LIỆU RÕ NGUỒN",
+    sensorNoticeTitle: "Đã bật tự nhận diện phần cứng.", sensorNoticeBody: "Chỉ hiện số đo khi cảm biến cục bộ cung cấp watt thật; số đo nhập tay vẫn tách riêng.", sensorNoticeTag: "TRẠNG THÁI PHẦN CỨNG",
+    sensorEyebrow: "TỰ NHẬN DIỆN PHẦN CỨNG", sensorHeading: "Cảm biến và thiết bị đã nhận diện", sensorStatusStarting: "Đang dò", sensorStatusAvailable: "Đang đo", sensorStatusPartial: "Một phần", sensorStatusUnavailable: "Chưa có số đo", sensorStatusUnsupported: "Chỉ hỗ trợ Windows",
+    sensorIntro: "Đang tìm các nguồn đo công suất mà máy tính cung cấp.", sensorAvailableMessage: "Đang nhận số đo trực tiếp từ các kênh phần cứng có trên PC này.", sensorPartialMessage: "Đã nhận diện thiết bị, nhưng Windows không cung cấp số watt trực tiếp cho chúng.", sensorUnavailableMessage: "Không tìm thấy cảm biến công suất trực tiếp được hỗ trợ trên PC này.", sensorUnsupportedMessage: "Hiện chỉ hỗ trợ tự động đọc cảm biến phần cứng trên Windows.", sensorReadingsHeading: "Công suất đo được hiện tại", sensorWaiting: "Đang chờ mẫu cảm biến tiếp theo", sensorSource: "Nguồn đo", sensorMethod: "Cách đo", sensorSessionEnergy: "Năng lượng ghi nhận từ lúc mở ứng dụng", sensorTotalTitle: "Tổng công suất cả máy", sensorTotalBody: "Các kênh có thể chồng lấp nên được hiển thị riêng. Cần đồng hồ đo điện ở ổ cắm để đo điện đầu vào của toàn PC.", sensorInventoryHeading: "Thiết bị trên máy tính đã nhận diện", sensorInventoryScope: "Chỉ máy này", sensorMeasured: "Có số watt trực tiếp", sensorNoLivePower: "Không có cảm biến watt trực tiếp", sensorNeedsUsbMeter: "Cần đồng hồ USB nối tiếp", sensorCoverage: "Kênh cảm biến: {channels}", sensorNoDevices: "Windows chưa trả về danh sách thiết bị phần cứng.", sensorNoReadings: "Chưa có số đo cảm biến trực tiếp.", sensorLabelPackage: "CPU package", sensorLabelCores: "Lõi CPU", sensorLabelDram: "Miền bộ nhớ (DRAM)", sensorLabelGraphicsDomain: "Miền đồ họa (PP1)", sensorLabelGpu: "Card đồ họa", sensorLabelOther: "Kênh năng lượng", sensorKindProcessor: "Bộ xử lý", sensorKindGraphics: "Đồ họa", sensorKindMemory: "Bộ nhớ", sensorKindStorage: "Ổ lưu trữ", sensorKindKeyboard: "Bàn phím", sensorKindMouse: "Chuột / thiết bị trỏ", sensorKindMonitor: "Màn hình", sensorKindUsb: "Thiết bị USB", sensorKindUsbHub: "Hub USB", sensorKindUsbController: "Bộ điều khiển USB", sensorKindBattery: "Pin", sensorKindMotherboard: "Bo mạch chủ", sensorKindCooling: "Quạt / tản nhiệt", sensorKindPowerSupply: "Bộ nguồn", sensorKindOther: "Thiết bị",
     latestLoggedPower: "SỐ ĐO CÔNG SUẤT MỚI NHẤT", noReadings: "Chưa có số đo", manualEntry: "GHI NHẬN THỦ CÔNG", estimatedEnergy: "NĂNG LƯỢNG ƯỚC TÍNH", needTwoReadings: "Cần hai số đo gần nhau để tính năng lượng", calculatedFromReadings: "TÍNH TỪ CÁC SỐ ĐO", loggedReadings: "SỐ ĐO ĐÃ GHI", entries: "lần", metersConfigured: "Đang theo dõi {count} đồng hồ", savedOnDevice: "LƯU TRÊN THIẾT BỊ NÀY",
     powerTrend: "XU HƯỚNG CÔNG SUẤT", readingsOverTime: "Số đo theo thời gian", chartEmptyTitle: "Bắt đầu biểu đồ bằng một số đo", chartEmptyBody: "Ghi hai số đo để xem xu hướng công suất.", loggedPower: "Công suất đã ghi", wattsOverSelectedPeriod: "Watt · khoảng đã chọn",
     addToNotebook: "THÊM VÀO SỔ ĐO", logReading: "Ghi số đo", formIntro: "Nhập số hiển thị trên đồng hồ công suất ngoài.", meterOrDevice: "Đồng hồ hoặc thiết bị", powerReading: "Số đo công suất", noteOptional: "Ghi chú", optional: "KHÔNG BẮT BUỘC", saveReading: "Lưu số đo", savedLocally: "Lưu cục bộ · Không cần tài khoản",
@@ -28,7 +34,7 @@ const translations = {
 };
 
 const chartColors = ["#258b65", "#e39b44", "#7187b7", "#cf6f73", "#8768a8", "#3d9aa2"];
-const state = { language: "en", range: "24h", meter: "", readings: [], summary: null, meters: [], toastTimer: null };
+const state = { language: "en", range: "24h", meter: "", readings: [], summary: null, meters: [], sensors: null, toastTimer: null };
 const $ = (selector) => document.querySelector(selector);
 
 function tr(key, values = {}) {
@@ -65,6 +71,7 @@ function applyLanguage() {
   if (state.summary) renderSummary();
   renderReadings();
   drawChart();
+  renderSensors();
 }
 
 function setToast(message, error = false) {
@@ -111,6 +118,131 @@ async function refresh() {
     $("#refresh-caption").textContent = tr("refreshed", { time: formatTime(new Date()) });
   } catch (error) {
     setToast(error.message || tr("saveFailed"), true);
+  }
+}
+
+async function refreshSensors() {
+  try {
+    state.sensors = await requestJson("/api/sensors");
+    renderSensors();
+  } catch {
+    state.sensors = { status: "unavailable", providers: [], readings: [], devices: [], message: "" };
+    renderSensors();
+  }
+}
+
+function sensorLabel(reading) {
+  const name = String(reading.name ?? "");
+  if (name === "RAPL_Package0_PKG") return tr("sensorLabelPackage");
+  if (name === "RAPL_Package0_PP0") return tr("sensorLabelCores");
+  if (name === "RAPL_Package0_DRAM") return tr("sensorLabelDram");
+  if (name === "RAPL_Package0_PP1") return tr("sensorLabelGraphicsDomain");
+  if (reading.source === "NVIDIA nvidia-smi") return tr("sensorLabelGpu");
+  return name || tr("sensorLabelOther");
+}
+
+function renderSensors() {
+  const snapshot = state.sensors;
+  if (!snapshot) return;
+  const status = $("#sensor-status");
+  const statusKey = {
+    starting: "sensorStatusStarting",
+    available: "sensorStatusAvailable",
+    partial: "sensorStatusPartial",
+    unavailable: "sensorStatusUnavailable",
+    unsupported: "sensorStatusUnsupported"
+  }[snapshot.status] ?? "sensorStatusUnavailable";
+  status.dataset.state = snapshot.status;
+  status.textContent = tr(statusKey);
+  const messageKey = {
+    starting: "sensorIntro",
+    available: "sensorAvailableMessage",
+    partial: "sensorPartialMessage",
+    unavailable: "sensorUnavailableMessage",
+    unsupported: "sensorUnsupportedMessage"
+  }[snapshot.status] ?? "sensorUnavailableMessage";
+  $("#sensor-description").textContent = tr(messageKey);
+
+  const readingGrid = $("#sensor-reading-grid");
+  readingGrid.replaceChildren();
+  const readings = Array.isArray(snapshot.readings) ? snapshot.readings : [];
+  if (readings.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "sensor-empty";
+    empty.textContent = tr("sensorNoReadings");
+    readingGrid.append(empty);
+  }
+  for (const reading of readings) {
+    const card = document.createElement("article");
+    card.className = "sensor-card";
+    const heading = document.createElement("div");
+    heading.className = "sensor-card-heading";
+    const name = document.createElement("strong");
+    name.textContent = sensorLabel(reading);
+    const type = document.createElement("span");
+    type.textContent = tr(reading.kind === "processor" ? "sensorKindProcessor" : reading.kind === "graphics" ? "sensorKindGraphics" : reading.kind === "memory" ? "sensorKindMemory" : "sensorKindOther");
+    heading.append(name, type);
+
+    const value = document.createElement("div");
+    value.className = "sensor-value";
+    value.textContent = Number.isFinite(reading.watts) ? `${formatPower(reading.watts)} W` : `— W · ${tr("sensorWaiting")}`;
+
+    const energy = document.createElement("div");
+    energy.className = "sensor-energy";
+    const formattedEnergy = formatEnergy(Number(reading.energyWhSinceStart) || 0);
+    energy.textContent = `${formattedEnergy.value} ${formattedEnergy.unit} · ${tr("sensorSessionEnergy")}`;
+
+    const source = document.createElement("p");
+    source.className = "sensor-provenance";
+    source.textContent = `${tr("sensorSource")}: ${reading.source ?? tr("none")}`;
+    const method = document.createElement("p");
+    method.className = "sensor-provenance";
+    method.textContent = `${tr("sensorMethod")}: ${reading.method ?? tr("none")}`;
+    card.append(heading, value, energy, source, method);
+    readingGrid.append(card);
+  }
+
+  const deviceList = $("#hardware-device-list");
+  deviceList.replaceChildren();
+  const devices = Array.isArray(snapshot.devices) ? snapshot.devices : [];
+  if (devices.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "sensor-empty";
+    empty.textContent = tr("sensorNoDevices");
+    deviceList.append(empty);
+    return;
+  }
+  const kindKeys = {
+    processor: "sensorKindProcessor", graphics: "sensorKindGraphics", memory: "sensorKindMemory", storage: "sensorKindStorage",
+    keyboard: "sensorKindKeyboard", mouse: "sensorKindMouse", monitor: "sensorKindMonitor", usb: "sensorKindUsb", "usb-hub": "sensorKindUsbHub", "usb-controller": "sensorKindUsbController", battery: "sensorKindBattery",
+    motherboard: "sensorKindMotherboard", cooling: "sensorKindCooling", "power-supply": "sensorKindPowerSupply"
+  };
+  for (const device of devices) {
+    const row = document.createElement("article");
+    row.className = "device-row";
+    const details = document.createElement("div");
+    details.className = "device-details";
+    const name = document.createElement("strong");
+    name.textContent = device.name ?? tr("sensorKindOther");
+    const kind = document.createElement("span");
+    kind.textContent = tr(kindKeys[device.kind] ?? "sensorKindOther");
+    details.append(name, kind);
+    const capability = document.createElement("div");
+    capability.className = `device-capability ${device.measurementStatus === "measured" ? "is-measured" : "is-unavailable"}`;
+    const label = document.createElement("strong");
+    const needsUsbMeter = ["keyboard", "mouse", "usb"].includes(device.kind);
+    label.textContent = device.measurementStatus === "measured" ? tr("sensorMeasured") : needsUsbMeter ? tr("sensorNeedsUsbMeter") : tr("sensorNoLivePower");
+    capability.append(label);
+    if (Array.isArray(device.coveredBy) && device.coveredBy.length > 0) {
+      const coverage = document.createElement("span");
+      coverage.textContent = tr("sensorCoverage", { channels: device.coveredBy.map((name) => {
+        const channel = readings.find((reading) => reading.name === name);
+        return channel ? sensorLabel(channel) : name;
+      }).join(", ") });
+      capability.append(coverage);
+    }
+    row.append(details, capability);
+    deviceList.append(row);
   }
 }
 
@@ -407,4 +539,6 @@ window.addEventListener("resize", drawChart);
 if ("ResizeObserver" in window) new ResizeObserver(drawChart).observe($(".chart-wrap"));
 applyLanguage();
 refresh();
+refreshSensors();
 setInterval(refresh, 30000);
+setInterval(refreshSensors, 3000);
