@@ -89,17 +89,13 @@ On Windows, the detected hardware inventory refreshes every 15 seconds so device
 
 The server binds only to IPv4 loopback (`127.0.0.1`) on an OS-assigned port by default. It checks the request host and the origin of state-changing requests, serves only the bundled UI files, and sends a restrictive content security policy. When configured, the Windows sensor process makes bounded read-only requests to the meter's explicitly configured private IPv4 address; the app does not scan the network or make internet requests. Meter API traffic uses local HTTP and is not encrypted, so keep the meter on a trusted network.
 
-Manual watt entry and `POST /api/readings` are disabled. Existing `readings.json` files from the earlier preview are kept for compatibility. Automatic sensor samples are saved to daily `.jsonl` files in a `sensor-history` subfolder, kept for seven days, and contain only finite readings from hardware sensors; estimates are never stored:
+Manual readings and their history API are removed. Legacy `/api/readings`, `/api/meters`, `/api/summary`, and `/api/export.csv` routes are no longer served. Existing `readings.json` files are not imported or read. Automatic sensor samples are saved to daily `.jsonl` files in a `sensor-history` subfolder, kept for seven days, and contain only finite readings from hardware sensors; estimates are never stored:
 
 - Windows: `%LOCALAPPDATA%\PowerMonitorLab\sensor-history\YYYY-MM-DD.jsonl`
 - macOS: `~/Library/Application Support/PowerMonitorLab/sensor-history/YYYY-MM-DD.jsonl`
 - Linux: `$XDG_DATA_HOME/power-monitor-lab/sensor-history/YYYY-MM-DD.jsonl`, or `~/.local/share/power-monitor-lab/sensor-history/YYYY-MM-DD.jsonl`
 
-Legacy `readings.json` files stay beside these folders and are not rewritten.
-
-Set `POWER_MONITOR_DATA_DIR` to choose another folder for automatic sensor history and legacy data. The files are local and are not encrypted by the app. The dashboard reads live values from available hardware sensors while the app runs and creates history without manual records.
-
-History written by the earlier Windows preview remains readable. Its .NET monotonic-clock values are not converted to Node.js clock values, so watt-hours are calculated only for intervals recorded by this npm version.
+Set `POWER_MONITOR_DATA_DIR` to choose another folder for automatic sensor history. The files are local and are not encrypted by the app. The dashboard reads live values from available hardware sensors while the app runs and creates history without manual records.
 
 ## Run from a checkout
 
@@ -181,7 +177,7 @@ Sau khi mở lại ứng dụng, công suất watt và điện năng Wh được
 Ứng dụng chỉ gửi `GET http://127.0.0.1:8085/data.json` và chỉ nhận các cảm biến hữu hạn có loại `Power`; không gọi các API điều khiển. Để bật, cài và chạy [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), rồi chọn **Options → Remote Web Server → Run**. Nếu đổi cổng, đặt `POWER_MONITOR_LHM_PORT` trước khi mở app. Ứng dụng không tự cài driver hay chạy quyền quản trị; một số cảm biến bo mạch yêu cầu LibreHardwareMonitor chạy bằng quyền administrator. Chỉ các cảm biến watt mà thiết bị/driver thực sự cung cấp mới xuất hiện; kênh CPU/DRAM dùng chung vẫn không tách được từng thanh RAM hoặc từng thiết bị HID USB. LibreHardwareMonitor hiện không được cài/chạy trên PC này nên nguồn tùy chọn chưa có số đo.
 Số đo cảm biến tự cập nhật khi máy chủ ứng dụng đang chạy. Dashboard hiển thị watt hiện tại theo từng kênh; ứng dụng tự lưu số đo cảm biến thật mỗi 30 giây và giữ lịch sử 7 ngày. Năng lượng trong phiên vẫn bắt đầu lại khi khởi động server. Ước tính không trở thành số đo cảm biến và không được lưu.
 
-Lịch sử tự động được lưu theo ngày trong thư mục `sensor-history` tại thư mục dữ liệu cục bộ (Windows: `%LOCALAPPDATA%\PowerMonitorLab`; macOS: `~/Library/Application Support/PowerMonitorLab`; Linux: `$XDG_DATA_HOME/power-monitor-lab` hoặc `~/.local/share/power-monitor-lab`). Các tệp `readings.json` từ bản thử nghiệm cũ được giữ nguyên.
+Lịch sử cảm biến tự động được lưu theo ngày trong thư mục `sensor-history` tại thư mục dữ liệu cục bộ (Windows: `%LOCALAPPDATA%\PowerMonitorLab`; macOS: `~/Library/Application Support/PowerMonitorLab`; Linux: `$XDG_DATA_HOME/power-monitor-lab` hoặc `~/.local/share/power-monitor-lab`). Lịch sử nhập tay và các API cũ (`/api/readings`, `/api/meters`, `/api/summary`, `/api/export.csv`) đã bị gỡ; tệp `readings.json` cũ không được ứng dụng đọc. Lịch sử cảm biến tự động vẫn được giữ trong bảy ngày.
 
 Lịch sử từ bản Windows thử nghiệm trước vẫn xem được. Giá trị đồng hồ đơn điệu cũ của .NET không được quy đổi sang Node.js, vì vậy Wh chỉ được tính cho các khoảng đo ghi bằng bản npm này.
 

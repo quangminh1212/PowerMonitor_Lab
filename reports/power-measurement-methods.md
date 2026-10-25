@@ -13,7 +13,7 @@ Snapshot trực tiếp gần nhất ghi nhận 4 kênh watt, 18 thiết bị đ�
 
 Các số CPU package, PP0 và DRAM là miền đo riêng có thể chồng lấp. Không cộng chúng với nhau hoặc với GPU để suy ra điện ở ổ cắm. PP0 là miền CPU gộp, không phải số đo từng lõi. DRAM là số đo dùng chung, không phải số đo riêng từng thanh RAM.
 
-Không có biểu mẫu ghi W thủ công. `POST /api/readings` bị tắt và trả HTTP 405; dashboard chỉ hiển thị số từ nguồn cảm biến tự động. Dữ liệu lịch sử cũ vẫn có thể đọc để tương thích, nhưng không thể ghi thêm theo cách thủ công.
+Không có biểu mẫu ghi W thủ công. Các API lịch sử cũ (`/api/readings`, `/api/meters`, `/api/summary`, `/api/export.csv`) không còn được phục vụ; dashboard chỉ hiển thị số từ nguồn cảm biến tự động. Tệp `readings.json` cũ không được ứng dụng đọc.
 
 ## Phần cứng máy và đường đo còn thiếu
 

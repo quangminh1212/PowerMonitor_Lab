@@ -107,5 +107,5 @@ test("serves automatically collected local history and rejects manual watt posts
     headers: { Origin: app.origin, "Content-Type": "application/json" },
     body: JSON.stringify({ watts: 999 })
   });
-  assert.equal(manualResponse.status, 405);
+  assert.equal(manualResponse.status, 404);
 });

@@ -141,7 +141,7 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .sensor-integration-hint { margin: 10px 0 0; color: #68766e; font-size: 12px; line-height: 1.5; }
 
 .content-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, .9fr); align-items: start; gap: 16px; margin-bottom: 18px; }
-.chart-panel, .record-panel { min-width: 0; padding: 20px; }
+.chart-panel { min-width: 0; padding: 20px; }
 .chart-heading { align-items: flex-end; }
 .chart-controls { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
 .select-wrap { position: relative; display: block; }
@@ -179,9 +179,6 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .history-axis-label { fill: #748078; font-size: 12px; }
 .history-series { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .history-plot .history-empty { position: absolute; inset: 12px 0; min-height: 150px; }
-.clear-history-button { min-height: 36px; padding: 0 10px; color: #8a453c; background: #fff; border: 1px solid #ecd9d6; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 650; }
-.clear-history-button:hover { background: #fff6f4; border-color: #dfbfba; }
-.clear-history-button[hidden] { display: none; }
 .table-scroll { width: 100%; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 thead { background: #f7faf8; }
@@ -201,9 +198,6 @@ td.meter-cell { color: #304237; font-weight: 650; }
 .history-empty strong { color: #394b3f; font-size: 14px; font-weight: 700; }
 .history-empty span:last-child { font-size: 13px; }
 .history-footer { display: flex; min-height: 42px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px; color: #68766e; background: #fafcfb; border-top: 1px solid #e9eeeb; font-size: 12px; }
-.summary-panel { margin-bottom: 16px; padding: 0 20px; }
-.summary-panel > summary { min-height: 54px; }
-.summary-panel[open] { padding-bottom: 15px; }
 .metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding-top: 6px; }
 .metric-card { min-width: 0; padding: 14px; background: #f8faf9; border: 1px solid #e5ebe7; border-radius: 8px; }
 .metric-label { color: #5f6e64; font-size: 11px; font-weight: 750; }
@@ -237,7 +231,7 @@ td.meter-cell { color: #304237; font-weight: 650; }
   .page-content { width: calc(100% - 28px); padding-top: 23px; }
   .page-heading { align-items: flex-start; flex-direction: column; gap: 6px; margin-bottom: 15px; }
   .page-subtitle { font-size: 14px; }
-  .sensor-panel, .chart-panel, .record-panel { padding: 17px; }
+  .sensor-panel, .chart-panel { padding: 17px; }
   .sensor-heading { align-items: flex-start; }
   .sensor-status { min-height: 29px; padding: 3px 9px; font-size: 12px; }
   .sensor-reading-grid { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 9px; }
