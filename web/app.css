@@ -146,28 +146,6 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .chart-footer > span:first-child { display: inline-flex; align-items: center; gap: 7px; }
 .legend-dot { display: inline-block; width: 8px; height: 8px; background: #328761; border-radius: 50%; }
 
-.record-heading { margin-bottom: 8px; }
-.form-intro { margin: 7px 0 18px; color: #5f6e64; font-size: 13px; line-height: 1.5; }
-#reading-form { display: grid; }
-.field-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; color: #394a3f; font-size: 13px; font-weight: 650; }
-.field-label-spaced { margin-top: 14px; }
-.field-unit, .optional-label { color: #68776e; font-size: 12px; font-weight: 600; }
-.field-help { margin: 5px 0 0; color: #627168; font-size: 12px; }
-#reading-form input { width: 100%; min-height: 42px; padding: 0 11px; color: #293a30; background: #fff; border: 1px solid #d5dfd8; border-radius: 7px; font-size: 14px; }
-#reading-form input::placeholder { color: #829087; }
-.number-input-wrap { position: relative; }
-.number-input-wrap input { padding-right: 43px; }
-.number-unit { position: absolute; top: 10px; right: 12px; color: #68776e; font-size: 13px; font-weight: 650; pointer-events: none; }
-.button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 8px; padding: 0 13px; border: 1px solid transparent; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 700; transition: background .15s ease, transform .15s ease, border-color .15s ease; }
-.button:active { transform: translateY(1px); }
-.button-primary { color: #fff; background: var(--green); }
-.button-primary:hover { background: var(--green-dark); }
-.button-secondary { color: #405348; background: #fff; border-color: #d5dfd8; }
-.button-secondary:hover { background: #f5f9f6; border-color: #baccc0; }
-.submit-button { width: 100%; justify-content: space-between; margin-top: 17px; }
-.submit-button span:last-child { font-size: 18px; font-weight: 400; }
-.form-footnote { margin: 10px 0 0; color: #627168; font-size: 12px; text-align: center; }
-
 .history-panel { overflow: hidden; margin-bottom: 14px; }
 .history-heading { padding: 20px; }
 .history-caption { margin: 5px 0 0; color: #637168; font-size: 13px; }
