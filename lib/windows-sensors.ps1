@@ -236,16 +236,34 @@ function Add-PhysicalStorage($items) {
             return
         }
     }
+    $activityByDiskId = @{}
+    try {
+        foreach ($counter in @(Get-CimInstance -ClassName Win32_PerfFormattedData_PerfDisk_PhysicalDisk -ErrorAction Stop)) {
+            if ([string]$counter.Name -match '^(\d+)') {
+                $activityByDiskId[$Matches[1]] = [pscustomobject]@{
+                    readBytesPerSecond = [double]$counter.DiskReadBytesPersec
+                    writeBytesPerSecond = [double]$counter.DiskWriteBytesPersec
+                }
+            }
+        }
+    } catch {
+        $activityByDiskId = @{}
+    }
     $index = 0
     foreach ($disk in $disks) {
         $name = [string]$disk.FriendlyName
         if ([string]::IsNullOrWhiteSpace($name)) { $name = [string]$disk.Model }
         if ([string]::IsNullOrWhiteSpace($name)) { $name = "Physical disk" }
+        $deviceId = [string]$disk.DeviceId
+        if ($deviceId -notmatch '^\d+$' -and $null -ne $disk.Index) { $deviceId = [string]$disk.Index }
+        $activity = $activityByDiskId[$deviceId]
         $items.Add([pscustomobject]@{
             id = "storage-$index"
             kind = "storage"
             name = $name.Trim()
             busType = [string]$disk.BusType
+            readBytesPerSecond = if ($activity) { $activity.readBytesPerSecond } else { $null }
+            writeBytesPerSecond = if ($activity) { $activity.writeBytesPerSecond } else { $null }
             capability = "inventory-only"
         })
         $index++

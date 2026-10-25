@@ -211,6 +211,120 @@ function deviceMeasurementGuide(device) {
   return deviceMeasurementGuides[state.language]?.[keys[device.kind]] ?? "";
 }
 
+const powerEstimateLabels = {
+  en: {
+    disclosure: "Estimates are separate from live sensor readings and are never added to measured watts or whole-PC totals.",
+    measuredTag: "MEASURED", allocatedTag: "ALLOCATED ESTIMATE", modelledTag: "ACTIVITY MODEL",
+    rangeTag: "ESTIMATE RANGE", boundTag: "SPEC LIMIT", adapterTag: "ADAPTER RATING", includedTag: "INCLUDED ELSEWHERE", unavailableTag: "NO ESTIMATE",
+    measuredValue: "Direct sensor value shown above",
+    allocatedValue: "~{watts} W allocated from shared sensor",
+    modelledValue: "~{watts} W model estimate · profile {low}–{high} W",
+    rangeValue: "Model range {low}–{high} W",
+    rangeTypicalValue: "Model range {low}–{high} W · reference {typical} W",
+    boundValue: "Manufacturer maximum {watts} W · not current draw",
+    adapterValue: "Family adapter output rating {low}–{high} W · not monitor draw",
+    includedValue: "Included in {device}", unavailableValue: "No defensible estimate basis",
+    confidenceLow: "low confidence", confidenceMedium: "medium confidence", confidenceVeryLow: "very low confidence",
+    sourceLabel: "Source"
+  },
+  vi: {
+    disclosure: "Ước tính được tách khỏi số đo cảm biến trực tiếp và không bao giờ cộng vào watt đo được hay tổng công suất PC.",
+    measuredTag: "ĐO TRỰC TIẾP", allocatedTag: "ƯỚC TÍNH PHÂN BỔ", modelledTag: "MÔ HÌNH HOẠT ĐỘNG",
+    rangeTag: "KHOẢNG ƯỚC TÍNH", boundTag: "GIỚI HẠN TÀI LIỆU", adapterTag: "CÔNG SUẤT ADAPTER", includedTag: "ĐÃ TÍNH Ở MỤC KHÁC", unavailableTag: "CHƯA ƯỚC TÍNH",
+    measuredValue: "Số đo cảm biến trực tiếp ở phía trên",
+    allocatedValue: "~{watts} W phân bổ từ cảm biến dùng chung",
+    modelledValue: "~{watts} W mô hình · khoảng hồ sơ {low}–{high} W",
+    rangeValue: "Khoảng mô hình {low}–{high} W",
+    rangeTypicalValue: "Khoảng mô hình {low}–{high} W · mốc tham khảo {typical} W",
+    boundValue: "Công suất tối đa {watts} W theo tài liệu · không phải số đang dùng",
+    adapterValue: "Công suất đầu ra adapter của họ mẫu {low}–{high} W · không phải điện tiêu thụ của màn hình",
+    includedValue: "Đã gộp trong ước tính {device}", unavailableValue: "Chưa có cơ sở ước tính đáng tin",
+    confidenceLow: "độ tin cậy thấp", confidenceMedium: "độ tin cậy trung bình", confidenceVeryLow: "độ tin cậy rất thấp",
+    sourceLabel: "Nguồn"
+  }
+};
+
+function formatEstimateWatts(value) {
+  if (!Number.isFinite(value)) return "—";
+  if (value === 0) return "0";
+  return value < 1 ? value.toFixed(2) : value.toFixed(1);
+}
+
+function renderPowerEstimate(device, language) {
+  const estimate = device.powerEstimate;
+  if (!estimate) return null;
+  const labels = powerEstimateLabels[language] ?? powerEstimateLabels.en;
+  const container = document.createElement("div");
+  container.className = `device-estimate estimate-${estimate.status ?? "unavailable"}`;
+  const methodText = language === "vi" ? (estimate.methodVi ?? estimate.method) : estimate.method;
+  container.title = methodText ?? "";
+
+  const tag = document.createElement("strong");
+  const tagKey = {
+    measured: "measuredTag", allocated: "allocatedTag", modelled: "modelledTag",
+    range: "rangeTag", "upper-bound": "boundTag", "adapter-rating": "adapterTag", included: "includedTag", unavailable: "unavailableTag"
+  }[estimate.status] ?? "unavailableTag";
+  tag.textContent = labels[tagKey];
+
+  const interpolate = (key, values = {}) => Object.entries(values).reduce(
+    (text, [name, replacement]) => text.replaceAll(`{${name}}`, String(replacement)), labels[key]
+  );
+  const value = document.createElement("span");
+  if (estimate.status === "measured") {
+    value.textContent = labels.measuredValue;
+  } else if (estimate.status === "allocated") {
+    value.textContent = interpolate("allocatedValue", { watts: formatEstimateWatts(estimate.estimatedWatts) });
+  } else if (estimate.status === "modelled") {
+    value.textContent = interpolate("modelledValue", {
+      watts: formatEstimateWatts(estimate.estimatedWatts), low: formatEstimateWatts(estimate.lowWatts), high: formatEstimateWatts(estimate.highWatts)
+    });
+  } else if (estimate.status === "range") {
+    const key = Number.isFinite(estimate.typicalWatts) ? "rangeTypicalValue" : "rangeValue";
+    value.textContent = interpolate(key, {
+      low: formatEstimateWatts(estimate.lowWatts), high: formatEstimateWatts(estimate.highWatts), typical: formatEstimateWatts(estimate.typicalWatts)
+    });
+  } else if (estimate.status === "upper-bound") {
+    value.textContent = interpolate("boundValue", { watts: formatEstimateWatts(estimate.highWatts) });
+  } else if (estimate.status === "adapter-rating") {
+    value.textContent = interpolate("adapterValue", {
+      low: formatEstimateWatts(estimate.lowWatts), high: formatEstimateWatts(estimate.highWatts)
+    });
+  } else if (estimate.status === "included") {
+    value.textContent = interpolate("includedValue", { device: estimate.parentName ?? "related device" });
+  } else {
+    value.textContent = labels.unavailableValue;
+  }
+
+  container.append(tag, value);
+  if (methodText && estimate.status !== "measured") {
+    const method = document.createElement("small");
+    method.className = "device-estimate-method";
+    method.textContent = methodText;
+    container.append(method);
+  }
+  const confidenceKey = { low: "confidenceLow", medium: "confidenceMedium", "very-low": "confidenceVeryLow" }[estimate.confidence];
+  if (confidenceKey) {
+    const confidence = document.createElement("small");
+    confidence.textContent = labels[confidenceKey];
+    container.append(confidence);
+  }
+  if (Array.isArray(estimate.sources) && estimate.sources.length > 0) {
+    const sources = document.createElement("span");
+    sources.className = "device-estimate-sources";
+    estimate.sources.forEach((source, index) => {
+      if (index > 0) sources.append(document.createTextNode(" · "));
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = `${labels.sourceLabel}: ${source.label}`;
+      sources.append(link);
+    });
+    container.append(sources);
+  }
+  return container;
+}
+
 function renderSensors() {
   const snapshot = state.sensors;
   if (!snapshot) return;
@@ -224,6 +338,8 @@ function renderSensors() {
   }[snapshot.status] ?? "sensorStatusUnavailable";
   status.dataset.state = snapshot.status;
   status.textContent = tr(statusKey);
+  const estimateNote = $("#sensor-estimate-note");
+  if (estimateNote) estimateNote.textContent = (powerEstimateLabels[state.language] ?? powerEstimateLabels.en).disclosure;
   const messageKey = {
     starting: "sensorIntro",
     available: "sensorAvailableMessage",
@@ -368,6 +484,8 @@ function renderSensors() {
       guide.textContent = guideText;
       capability.append(guide);
     }
+    const estimate = renderPowerEstimate(device, state.language);
+    if (estimate) capability.append(estimate);
     row.append(details, capability);
     deviceList.append(row);
   }

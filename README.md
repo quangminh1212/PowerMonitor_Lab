@@ -25,6 +25,7 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 - On Windows, reads the last measured GPU board power from `nvidia-smi` when an NVIDIA driver provides it.
 - On Windows, optionally reads additional hardware `Power` sensors from the local LibreHardwareMonitor web server.
 - Lists hardware devices Windows can identify, including the processor, graphics, memory, drives, monitors, keyboards, mice, and USB devices; marks devices without live watt telemetry.
+- Shows separate, sourced estimates for devices without live watt telemetry when manufacturer specifications or shared sensors support one. Other devices remain clearly marked as lacking a defensible estimate. Estimates are not sensor readings and are excluded from logged readings and totals.
 - Records manually entered watt readings for a named meter or device, with an optional note.
 - Shows the latest reading, power trend, history, and meter/time-range filters.
 - Estimates watt-hours by trapezoidal integration between nearby readings from the same meter and app session.
@@ -49,10 +50,23 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 
 `bMaxPower` is the USB device's declared maximum, not a live measurement. Power readings for the CPU and GPU are component domains; they cannot be added to recover wall input. Sources: [Windows EMI](https://learn.microsoft.com/en-us/windows-hardware/drivers/powermeter/energy-meter-interface), [Intel RAPL domains](https://cdrdv2-public.intel.com/868137/325462-089-sdm-vol-1-2abcd-3abcd-4.pdf), [NVIDIA NVML power usage](https://docs.nvidia.com/deploy/nvml-api/latest/api/group__nvmlDeviceQueries.html), [USB-IF descriptor](https://www.usb.org/sites/default/files/pdcv10.pdf), [NVMe 2.3](https://nvmexpress.org/wp-content/uploads/NVM-Express-Base-Specification-Revision-2.3-2025.08.01-Ratified.pdf), and [ASRock H510M-HVS specifications](https://www.asrock.com/MB/Intel/H510M-HVS/index.asp).
 
+### Separate device estimate mode
+
+The sensor API attaches a `powerEstimate` object to each detected device without changing the `readings` array. The UI renders estimates in a separate column and labels their type and confidence. They are not persisted, graphed, integrated into watt-hours, or summed into a whole-PC figure.
+
+- The two DIMM estimates allocate the measured shared DRAM channel by installed capacity. They do not represent per-DIMM telemetry.
+- The Kingston A400 range uses the published idle/read/write figures. When Windows exposes physical-disk byte rates, a linear throughput model estimates a point within that specification range. This is a low-confidence model, not a watt sensor.
+- The Hikvision/HIKSEMI E100 shows the manufacturer's maximum-power envelope only because no idle value for this unit was verified.
+- The Dell E2318H shows the manufacturer on-mode and sleep reference range; current state is not read. The HKC MB24V9 entry shows only its family adapter's 24–30 W output rating. A 17.06 W reference is from a comparable model, not this monitor.
+- Components without a device-specific source or live sensor (motherboard, USB HID, network, audio, fans, and unknown models) remain explicitly unavailable instead of receiving invented watt ranges. Integrated NVIDIA audio is linked to the measured GPU board reading.
+- An estimate or specification limit is not a measured current draw. Unknown power states, device revisions, peripherals and workloads can move actual use outside these models. No estimated whole-PC total is produced.
+
+Model sources: [Kingston A400 specification](https://www.kingston.com/datasheets/sa400s37_us.pdf), [HIKSEMI E100 specification](https://www.hiksemitech.com/pt/hiksemi/all-products/solid-state-drive/consumer-ssd/hs-ssd-e100.html), [Dell E2318H specification](https://i.dell.com/sites/csdocuments/Product_Docs/en/dell_23_monitor_e2318h_product_spec_sheet.pdf), [comparable HKC ENERGY STAR display](https://www.energystar.gov/productfinder/product/certified-displays/details/4497038/export/pdf), and [HKC MB24V9 family certification](https://www.cqc.com.cn/www/upload/files/upload/resources/file/2025/05/19/63005.pdf).
+
 ### Optional LibreHardwareMonitor source (Windows)
 
 The app polls only `GET http://127.0.0.1:8085/data.json`; it imports finite sensors whose type is `Power` and never calls LibreHardwareMonitor's control endpoints. To enable it, install and run [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), then choose **Options → Remote Web Server → Run**. If you use another local port, set `POWER_MONITOR_LHM_PORT` before starting the app. The app does not install a sensor driver or elevate itself; some motherboard sensors require LibreHardwareMonitor to run with administrator rights. Only power sensors the hardware/driver exposes appear, and a shared CPU/DRAM channel still does not measure each DIMM or USB HID device. On this PC, LibreHardwareMonitor is not installed or running, so this optional provider currently contributes no readings.
-Sensor energy is observed only while this local app process is running. It resets when the server stops and is kept separate from manually logged readings. If a device or driver does not expose live power, the app labels it as detected without a watt sensor instead of estimating a value.
+Sensor energy is observed only while this local app process is running. It resets when the server stops and is kept separate from manually logged readings. Devices without watt sensors can have a separate model estimate; those values never become sensor readings or recorded measurements.
 
 On Windows, the detected hardware inventory refreshes every 15 seconds so devices added or removed while the app is open appear without restarting it.
 
@@ -118,6 +132,17 @@ Danh sách thiết bị Windows được dò lại mỗi 15 giây để nhận t
 | Cả PC | Số CPU/GPU có miền chồng lấp và không bao phủ mọi đường nguồn. | Đồng hồ AC đo watt thật ở dây nguồn của thùng máy. Nếu đồng hồ cắm vào ổ chia chung thì nó đo tất cả thiết bị trên ổ chia đó. |
 
 `bMaxPower` của USB là mức tối đa khai báo, không phải số đo trực tiếp. Không cộng số CPU/GPU để suy ra điện ở ổ cắm.
+
+### Ước tính công suất theo thiết bị
+
+API `/api/sensors` bổ sung trường `powerEstimate` riêng trên từng thiết bị. Trường này không thay đổi danh sách `readings`, không được lưu vào lịch sử, biểu đồ, Wh hay tổng PC. Màn hình gắn nhãn rõ số đo, phân bổ cảm biến dùng chung, mô hình, khoảng tham khảo, giới hạn tài liệu hoặc chưa đủ căn cứ.
+
+- Hai thanh RAM được phân bổ số đo DRAM dùng chung theo dung lượng. Đây không phải số đo từng DIMM và không được cộng lại với kênh DRAM gốc.
+- Kingston A400 dùng thông số nhà sản xuất; khi Windows có bộ đếm I/O ổ đĩa, ứng dụng nội suy một mô hình công suất hoạt động có độ tin cậy thấp. HIKSEMI E100 chỉ hiển thị giới hạn tối đa 2,9 W vì chưa có thông số nhàn rỗi phù hợp.
+- Dell E2318H hiển thị khoảng tham khảo khi bật/ngủ theo tài liệu nhưng không biết trạng thái hiện tại. HKC MB24V9 chỉ hiển thị công suất đầu ra adapter 24–30 W của họ sản phẩm; mức tham khảo 17,06 W thuộc một mẫu khác, không phải màn hình này.
+- Bo mạch, USB, bàn phím, chuột, mạng, âm thanh, quạt và mẫu thiết bị không rõ nguồn vẫn hiện “chưa đủ căn cứ” thay vì gán watt phỏng đoán.
+
+Các nguồn và giới hạn của từng mô hình được ghi cạnh thiết bị trong ứng dụng và trong mục tiếng Anh phía trên. Không có tổng công suất ước tính cho toàn PC.
 
 ### Nguồn LibreHardwareMonitor tùy chọn (Windows)
 
