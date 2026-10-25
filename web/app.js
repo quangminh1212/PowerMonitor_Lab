@@ -40,6 +40,22 @@ const additionalKindLabels = {
   en: { network: "Network adapter", audio: "Audio device" },
   vi: { network: "Card mạng", audio: "Thiết bị âm thanh" }
 };
+const sharedMeasurementLabels = {
+  en: { memory: "Shared DRAM channel" },
+  vi: { memory: "Kênh DRAM dùng chung" }
+};
+const sensorReadingNotes = {
+  en: {
+    powerLimit: "GPU power limit (cap, not current draw)",
+    sharedDram: "Shared memory-domain reading; not per-DIMM power.",
+    unusedPp1: "This F-series CPU has no integrated graphics; PP1 does not measure the NVIDIA card."
+  },
+  vi: {
+    powerLimit: "Giới hạn công suất GPU (mức trần, không phải mức đang dùng)",
+    sharedDram: "Số đo miền bộ nhớ dùng chung, không phải watt riêng từng thanh RAM.",
+    unusedPp1: "CPU dòng F này không có đồ họa tích hợp; PP1 không đo card NVIDIA."
+  }
+};
 const deviceMeasurementGuides = {
   en: {
     processor: "CPU package and PP0 domains are measured; individual core watts are not exposed.",
@@ -234,6 +250,11 @@ function renderSensors() {
   const readingGrid = $("#sensor-reading-grid");
   readingGrid.replaceChildren();
   const readings = Array.isArray(snapshot.readings) ? snapshot.readings : [];
+  const hasIntelFSeriesCpu = (Array.isArray(snapshot.devices) ? snapshot.devices : []).some((device) =>
+    device.kind === "processor" &&
+    /intel/i.test(device.name ?? "") &&
+    /\b\d{4,5}(?:KF|F)\b/i.test(device.name ?? "")
+  );
   if (readings.length === 0) {
     const empty = document.createElement("p");
     empty.className = "sensor-empty";
@@ -267,6 +288,25 @@ function renderSensors() {
     method.className = "sensor-provenance";
     method.textContent = `${tr("sensorMethod")}: ${reading.method ?? tr("none")}`;
     card.append(heading, value, energy, source, method);
+    const notes = sensorReadingNotes[state.language] ?? sensorReadingNotes.en;
+    if (Number.isFinite(reading.powerLimitWatts)) {
+      const limit = document.createElement("p");
+      limit.className = "sensor-provenance";
+      limit.textContent = `${notes.powerLimit}: ${formatPower(reading.powerLimitWatts)} W`;
+      card.append(limit);
+    }
+    if (reading.name === "RAPL_Package0_DRAM") {
+      const shared = document.createElement("p");
+      shared.className = "sensor-provenance";
+      shared.textContent = notes.sharedDram;
+      card.append(shared);
+    }
+    if (reading.name === "RAPL_Package0_PP1" && hasIntelFSeriesCpu) {
+      const inactive = document.createElement("p");
+      inactive.className = "sensor-provenance";
+      inactive.textContent = notes.unusedPp1;
+      card.append(inactive);
+    }
     readingGrid.append(card);
   }
 
@@ -298,10 +338,16 @@ function renderSensors() {
       : additionalKindLabels[state.language]?.[device.kind] ?? tr("sensorKindOther");
     details.append(name, kind);
     const capability = document.createElement("div");
-    capability.className = `device-capability ${device.measurementStatus === "measured" ? "is-measured" : "is-unavailable"}`;
+    const isMeasured = device.measurementStatus === "measured";
+    const isShared = device.measurementStatus === "shared";
+    capability.className = `device-capability ${isMeasured ? "is-measured" : isShared ? "is-shared" : "is-unavailable"}`;
     const label = document.createElement("strong");
     const needsUsbMeter = ["keyboard", "mouse", "usb"].includes(device.kind);
-    label.textContent = device.measurementStatus === "measured" ? tr("sensorMeasured") : needsUsbMeter ? tr("sensorNeedsUsbMeter") : tr("sensorNoLivePower");
+    label.textContent = isMeasured
+      ? tr("sensorMeasured")
+      : isShared
+        ? sharedMeasurementLabels[state.language]?.[device.kind] ?? sharedMeasurementLabels.en[device.kind]
+        : needsUsbMeter ? tr("sensorNeedsUsbMeter") : tr("sensorNoLivePower");
     capability.append(label);
     if (Array.isArray(device.coveredBy) && device.coveredBy.length > 0) {
       const coverage = document.createElement("span");
