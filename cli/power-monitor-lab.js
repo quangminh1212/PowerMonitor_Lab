@@ -113,6 +113,9 @@ Options:
 
 Environment:
   POWER_MONITOR_DATA_DIR  Override the folder used for local readings
+  POWER_MONITOR_PC_METER_HOST  Private IPv4 address[:port] for a Shelly PC outlet meter
+  POWER_MONITOR_PC_METER_PASSWORD  Enabled Shelly Digest-authentication password
+  POWER_MONITOR_PC_METER_COMPONENT  Optional pm1:N or switch:N outlet channel
 `);
 }
 

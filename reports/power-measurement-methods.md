@@ -30,11 +30,11 @@ Không có biểu mẫu ghi W thủ công. `POST /api/readings` bị tắt và t
 
 Chuột/bàn phím không dây lấy năng lượng từ pin; đo đầu thu USB không đo được mức tiêu thụ của thiết bị chạy pin. Đồng hồ đặt trên ổ chia chung sẽ tính cả những thiết bị khác cùng cắm vào đó.
 
-## Đường nâng cấp cho tổng điện thùng máy
+## Đo tự động điện đầu vào cả PC
 
-Một AC meter có API cục bộ có thể đo tự động tổng điện đầu vào sau khi nối nó riêng với dây nguồn PC. Ví dụ, tài liệu Shelly Plug PM Gen3 dùng `PM1.GetStatus?id=0`; trạng thái có `apower` (W) và `aenergy.total` (Wh). Mẫu EU công bố 230 V / 50 Hz, 16 A và 3680 W cho tải điện trở. Mức tải điện trở này không tự chứng minh phù hợp với mọi bộ nguồn PC; cần kiểm tra đúng loại phích cắm, điện áp lưới và tải thực tế.
+Ứng dụng đã có adapter đọc đồng hồ Shelly Gen2+ bằng `GET /rpc/Shelly.GetStatus`; `apower` được dùng làm W đang đo và `aenergy.total` làm bộ đếm Wh. Adapter chỉ gọi API đọc, yêu cầu Digest authentication, nhận địa chỉ IPv4 riêng tư tường minh, không dò mạng và cập nhật mỗi ba giây. Đặt `POWER_MONITOR_PC_METER_HOST` và `POWER_MONITOR_PC_METER_PASSWORD` trước khi chạy ứng dụng. Nếu meter có nhiều cổng, đặt thêm `POWER_MONITOR_PC_METER_COMPONENT` (`pm1:N` hoặc `switch:N`) cho đúng cổng PC; nhiều kênh không khai báo sẽ bị từ chối thay vì chọn nhầm. Mật khẩu chỉ được đọc từ biến môi trường, không ghi vào giao diện hay log.
 
-Power Monitor Lab hiện chưa kết nối hay hỗ trợ adapter Shelly. Vì vậy chưa có số tổng PC từ ổ cắm. Muốn có số này, cần meter thật trước; khi có thể tích hợp, app phải đọc API cục bộ theo chu kỳ và chỉ coi `apower` là watt đo được.
+Adapter chưa được xác nhận với đồng hồ vật lý trong phiên này. Máy hiện tại chưa có meter Shelly kết nối/cấu hình, nên tổng vẫn là `null`. Kiểm thử tự động xác nhận parser, địa chỉ mạng riêng, công thức Digest và trao đổi HTTP giả lập; chúng không thay thế kiểm tra phần cứng thật. Đồng hồ phải cắm riêng PC, đúng loại phích cắm/điện áp và đủ định mức tải cho bộ nguồn. Plug PM Gen3 EU công bố tối đa 16 A / 3680 W cho tải điện trở; con số đó không tự chứng minh phù hợp với mọi PSU PC.
 
 Hub USB Cambrionix có thể cung cấp dòng mA theo cổng; tài liệu ThunderSync3-16 không cho biết điện áp VBUS riêng từng cổng. Nhân dòng với 5 V danh định chỉ tạo ước tính, không phải watt đo trực tiếp. Muốn W trực tiếp cần cả V và A của nhánh đó.
 

@@ -48,20 +48,41 @@
           <div class="panel-heading sensor-heading">
             <div>
               <p class="eyebrow" data-i18n="sensorEyebrow">SỐ ĐO CẢM BIẾN</p>
-              <h2 id="sensor-heading" data-i18n="sensorHeading">Công suất đang đo</h2>
+              <h2 id="sensor-heading" data-i18n="sensorHeading">Số đo linh kiện</h2>
             </div>
             <span id="sensor-status" class="sensor-status" data-state="starting" data-i18n="sensorStatusStarting">Đang dò</span>
           </div>
           <p id="sensor-description" class="sensor-description" data-i18n="sensorIntro">Đang tìm cảm biến công suất trên máy tính này.</p>
-          <div id="sensor-reading-grid" class="sensor-reading-grid"></div>
-
-          <aside class="sensor-total-note" role="note">
-            <span class="total-note-icon" aria-hidden="true">i</span>
-            <div>
-              <strong data-i18n="sensorTotalTitle">Chưa đo được điện đầu vào của cả máy</strong>
-              <p data-i18n="sensorTotalBody">Cảm biến bên trong chỉ đo một số phần và có thể chồng lấp. Muốn biết PC lấy bao nhiêu điện từ ổ cắm, cần đồng hồ đo AC.</p>
+          <section class="pc-total-card" data-state="missing" aria-labelledby="pc-total-heading">
+            <div class="pc-total-copy">
+              <p class="eyebrow" data-i18n="pcTotalEyebrow">TOÀN BỘ PC</p>
+              <h3 id="pc-total-heading" data-i18n="pcTotalHeading">Điện đầu vào tại ổ cắm</h3>
+              <p id="pc-total-description" data-i18n="pcTotalMissingDescription">Muốn đo cả máy, hãy nối riêng PC qua đồng hồ AC tương thích. Sau khi kết nối, số đo tự cập nhật; không cần nhập watt.</p>
+              <p id="pc-total-detail" class="pc-total-detail" hidden></p>
             </div>
-          </aside>
+            <div class="pc-total-reading">
+              <strong id="pc-total-value" data-state="unavailable">— W</strong>
+              <span id="pc-total-state" data-state="unavailable" data-i18n="pcTotalMissingState">Chưa có đồng hồ</span>
+            </div>
+          </section>
+
+          <section class="component-readings" aria-labelledby="component-readings-heading">
+            <h3 id="component-readings-heading" class="component-readings-heading" data-i18n="sensorReadingsHeading">Công suất đo trực tiếp</h3>
+            <div id="sensor-reading-grid" class="sensor-reading-grid"></div>
+          </section>
+
+          <details class="meter-setup-disclosure">
+            <summary data-i18n="pcMeterSetupHeading">Kết nối đồng hồ để đo tự động</summary>
+            <div class="meter-setup-body">
+              <p data-i18n="pcMeterSetupBody">Dùng đồng hồ Shelly có API cục bộ, hỗ trợ đo tải phù hợp với điện lưới và bộ nguồn PC. Bật xác thực trên đồng hồ, rồi đặt hai biến sau trong PowerShell trước khi chạy ứng dụng:</p>
+              <pre><code>$env:POWER_MONITOR_PC_METER_HOST = '192.168.1.20'
+$env:POWER_MONITOR_PC_METER_PASSWORD = '&lt;mật-khẩu-đồng-hồ&gt;'
+# Tùy chọn / Optional on multi-channel meters:
+$env:POWER_MONITOR_PC_METER_COMPONENT = 'pm1:0'
+npx power-monitor-lab</code></pre>
+              <p class="meter-setup-security" data-i18n="pcMeterSetupSecurity">Máy chủ đọc dữ liệu cục bộ mỗi 3 giây. Kết nối HTTP trong mạng nội bộ không mã hóa; hãy đặt đồng hồ trong mạng tin cậy.</p>
+            </div>
+          </details>
 
           <details class="inventory-disclosure" id="hardware-inventory">
             <summary>

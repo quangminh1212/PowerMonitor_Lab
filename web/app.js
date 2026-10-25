@@ -16,7 +16,7 @@ const translations = {
     title: "Computer power",
     subtitle: "Automatically updated readings from the sensors available on this PC.",
     sensorEyebrow: "LIVE SENSOR READINGS",
-    sensorHeading: "Power being measured",
+    sensorHeading: "Measured components",
     sensorIntro: "Looking for power sensors on this computer.",
     sensorStatusStarting: "Discovering",
     sensorStatusAvailable: "Measuring",
@@ -30,6 +30,21 @@ const translations = {
     sensorProviderConnected: "connected",
     sensorProviderUnavailable: "not connected",
     sensorReadingsHeading: "Measured power",
+    pcTotalEyebrow: "WHOLE PC",
+    pcTotalHeading: "Input power at the outlet",
+    pcTotalMeasuredState: "Measured live",
+    pcTotalMissingState: "Meter not connected",
+    pcTotalDisconnectedState: "Meter not responding",
+    pcTotalSelectState: "Select outlet channel",
+    pcTotalMeasuredDescription: "Active input is measured at the dedicated PC outlet.",
+    pcTotalMissingDescription: "To measure the whole PC, connect it through a compatible AC meter. Once connected, readings update automatically; no watt entry is needed.",
+    pcTotalDisconnectedDescription: "The meter is configured but not responding. Check its power, network connection, and device authentication.",
+    pcTotalSelectDescription: "This meter reports several power channels. Select the exact channel feeding only this PC before showing its total.",
+    pcTotalUnsupportedDescription: "Whole-PC meter integration currently runs on Windows. Component sensors available on this PC remain listed below.",
+    pcTotalEnergy: "Energy this session: {energy} Wh",
+    pcMeterSetupHeading: "Connect a meter for automatic total power",
+    pcMeterSetupBody: "Use a Shelly meter with its local API, rated for your mains and PC power supply load. Enable device authentication, then set these variables in PowerShell before starting the app. The component line is needed only for meters with multiple outlets:",
+    pcMeterSetupSecurity: "The app reads the local meter every 3 seconds. Local HTTP is not encrypted; keep the meter on a trusted network.",
     sensorWaiting: "Waiting for the next sensor sample",
     sensorSource: "Source",
     sensorMethod: "Measurement",
@@ -56,8 +71,6 @@ const translations = {
     sensorKindCooling: "Fans / cooling",
     sensorKindPowerSupply: "Power supply",
     sensorKindOther: "Device",
-    sensorTotalTitle: "Whole-PC input power is not measured",
-    sensorTotalBody: "Internal sensors cover only some components and can overlap. Use an AC outlet meter to measure power drawn by the whole PC.",
     sensorInventoryHeading: "Detected devices",
     sensorInventoryScope: "Scanned again every 15 seconds",
     deviceCount: "{count} detected devices",
@@ -91,7 +104,7 @@ const translations = {
     title: "Công suất máy tính",
     subtitle: "Tự động cập nhật số đo từ các cảm biến có trên PC này.",
     sensorEyebrow: "SỐ ĐO CẢM BIẾN",
-    sensorHeading: "Công suất đang đo",
+    sensorHeading: "Số đo linh kiện",
     sensorIntro: "Đang tìm cảm biến công suất trên máy tính này.",
     sensorStatusStarting: "Đang dò",
     sensorStatusAvailable: "Đang đo",
@@ -105,6 +118,21 @@ const translations = {
     sensorProviderConnected: "đã kết nối",
     sensorProviderUnavailable: "chưa kết nối",
     sensorReadingsHeading: "Công suất đo trực tiếp",
+    pcTotalEyebrow: "TOÀN BỘ PC",
+    pcTotalHeading: "Điện đầu vào tại ổ cắm",
+    pcTotalMeasuredState: "Đang đo trực tiếp",
+    pcTotalMissingState: "Chưa có đồng hồ",
+    pcTotalDisconnectedState: "Mất kết nối đồng hồ",
+    pcTotalSelectState: "Chọn kênh ổ cắm",
+    pcTotalMeasuredDescription: "Đang đo điện đầu vào tại ổ cắm riêng của PC.",
+    pcTotalMissingDescription: "Muốn đo cả máy, hãy nối riêng PC qua đồng hồ AC tương thích. Sau khi kết nối, số đo tự cập nhật; không cần nhập watt.",
+    pcTotalDisconnectedDescription: "Đồng hồ đã cấu hình nhưng chưa phản hồi. Hãy kiểm tra nguồn điện, kết nối mạng và xác thực trên đồng hồ.",
+    pcTotalSelectDescription: "Đồng hồ đang báo nhiều kênh công suất. Hãy chọn đúng kênh chỉ cấp cho PC trước khi hiện tổng.",
+    pcTotalUnsupportedDescription: "Tích hợp đồng hồ đo cả PC hiện chạy trên Windows. Các cảm biến linh kiện của máy vẫn hiển thị bên dưới.",
+    pcTotalEnergy: "Điện năng phiên này: {energy} Wh",
+    pcMeterSetupHeading: "Kết nối đồng hồ để tự đo tổng công suất",
+    pcMeterSetupBody: "Dùng đồng hồ Shelly có API cục bộ, chịu tải phù hợp với điện lưới và bộ nguồn PC. Bật xác thực trên đồng hồ, rồi đặt các biến sau trong PowerShell trước khi chạy ứng dụng. Dòng chọn kênh chỉ cần cho đồng hồ có nhiều ổ cắm:",
+    pcMeterSetupSecurity: "Ứng dụng đọc đồng hồ cục bộ mỗi 3 giây. HTTP nội bộ không mã hóa; chỉ đặt đồng hồ trong mạng tin cậy.",
     sensorWaiting: "Đang chờ mẫu cảm biến tiếp theo",
     sensorSource: "Nguồn đo",
     sensorMethod: "Cách đo",
@@ -131,8 +159,6 @@ const translations = {
     sensorKindCooling: "Quạt / tản nhiệt",
     sensorKindPowerSupply: "Bộ nguồn",
     sensorKindOther: "Thiết bị",
-    sensorTotalTitle: "Chưa đo được điện đầu vào của cả máy",
-    sensorTotalBody: "Cảm biến bên trong chỉ đo một số phần và có thể chồng lấp. Muốn biết PC lấy bao nhiêu điện từ ổ cắm, cần đồng hồ đo AC.",
     sensorInventoryHeading: "Thiết bị được nhận diện",
     sensorInventoryScope: "Tự quét lại mỗi 15 giây",
     deviceCount: "{count} thiết bị được nhận diện",
@@ -284,6 +310,69 @@ function sensorLabel(reading) {
   return name || tr("sensorLabelOther");
 }
 
+function renderPcTotal(snapshot) {
+  const valueElement = $("#pc-total-value");
+  const stateElement = $("#pc-total-state");
+  const descriptionElement = $("#pc-total-description");
+  const detailElement = $("#pc-total-detail");
+  const cardElement = document.querySelector(".pc-total-card");
+  if (!valueElement || !stateElement || !descriptionElement || !detailElement || !cardElement) return;
+
+  const readings = Array.isArray(snapshot.readings) ? snapshot.readings : [];
+  const reading = readings.find((item) => item.id === "shelly-pc-input");
+  const meterProvider = (Array.isArray(snapshot.providers) ? snapshot.providers : [])
+    .find((provider) => provider.id === "shelly-local-meter");
+  const needsComponentSelection = [
+    "multiple-meter-channels",
+    "invalid-component-id",
+    "selected-component-unavailable"
+  ].includes(meterProvider?.reason);
+  const watts = Number.isFinite(snapshot.totalPowerWatts) && snapshot.totalPowerWatts >= 0
+    ? snapshot.totalPowerWatts
+    : null;
+  const stateKey = watts !== null
+    ? "measured"
+    : snapshot.status === "unsupported"
+      ? "unsupported"
+      : needsComponentSelection
+        ? "selection"
+        : meterProvider?.configured
+        ? "disconnected"
+        : "missing";
+
+  cardElement.dataset.state = stateKey;
+  valueElement.dataset.state = watts === null ? "unavailable" : "measured";
+  valueElement.textContent = watts === null ? "— W" : `${formatPower(watts)} W`;
+  stateElement.dataset.state = stateKey === "measured" ? "measured" : stateKey;
+  stateElement.textContent = tr({
+    measured: "pcTotalMeasuredState",
+    missing: "pcTotalMissingState",
+    disconnected: "pcTotalDisconnectedState",
+    selection: "pcTotalSelectState",
+    unsupported: "sensorStatusUnsupported"
+  }[stateKey]);
+  descriptionElement.textContent = tr({
+    measured: "pcTotalMeasuredDescription",
+    missing: "pcTotalMissingDescription",
+    disconnected: "pcTotalDisconnectedDescription",
+    selection: "pcTotalSelectDescription",
+    unsupported: "pcTotalUnsupportedDescription"
+  }[stateKey]);
+
+  const detailParts = [];
+  if (Number.isFinite(reading?.voltage) && reading.voltage > 0) {
+    detailParts.push(`${formatPower(reading.voltage)} V`);
+  }
+  if (Number.isFinite(reading?.current) && reading.current >= 0) {
+    detailParts.push(`${formatPower(reading.current)} A`);
+  }
+  if (Number.isFinite(reading?.energyWhSinceStart)) {
+    detailParts.push(tr("pcTotalEnergy", { energy: formatEnergy(reading.energyWhSinceStart) }));
+  }
+  detailElement.textContent = detailParts.join(" · ");
+  detailElement.hidden = detailParts.length === 0;
+}
+
 function deviceMeasurementGuide(device) {
   const keys = {
     processor: "processor", graphics: "graphics", memory: "memory",
@@ -423,6 +512,7 @@ function renderSensors() {
   }[snapshot.status] ?? "sensorStatusUnavailable";
   status.dataset.state = snapshot.status;
   status.textContent = tr(statusKey);
+  renderPcTotal(snapshot);
   const estimateNote = $("#sensor-estimate-note");
   if (estimateNote) estimateNote.textContent = (powerEstimateLabels[state.language] ?? powerEstimateLabels.en).disclosure;
   const messageKey = {
@@ -450,7 +540,8 @@ function renderSensors() {
 
   const readingGrid = $("#sensor-reading-grid");
   readingGrid.replaceChildren();
-  const readings = Array.isArray(snapshot.readings) ? snapshot.readings : [];
+  const readings = (Array.isArray(snapshot.readings) ? snapshot.readings : [])
+    .filter((reading) => reading.id !== "shelly-pc-input");
   if (readings.length === 0) {
     const empty = document.createElement("p");
     empty.className = "sensor-empty";
@@ -485,7 +576,7 @@ function renderSensors() {
     if (Number.isFinite(reading.energyWhSinceStart)) {
       const energy = document.createElement("p");
       energy.className = "sensor-provenance";
-      const energyLabel = typeof reading.absoluteEnergyPwh === "string"
+      const energyLabel = Number.isFinite(reading.absoluteEnergyWh) || typeof reading.absoluteEnergyPwh === "string"
         ? tr("sensorMeasuredEnergy")
         : tr("sensorEstimatedEnergy");
       energy.textContent = `${energyLabel}: ${formatEnergy(reading.energyWhSinceStart)} Wh`;
