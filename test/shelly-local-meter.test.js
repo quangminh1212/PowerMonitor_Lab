@@ -186,10 +186,29 @@ test("builds the SHA-256 digest response for the exact read-only HTTP request", 
   assert.match(header, new RegExp(`response="${response}"`));
 });
 
+test("uses SHA-256 digest when Shelly omits its algorithm label", async () => {
+  const { createShellyDigestAuthorization } = await loadAdapter();
+  const header = createShellyDigestAuthorization({
+    challenge: 'Digest realm="shelly-test", nonce="nonce-no-algorithm", qop="auth"',
+    method: "GET",
+    uri: "/rpc/Shelly.GetStatus",
+    password: "secret",
+    nonceCount: 1,
+    clientNonce: "deadbeef"
+  });
+  assert.match(header, /^Digest username="admin"/);
+  assert.match(header, /algorithm=SHA-256/);
+});
+
 test("polls only Shelly.GetStatus and retries an enabled Digest challenge", async () => {
   const { ShellyLocalMeterSource } = await loadAdapter();
   let authorizationHeader = null;
   const server = createServer((request, response) => {
+    if (request.url === "/rpc/Shelly.GetDeviceInfo") {
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ id: "shelly-test", auth_en: true, auth_domain: "shelly-test" }));
+      return;
+    }
     assert.equal(request.method, "GET");
     assert.equal(request.url, "/rpc/Shelly.GetStatus");
     if (!request.headers.authorization) {
@@ -225,6 +244,141 @@ test("polls only Shelly.GetStatus and retries an enabled Digest challenge", asyn
     assert.equal(snapshot.readings[0].watts, 65.25);
     assert.match(authorizationHeader, /nonce="nonce-2"/);
     assert.match(authorizationHeader, /response="[a-f0-9]{64}"/);
+  } finally {
+    source.close();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+});
+
+test("trusts a Shelly HTTPS fingerprint and verifies identity before authentication", async () => {
+  const { ShellyLocalMeterSource } = await loadAdapter();
+  const fingerprint = "AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99";
+  const challenge = 'Digest realm="shelly-test", nonce="nonce-https", algorithm=SHA-256, qop="auth"';
+  const server = createServer((_request, response) => {
+    response.writeHead(302, { Location: "https://127.0.0.1/rpc/Shelly.GetStatus" });
+    response.end();
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const secureRequests = [];
+  const secureRequest = async (url, options) => {
+    secureRequests.push({ path: url.pathname, authorization: options.authorization ?? null, expectedFingerprint: options.expectedFingerprint });
+    options.onCertificate(fingerprint);
+    if (url.pathname === "/rpc/Shelly.GetDeviceInfo") {
+      return {
+        response: new Response(JSON.stringify({ id: "shelly-test", auth_en: true, auth_domain: "shelly-test" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        })
+      };
+    }
+    if (!options.authorization) {
+      return {
+        response: new Response(null, {
+          status: 401,
+          headers: { "WWW-Authenticate": challenge }
+        })
+      };
+    }
+    return {
+      response: new Response(JSON.stringify({ "pm1:0": { apower: 73.5, aenergy: { total: 41 } } }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      })
+    };
+  };
+  const source = new ShellyLocalMeterSource({
+    address: `127.0.0.1:${address.port}`,
+    password: "secret",
+    secureRequest,
+    requestTimeoutMs: 500
+  });
+  const trustedSource = new ShellyLocalMeterSource({
+    address: `127.0.0.1:${address.port}`,
+    password: "secret",
+    certificateFingerprint: fingerprint,
+    secureRequest,
+    requestTimeoutMs: 500
+  });
+
+  try {
+    const untrusted = await source.pollOnce();
+    assert.equal(untrusted.reason, "certificate-trust-required");
+    assert.equal(untrusted.certificateFingerprint, fingerprint);
+    assert.equal(secureRequests[0].authorization, null);
+    assert.equal(secureRequests[0].expectedFingerprint, null);
+
+    const trusted = await trustedSource.pollOnce();
+    assert.equal(trusted.available, true);
+    assert.equal(trusted.readings[0].watts, 73.5);
+    assert.equal(trusted.certificateFingerprint, fingerprint);
+    assert.equal(secureRequests[1].path, "/rpc/Shelly.GetStatus");
+    assert.equal(secureRequests[1].authorization, null);
+    assert.equal(secureRequests[1].expectedFingerprint, fingerprint.toLowerCase().replaceAll(":", ""));
+    assert.equal(secureRequests[2].path, "/rpc/Shelly.GetDeviceInfo");
+    assert.equal(secureRequests[2].authorization, null);
+    assert.match(secureRequests[3].authorization, /^Digest /);
+  } finally {
+    source.close();
+    trustedSource.close();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+});
+
+test("rejects a Shelly digest realm that differs from its verified device identity", async () => {
+  const { ShellyLocalMeterSource } = await loadAdapter();
+  const authorizationHeaders = [];
+  const server = createServer((request, response) => {
+    if (request.url === "/rpc/Shelly.GetDeviceInfo") {
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ id: "shellyplugpmg3-a1b2c3", auth_en: true, auth_domain: "shellyplugpmg3-a1b2c3" }));
+      return;
+    }
+    authorizationHeaders.push(request.headers.authorization ?? null);
+    response.writeHead(401, {
+      "WWW-Authenticate": 'Digest realm="attacker-chosen-realm", nonce="nonce-identity", algorithm=SHA-256, qop="auth"'
+    });
+    response.end();
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const source = new ShellyLocalMeterSource({
+    address: `127.0.0.1:${address.port}`,
+    password: "secret",
+    expectedDeviceId: "shellyplugpmg3-a1b2c3"
+  });
+
+  try {
+    const snapshot = await source.pollOnce();
+    assert.equal(snapshot.reason, "identity-mismatch");
+    assert.deepEqual(authorizationHeaders, [null]);
+  } finally {
+    source.close();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+});
+
+test("rejects Shelly HTTPS redirects to a different host or API path", async () => {
+  const { ShellyLocalMeterSource } = await loadAdapter();
+  const server = createServer((_request, response) => {
+    response.writeHead(302, { Location: "https://example.com/rpc/Shelly.GetStatus" });
+    response.end();
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  let secureRequestCount = 0;
+  const source = new ShellyLocalMeterSource({
+    address: `127.0.0.1:${address.port}`,
+    secureRequest: async () => {
+      secureRequestCount += 1;
+      throw new Error("The adapter must reject an off-device redirect.");
+    }
+  });
+
+  try {
+    const snapshot = await source.pollOnce();
+    assert.equal(snapshot.reason, "unsafe-redirect");
+    assert.equal(secureRequestCount, 0);
   } finally {
     source.close();
     await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));

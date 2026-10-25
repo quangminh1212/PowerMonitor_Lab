@@ -50,6 +50,12 @@ const translations = {
     meterDiscoveryDisconnected: "The selected meter is not responding. Check its power and local network connection.",
     meterDiscoverySelectedUnavailable: "The selected meter is temporarily missing from discovery. It remains selected while the app keeps checking.",
     meterDiscoveryAuthenticationRequired: "A Shelly device was found. Enter its device password to connect; the password stays in memory until this app closes.",
+    meterDiscoveryCertificateTrustRequired: "This meter redirects to local HTTPS. Verify its address, then trust its certificate fingerprint to start automatic readings.",
+    meterDiscoveryCertificateChanged: "The meter's HTTPS certificate changed. Verify the local address before trusting a replacement certificate.",
+    meterDiscoveryIdentityMismatch: "This device identity does not match its local discovery record. No password was sent; check the selected meter and its address.",
+    meterDiscoveryIdentityVerificationFailed: "The meter identity could not be verified, so its password was not sent.",
+    meterCertificateFingerprint: "SHA-256 fingerprint: {fingerprint}",
+    meterTrustCertificateButton: "Trust this meter",
     meterVerifyAddress: "Verify the meter's local address before entering its password: {address}.",
     meterDiscoveryComponentSelection: "This meter has multiple power channels. Enter the channel connected only to this computer, such as pm1:0.",
     meterDiscoveryConnecting: "Shelly device found. Checking its live power sensor…",
@@ -175,6 +181,12 @@ const translations = {
     meterDiscoveryDisconnected: "Đồng hồ đã chọn không phản hồi. Hãy kiểm tra nguồn và kết nối mạng nội bộ.",
     meterDiscoverySelectedUnavailable: "Tạm thời chưa thấy đồng hồ đã chọn khi dò mạng. Ứng dụng vẫn giữ lựa chọn này và tiếp tục kiểm tra.",
     meterDiscoveryAuthenticationRequired: "Đã tìm thấy thiết bị Shelly. Nhập mật khẩu của đồng hồ để kết nối; mật khẩu chỉ giữ trong bộ nhớ đến khi đóng ứng dụng.",
+    meterDiscoveryCertificateTrustRequired: "Đồng hồ chuyển sang HTTPS nội bộ. Hãy kiểm tra địa chỉ rồi xác nhận dấu vân tay chứng chỉ để bắt đầu tự đo.",
+    meterDiscoveryCertificateChanged: "Chứng chỉ HTTPS của đồng hồ đã thay đổi. Hãy kiểm tra địa chỉ nội bộ trước khi xác nhận chứng chỉ mới.",
+    meterDiscoveryIdentityMismatch: "Danh tính thiết bị không khớp thông tin dò mạng. App chưa gửi mật khẩu; hãy kiểm tra đồng hồ đã chọn và địa chỉ.",
+    meterDiscoveryIdentityVerificationFailed: "Không xác minh được danh tính đồng hồ nên app chưa gửi mật khẩu.",
+    meterCertificateFingerprint: "Dấu vân tay SHA-256: {fingerprint}",
+    meterTrustCertificateButton: "Tin cậy đồng hồ này",
     meterVerifyAddress: "Hãy xác nhận IP nội bộ của đồng hồ trước khi nhập mật khẩu: {address}.",
     meterDiscoveryComponentSelection: "Đồng hồ có nhiều kênh. Nhập kênh chỉ cấp điện cho máy tính, ví dụ pm1:0.",
     meterDiscoveryConnecting: "Đã tìm thấy Shelly. Đang kiểm tra cảm biến công suất…",
@@ -609,7 +621,9 @@ function renderMeterDiscovery(snapshot) {
   const unsupported = snapshot.status === "unsupported";
   const knownStates = new Set([
     "searching", "not-found", "multiple", "authentication-required", "component-selection",
-    "connecting", "connected", "unavailable", "not-a-meter", "configured", "disconnected", "selected-unavailable"
+    "connecting", "connected", "unavailable", "not-a-meter", "configured", "disconnected", "selected-unavailable",
+    "certificate-trust-required", "certificate-changed",
+    "identity-mismatch", "identity-verification-failed"
   ]);
   const stateKey = unsupported ? "unsupported" : knownStates.has(discovery.state) ? discovery.state : "not-found";
   const status = $("#meter-discovery-status");
@@ -618,13 +632,16 @@ function renderMeterDiscovery(snapshot) {
   const deviceSelect = $("#meter-device");
   const passwordField = $("#meter-password-field");
   const componentField = $("#meter-component-field");
+  const certificateTrust = $("#meter-certificate-trust");
+  const certificateFingerprint = $("#meter-certificate-fingerprint");
+  const trustCertificateButton = $("#meter-trust-certificate-button");
   if (!status || !form || !deviceSelect) return;
 
   const devices = Array.isArray(discovery.devices) ? discovery.devices : [];
   const selectedDevice = devices.find((device) => device.id === discovery.selectedDeviceId);
   const selectedAddress = selectedDevice?.host
     ? `${selectedDevice.host}${selectedDevice.port && selectedDevice.port !== 80 ? `:${selectedDevice.port}` : ""}`
-    : "";
+    : discovery.address ?? "";
   const discoveryMessage = tr(`meterDiscovery${stateKey[0].toLocaleUpperCase("en-US")}${stateKey.slice(1).replace(/-([a-z])/g, (_match, letter) => letter.toLocaleUpperCase("en-US"))}`);
   const hasConnectionError = state.meterConnectionErrorUntil > Date.now();
   status.dataset.state = hasConnectionError ? "unavailable" : stateKey;
@@ -633,6 +650,16 @@ function renderMeterDiscovery(snapshot) {
     : stateKey === "authentication-required" && selectedAddress
       ? `${discoveryMessage} ${tr("meterVerifyAddress", { address: selectedAddress })}`
       : discoveryMessage;
+  const requiresCertificateTrust = ["certificate-trust-required", "certificate-changed"].includes(stateKey) &&
+    typeof discovery.certificateFingerprint === "string";
+  if (certificateTrust) certificateTrust.hidden = !requiresCertificateTrust;
+  if (certificateFingerprint && requiresCertificateTrust) {
+    const fingerprintAddress = selectedAddress ? ` · ${selectedAddress}` : "";
+    certificateFingerprint.textContent = `${tr("meterCertificateFingerprint", {
+      fingerprint: discovery.certificateFingerprint
+    })}${fingerprintAddress}`;
+  }
+  if (trustCertificateButton) trustCertificateButton.disabled = !requiresCertificateTrust;
   const previousDeviceId = deviceSelect.value;
   deviceSelect.replaceChildren();
   for (const device of devices) {
@@ -668,7 +695,10 @@ function renderMeterDiscovery(snapshot) {
   const showForm = !unsupported && (needsDeviceChoice || needsPassword || needsComponent);
   const changeButton = $("#meter-change-button");
   const cancelButton = $("#meter-cancel-button");
-  const canChangeMeter = Boolean(selectedDeviceId) && discoveredDevices.some((device) => device.id !== selectedDeviceId);
+  const canChangeMeter = Boolean(selectedDeviceId) && (
+    discoveredDevices.some((device) => device.id !== selectedDeviceId) ||
+    ["identity-mismatch", "identity-verification-failed"].includes(stateKey)
+  );
   form.hidden = !showForm;
   deviceField.hidden = !needsDeviceChoice;
   passwordField.hidden = !needsPassword;
@@ -1022,11 +1052,43 @@ $("#meter-connect-form").addEventListener("submit", async (event) => {
   try {
     await requestJson("/api/meter/configure", {
       method: "POST",
-      body: JSON.stringify({ deviceId, password, componentId })
+      body: JSON.stringify({
+        deviceId,
+        password,
+        componentId,
+        certificateFingerprint: deviceId === state.sensors?.meterDiscovery?.selectedDeviceId
+          ? state.sensors?.meterDiscovery?.certificateFingerprint ?? ""
+          : ""
+      })
     });
     $("#meter-password").value = "";
     $("#meter-component").value = "";
     state.meterFormOpen = false;
+    state.meterConnectionErrorUntil = 0;
+    await refreshSensors();
+  } catch {
+    state.meterConnectionErrorUntil = Date.now() + 6_000;
+    renderMeterDiscovery(state.sensors ?? {});
+  } finally {
+    button.disabled = false;
+  }
+});
+$("#meter-trust-certificate-button").addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  const discovery = state.sensors?.meterDiscovery;
+  const deviceId = discovery?.selectedDeviceId || (discovery?.configured ? "configured-meter" : "");
+  if (!deviceId || !discovery?.certificateFingerprint) return;
+  button.disabled = true;
+  try {
+    await requestJson("/api/meter/configure", {
+      method: "POST",
+      body: JSON.stringify({
+        deviceId,
+        password: "",
+        componentId: $("#meter-component").value.trim(),
+        certificateFingerprint: discovery.certificateFingerprint
+      })
+    });
     state.meterConnectionErrorUntil = 0;
     await refreshSensors();
   } catch {

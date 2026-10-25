@@ -99,7 +99,7 @@ h2 { margin: 0; color: #203129; font-size: 20px; font-weight: 700; letter-spacin
 .meter-discovery-status { margin: 0; color: #58685e; font-size: 13px; line-height: 1.5; }
 .meter-discovery-status[data-state="connected"] { color: #236444; font-weight: 650; }
 .meter-discovery-status[data-state="authentication-required"], .meter-discovery-status[data-state="component-selection"], .meter-discovery-status[data-state="multiple"] { color: #765820; }
-.meter-discovery-status[data-state="unavailable"], .meter-discovery-status[data-state="not-a-meter"], .meter-discovery-status[data-state="disconnected"], .meter-discovery-status[data-state="selected-unavailable"] { color: #7a5044; }
+.meter-discovery-status[data-state="unavailable"], .meter-discovery-status[data-state="not-a-meter"], .meter-discovery-status[data-state="disconnected"], .meter-discovery-status[data-state="selected-unavailable"], .meter-discovery-status[data-state="identity-mismatch"], .meter-discovery-status[data-state="identity-verification-failed"] { color: #7a5044; }
 .meter-change-button { min-height: 34px; margin-top: 10px; padding: 6px 11px; color: var(--green-dark); background: #fff; border: 1px solid #bed2c5; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 650; }
 .meter-change-button[hidden] { display: none; }
 .meter-connect-form:not([hidden]) { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; gap: 11px; margin-top: 12px; }
@@ -115,6 +115,10 @@ h2 { margin: 0; color: #203129; font-size: 20px; font-weight: 700; letter-spacin
 .meter-connect-form .meter-cancel-button { color: #526359; background: #fff; border-color: #d5e0d8; }
 .meter-connect-form .meter-cancel-button:hover { background: #f3f7f4; }
 .meter-connect-form .meter-cancel-button[hidden] { display: none; }
+.meter-certificate-trust:not([hidden]) { display: grid; gap: 8px; margin-top: 12px; }
+.meter-certificate-fingerprint { margin: 0; color: #53665a; font: 11px/1.6 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+.meter-trust-certificate-button { justify-self: start; min-height: 36px; padding: 6px 12px; color: #fff; background: var(--green-dark); border: 1px solid var(--green-dark); border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 650; }
+.meter-trust-certificate-button:disabled { cursor: wait; opacity: .65; }
 .component-readings { margin-top: 4px; }
 .component-readings-heading { margin: 0 0 10px; color: #33463b; font-size: 15px; font-weight: 700; }
 .component-readings-note { margin: -4px 0 12px; color: #68776f; font-size: 12px; line-height: 1.4; }
