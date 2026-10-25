@@ -23,6 +23,7 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 
 - On Windows, discovers hardware exposed through the Windows Energy Metering Interface (EMI) and shows cumulative energy channels with average watts between samples.
 - On Windows, reads the last measured GPU board power from `nvidia-smi` when an NVIDIA driver provides it.
+- On Windows, optionally reads additional hardware `Power` sensors from the local LibreHardwareMonitor web server.
 - Lists hardware devices Windows can identify, including the processor, graphics, memory, drives, monitors, keyboards, mice, and USB devices; marks devices without live watt telemetry.
 - Records manually entered watt readings for a named meter or device, with an optional note.
 - Shows the latest reading, power trend, history, and meter/time-range filters.
@@ -39,19 +40,23 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 | --- | --- | --- |
 | CPU | Windows EMI provides package and PP0 energy domains; PP0 covers processor cores as one domain, not each core. | None for these reported domains. |
 | NVIDIA graphics card | `nvidia-smi` / NVML reports the last GPU board power reading, including circuitry on the card. | None while the driver exposes power readings. |
-| RAM | EMI reports one shared DRAM domain, not separate DIMM wattage. | Per-DIMM power needs specialized DIMM rail instrumentation. |
-| Storage | Both physical drives in this PC are SATA SSDs; Windows exposes no live watts for them. | An inline DC watt meter on each drive's SATA power lead, or model-specific firmware telemetry. Some NVMe 2.3 drives can optionally report one-second interval power, but this PC has no NVMe drive and the app does not query that log yet. |
+| RAM | EMI reports one shared DRAM domain, not separate DIMM wattage. LibreHardwareMonitor may expose additional power channels when supported by the CPU/board sensors. | Per-DIMM power needs specialized DIMM rail instrumentation. |
+| Storage | Windows exposes no live watts for the two SATA SSDs in this PC. LibreHardwareMonitor is checked for any drive `Power` sensors, but storage devices commonly expose temperature/activity rather than watts. | An inline DC watt meter on each drive's SATA power lead, or model-specific firmware telemetry. Some NVMe 2.3 drives can optionally report one-second interval power, but this PC has no NVMe drive and the app does not query that log yet. |
 | Monitors | DDC/CI exposes display controls and status, not a general live watt reading. | A true-watt AC outlet meter for each monitor. |
 | Keyboard, mouse, USB device | USB descriptors declare a maximum current, not the current being drawn now. | A data-pass-through inline USB power meter on each USB power path. A composite device or shared receiver is measured as one branch; a wireless keyboard or mouse draws from its own battery, not the PC's receiver port. |
 | Motherboard, fan, network and audio | The H510M-HVS reports rail voltages and fan RPM, not per-part current or watts. | Rail-level DC instrumentation for a subcomponent; a true-watt AC meter at the PC outlet for the complete tower. |
 | Whole PC | Internal CPU/GPU readings overlap and do not include every rail. | A true-watt AC outlet meter on the tower's power cable. A meter on a shared strip includes every device plugged into that strip. |
 
 `bMaxPower` is the USB device's declared maximum, not a live measurement. Power readings for the CPU and GPU are component domains; they cannot be added to recover wall input. Sources: [Windows EMI](https://learn.microsoft.com/en-us/windows-hardware/drivers/powermeter/energy-meter-interface), [Intel RAPL domains](https://cdrdv2-public.intel.com/868137/325462-089-sdm-vol-1-2abcd-3abcd-4.pdf), [NVIDIA NVML power usage](https://docs.nvidia.com/deploy/nvml-api/latest/api/group__nvmlDeviceQueries.html), [USB-IF descriptor](https://www.usb.org/sites/default/files/pdcv10.pdf), [NVMe 2.3](https://nvmexpress.org/wp-content/uploads/NVM-Express-Base-Specification-Revision-2.3-2025.08.01-Ratified.pdf), and [ASRock H510M-HVS specifications](https://www.asrock.com/MB/Intel/H510M-HVS/index.asp).
+
+### Optional LibreHardwareMonitor source (Windows)
+
+The app polls only `GET http://127.0.0.1:8085/data.json`; it imports finite sensors whose type is `Power` and never calls LibreHardwareMonitor's control endpoints. To enable it, install and run [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), then choose **Options → Remote Web Server → Run**. If you use another local port, set `POWER_MONITOR_LHM_PORT` before starting the app. The app does not install a sensor driver or elevate itself; some motherboard sensors require LibreHardwareMonitor to run with administrator rights. Only power sensors the hardware/driver exposes appear, and a shared CPU/DRAM channel still does not measure each DIMM or USB HID device. On this PC, LibreHardwareMonitor is not installed or running, so this optional provider currently contributes no readings.
 Sensor energy is observed only while this local app process is running. It resets when the server stops and is kept separate from manually logged readings. If a device or driver does not expose live power, the app labels it as detected without a watt sensor instead of estimating a value.
 
 ## Local data and privacy
 
-The server binds only to IPv4 loopback (`127.0.0.1`) on an OS-assigned port by default. It checks the request host and the origin of state-changing requests, limits JSON request size, serves only the bundled UI files, and sends a restrictive content security policy. The CLI makes no third-party network requests; opening the browser uses the operating system's default URL handler.
+The server binds only to IPv4 loopback (`127.0.0.1`) on an OS-assigned port by default. It checks the request host and the origin of state-changing requests, limits JSON request size, serves only the bundled UI files, and sends a restrictive content security policy. When the optional LibreHardwareMonitor integration is available, the Windows sensor process makes bounded read-only requests to the loopback service at `127.0.0.1:8085` (or the configured local port); the app makes no internet requests.
 
 Readings are stored as JSON under the current user's application data folder:
 
@@ -91,7 +96,7 @@ npx power-monitor-lab
 
 Yêu cầu Node.js 22 trở lên. Máy chủ tự chọn cổng local, in địa chỉ truy cập và mở trình duyệt. Nhấn **Ctrl+C** để dừng. Có thể dùng `--no-open` để chỉ in địa chỉ hoặc `--port 4317` để yêu cầu cổng cụ thể.
 
-Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng liệt kê các thiết bị Windows nhận diện được, gồm CPU, card đồ họa, RAM, ổ đĩa, màn hình, bàn phím, chuột và thiết bị USB; thiết bị không có cảm biến watt sẽ được ghi rõ.
+Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng cũng có thể đọc thêm cảm biến `Power` từ máy chủ web cục bộ của LibreHardwareMonitor. Ứng dụng liệt kê các thiết bị Windows nhận diện được, gồm CPU, card đồ họa, RAM, ổ đĩa, màn hình, bàn phím, chuột và thiết bị USB; thiết bị không có cảm biến watt sẽ được ghi rõ.
 
 **Giới hạn đo:** kênh DRAM là miền bộ nhớ dùng chung, không đo riêng từng thanh RAM. Thiết bị chỉ được đánh dấu có số đo khi dữ liệu cảm biến gắn được với đúng thiết bị. Kênh EMI có thể chồng lấp nên được hiển thị riêng, không cộng thành tổng công suất toàn PC. `nvidia-smi` báo công suất card đồ họa tại lần đo gần nhất, không phải điện đầu vào tại ổ cắm. Windows không cung cấp số watt trực tiếp cho mọi chuột, bàn phím, ổ đĩa, quạt, màn hình hoặc bo mạch. Cần đồng hồ đo ở ổ cắm để đo tổng máy và đồng hồ USB nối tiếp để đo riêng thiết bị USB. Trên macOS/Linux, ứng dụng vẫn cho nhập số thủ công nhưng chưa có đọc cảm biến tự động.
 
@@ -101,14 +106,18 @@ Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI c
 | --- | --- | --- |
 | CPU | Windows EMI báo miền năng lượng package và PP0; PP0 gộp các lõi CPU, không tách từng lõi. | Không cần cho các miền đang được báo. |
 | Card NVIDIA | `nvidia-smi` / NVML báo lần đo công suất bo mạch card gần nhất, gồm mạch trên card. | Không cần khi driver còn cung cấp số đo. |
-| RAM | EMI chỉ báo miền DRAM dùng chung, không tách watt từng thanh. | Muốn đo riêng từng thanh cần thiết bị đo chuyên dụng trên đường nguồn DIMM. |
-| Ổ lưu trữ | Hai ổ vật lý của PC này là SSD SATA; Windows không báo watt trực tiếp. | Đồng hồ DC nối tiếp trên dây nguồn SATA của từng ổ hoặc telemetry riêng của firmware. Một số ổ NVMe 2.3 hỗ trợ tùy chọn đo công suất trung bình 1 giây, nhưng PC này không có ổ NVMe và ứng dụng chưa đọc log đó. |
+| RAM | EMI chỉ báo miền DRAM dùng chung, không tách watt từng thanh. LibreHardwareMonitor có thể cung cấp thêm kênh công suất nếu cảm biến CPU/bo mạch hỗ trợ. | Muốn đo riêng từng thanh cần thiết bị đo chuyên dụng trên đường nguồn DIMM. |
+| Ổ lưu trữ | Hai ổ vật lý của PC này là SSD SATA; Windows không báo watt trực tiếp. Ứng dụng kiểm tra thêm cảm biến `Power` từ LibreHardwareMonitor nếu ổ có cung cấp. | Đồng hồ DC nối tiếp trên dây nguồn SATA của từng ổ hoặc telemetry riêng của firmware. Một số ổ NVMe 2.3 hỗ trợ tùy chọn đo công suất trung bình 1 giây, nhưng PC này không có ổ NVMe và ứng dụng chưa đọc log đó. |
 | Màn hình | DDC/CI cho phép đọc/điều khiển một số thiết lập và trạng thái, không phải đồng hồ watt tổng quát. | Đồng hồ AC đo watt thật cho từng màn hình. |
 | Bàn phím, chuột, USB | Descriptor USB chỉ khai báo dòng tối đa, không cho biết dòng đang dùng. | Đồng hồ USB có truyền dữ liệu, mắc nối tiếp trên từng nhánh nguồn. Thiết bị ghép chung hoặc đầu thu chung chỉ có số đo gộp; chuột/bàn phím không dây dùng pin riêng, không lấy điện từ cổng USB của PC. |
 | Bo mạch, quạt, mạng và âm thanh | H510M-HVS báo điện áp đường nguồn và RPM quạt, không báo dòng/watt từng phần. | Đo DC trên đường nguồn nếu cần tách linh kiện; đồng hồ AC ở ổ cắm đo cả thùng máy. |
 | Cả PC | Số CPU/GPU có miền chồng lấp và không bao phủ mọi đường nguồn. | Đồng hồ AC đo watt thật ở dây nguồn của thùng máy. Nếu đồng hồ cắm vào ổ chia chung thì nó đo tất cả thiết bị trên ổ chia đó. |
 
 `bMaxPower` của USB là mức tối đa khai báo, không phải số đo trực tiếp. Không cộng số CPU/GPU để suy ra điện ở ổ cắm.
+
+### Nguồn LibreHardwareMonitor tùy chọn (Windows)
+
+Ứng dụng chỉ gửi `GET http://127.0.0.1:8085/data.json` và chỉ nhận các cảm biến hữu hạn có loại `Power`; không gọi các API điều khiển. Để bật, cài và chạy [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), rồi chọn **Options → Remote Web Server → Run**. Nếu đổi cổng, đặt `POWER_MONITOR_LHM_PORT` trước khi mở app. Ứng dụng không tự cài driver hay chạy quyền quản trị; một số cảm biến bo mạch yêu cầu LibreHardwareMonitor chạy bằng quyền administrator. Chỉ các cảm biến watt mà thiết bị/driver thực sự cung cấp mới xuất hiện; kênh CPU/DRAM dùng chung vẫn không tách được từng thanh RAM hoặc từng thiết bị HID USB. LibreHardwareMonitor hiện không được cài/chạy trên PC này nên nguồn tùy chọn chưa có số đo.
 Năng lượng cảm biến chỉ được ghi nhận khi máy chủ ứng dụng đang chạy và không được lưu qua lần khởi động lại. Số đo cảm biến tách khỏi số nhập thủ công; ứng dụng không tự đoán watt khi thiết bị hoặc driver không cung cấp dữ liệu.
 
 Dữ liệu nằm tại `%LOCALAPPDATA%\PowerMonitorLab\readings.json` trên Windows, `~/Library/Application Support/PowerMonitorLab/readings.json` trên macOS, hoặc `$XDG_DATA_HOME/power-monitor-lab/readings.json` trên Linux. Có thể đặt `POWER_MONITOR_DATA_DIR` để đổi thư mục.

@@ -100,6 +100,8 @@
             <span id="sensor-status" class="sensor-status" data-state="starting" data-i18n="sensorStatusStarting">Discovering</span>
           </div>
           <p id="sensor-description" class="sensor-description" data-i18n="sensorIntro">Looking for power readings exposed by this computer.</p>
+          <p class="sensor-integration-hint" data-i18n="sensorLhmHint">Optional: run LibreHardwareMonitor and enable its Remote Web Server on port 8085 to add any additional live power channels it exposes.</p>
+          <div id="sensor-provider-list" class="sensor-provider-list" aria-live="polite" aria-label="Hardware sensor providers"></div>
           <h3 class="sensor-subheading" data-i18n="sensorReadingsHeading">Current measured power</h3>
           <div id="sensor-reading-grid" class="sensor-reading-grid" aria-live="polite"></div>
           <div class="sensor-total-note"><strong data-i18n="sensorTotalTitle">Whole PC total</strong><span data-i18n="sensorTotalBody">Sensor channels can overlap, so they are shown separately. A wall outlet power meter is required to measure the full PC input.</span></div>
