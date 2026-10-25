@@ -23,6 +23,7 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 
 - On Windows, discovers hardware exposed through the Windows Energy Metering Interface (EMI) and shows cumulative energy channels with average watts between samples.
 - On Windows, reads the last measured GPU board power from `nvidia-smi` when an NVIDIA driver provides it.
+- Shows a tracked component-energy subtotal in kWh while the app runs, using CPU package energy counters and supported NVIDIA GPU board readings. It is not a whole-PC outlet total.
 - On Windows, optionally reads additional hardware `Power` sensors from the local LibreHardwareMonitor web server.
 - On Windows, optionally reads a compatible Shelly meter dedicated to the PC outlet and shows measured whole-PC active watts and meter energy. After a one-time local configuration, it polls automatically every three seconds.
 - Refreshes the live sensor dashboard automatically every three seconds while the local app is running.
@@ -32,6 +33,8 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 - Supports English and Vietnamese.
 
 **Measurement boundary:** hardware readings depend on sensors and vendor drivers installed on the computer. The DRAM channel is a shared memory domain and does not measure each DIMM separately. A device is marked measured only when telemetry can be tied to that exact device. EMI channels are separate domains and can overlap; the app shows each channel independently and never adds them into a whole-PC total. `nvidia-smi` reports the latest GPU board draw, not the computer's wall input. Windows does not expose live watts for every keyboard, mouse, drive, fan, display, or motherboard. Whole-PC input power requires a real AC outlet meter dedicated to the PC; without one, the total remains unavailable. Inline USB meters are required to isolate USB peripherals. On macOS/Linux, automatic hardware power sensing is not implemented; the dashboard reports the unsupported state.
+
+The tracked component-energy subtotal adds CPU package counter deltas and NVIDIA board energy integrated from sampled watts. PP0/PP1, DRAM, and other channels stay separate so overlapping domains are not counted twice. This subtotal resets when the server restarts and does not include time when the app is stopped. When a compatible AC meter is configured, the whole-PC card also shows that meter's cumulative kWh counter; its value follows the meter's own reset behavior.
 
 ### Per-device measurement routes
 

@@ -66,6 +66,18 @@
             </div>
           </section>
 
+          <section class="pc-total-card tracked-component-energy" data-state="missing" aria-labelledby="component-energy-heading">
+            <div class="pc-total-copy">
+              <p class="eyebrow" data-i18n="componentEnergyEyebrow">TRACKED COMPONENTS</p>
+              <h3 id="component-energy-heading" data-i18n="componentEnergyHeading">Tracked component energy</h3>
+              <p id="component-energy-description" data-i18n="componentEnergyDescription">Subtotal from CPU package energy counters and sampled NVIDIA GPU board watts. DRAM and other channels stay separate; this is not whole-PC outlet input.</p>
+              <p id="component-energy-detail" class="pc-total-detail" hidden></p>
+            </div>
+            <div class="pc-total-reading">
+              <strong id="component-energy-value" data-state="unavailable">— kWh</strong>
+              <span id="component-energy-state" data-state="missing" data-i18n="componentEnergyWaitingState">Waiting for readings</span>
+            </div>
+          </section>
           <section class="component-readings" aria-labelledby="component-readings-heading">
             <h3 id="component-readings-heading" class="component-readings-heading" data-i18n="sensorReadingsHeading">Công suất đo trực tiếp</h3>
             <div id="sensor-reading-grid" class="sensor-reading-grid"></div>

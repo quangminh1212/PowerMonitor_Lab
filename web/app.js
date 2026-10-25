@@ -42,6 +42,13 @@ const translations = {
     pcTotalSelectDescription: "This meter reports several power channels. Select the exact channel feeding only this PC before showing its total.",
     pcTotalUnsupportedDescription: "Whole-PC meter integration currently runs on Windows. Component sensors available on this PC remain listed below.",
     pcTotalEnergy: "Energy this session: {energy} Wh",
+    pcTotalMeterEnergyTotal: "Meter counter: {energy} kWh",
+    componentEnergyEyebrow: "TRACKED COMPONENTS",
+    componentEnergyHeading: "Tracked component energy",
+    componentEnergyDescription: "Subtotal from CPU package energy counters and sampled NVIDIA GPU board watts. DRAM and other channels stay separate; this is not whole-PC outlet input.",
+    componentEnergyTrackedState: "Tracking this session",
+    componentEnergyWaitingState: "Waiting for readings",
+    componentEnergySinceStart: "Since app start · {channels} channels",
     pcMeterSetupHeading: "Connect a meter for automatic total power",
     pcMeterSetupBody: "Use a Shelly meter with its local API, rated for your mains and PC power supply load. Enable device authentication, then set these variables in PowerShell before starting the app. The component line is needed only for meters with multiple outlets:",
     pcMeterSetupSecurity: "The app reads the local meter every 3 seconds. Local HTTP is not encrypted; keep the meter on a trusted network.",
@@ -145,6 +152,13 @@ const translations = {
     pcTotalSelectDescription: "Đồng hồ đang báo nhiều kênh công suất. Hãy chọn đúng kênh chỉ cấp cho PC trước khi hiện tổng.",
     pcTotalUnsupportedDescription: "Tích hợp đồng hồ đo cả PC hiện chạy trên Windows. Các cảm biến linh kiện của máy vẫn hiển thị bên dưới.",
     pcTotalEnergy: "Điện năng phiên này: {energy} Wh",
+    pcTotalMeterEnergyTotal: "Bộ đếm đồng hồ: {energy} kWh",
+    componentEnergyEyebrow: "LINH KIỆN ĐANG THEO DÕI",
+    componentEnergyHeading: "Điện năng linh kiện đã theo dõi",
+    componentEnergyDescription: "Tạm tính từ bộ đếm CPU package và công suất mẫu của bo mạch GPU NVIDIA. DRAM và kênh khác được giữ riêng; đây không phải điện đầu vào toàn PC.",
+    componentEnergyTrackedState: "Đang cộng dồn phiên này",
+    componentEnergyWaitingState: "Đang chờ cảm biến",
+    componentEnergySinceStart: "Từ lúc mở ứng dụng · {channels} kênh",
     pcMeterSetupHeading: "Kết nối đồng hồ để tự đo tổng công suất",
     pcMeterSetupBody: "Dùng đồng hồ Shelly có API cục bộ, chịu tải phù hợp với điện lưới và bộ nguồn PC. Bật xác thực trên đồng hồ, rồi đặt các biến sau trong PowerShell trước khi chạy ứng dụng. Dòng chọn kênh chỉ cần cho đồng hồ có nhiều ổ cắm:",
     pcMeterSetupSecurity: "Ứng dụng đọc đồng hồ cục bộ mỗi 3 giây. HTTP nội bộ không mã hóa; chỉ đặt đồng hồ trong mạng tin cậy.",
@@ -541,11 +555,40 @@ function renderPcTotal(snapshot) {
   if (Number.isFinite(reading?.current) && reading.current >= 0) {
     detailParts.push(`${formatPower(reading.current)} A`);
   }
+  if (Number.isFinite(reading?.absoluteEnergyWh) && reading.absoluteEnergyWh >= 0) {
+    detailParts.push(tr("pcTotalMeterEnergyTotal", {
+      energy: formatEnergy(reading.absoluteEnergyWh / 1_000)
+    }));
+  }
   if (Number.isFinite(reading?.energyWhSinceStart)) {
     detailParts.push(tr("pcTotalEnergy", { energy: formatEnergy(reading.energyWhSinceStart) }));
   }
   detailElement.textContent = detailParts.join(" · ");
   detailElement.hidden = detailParts.length === 0;
+}
+
+function renderTrackedComponentEnergy(snapshot) {
+  const cardElement = document.querySelector(".tracked-component-energy");
+  const valueElement = $("#component-energy-value");
+  const stateElement = $("#component-energy-state");
+  const detailElement = $("#component-energy-detail");
+  if (!cardElement || !valueElement || !stateElement || !detailElement) return;
+
+  const energyWh = snapshot.trackedComponentEnergyWhSinceStart;
+  const channels = Number.isInteger(snapshot.trackedComponentEnergyChannelCount)
+    ? snapshot.trackedComponentEnergyChannelCount
+    : 0;
+  const tracked = Number.isFinite(energyWh) && energyWh >= 0 && channels > 0;
+
+  cardElement.dataset.state = tracked ? "tracked" : "missing";
+  valueElement.dataset.state = tracked ? "measured" : "unavailable";
+  valueElement.textContent = tracked ? `${formatEnergy(energyWh / 1_000)} kWh` : "— kWh";
+  stateElement.dataset.state = tracked ? "tracked" : "missing";
+  stateElement.textContent = tr(tracked ? "componentEnergyTrackedState" : "componentEnergyWaitingState");
+  detailElement.textContent = tracked
+    ? tr("componentEnergySinceStart", { channels })
+    : "";
+  detailElement.hidden = !tracked;
 }
 
 function deviceMeasurementGuide(device) {
@@ -688,6 +731,7 @@ function renderSensors() {
   status.dataset.state = snapshot.status;
   status.textContent = tr(statusKey);
   renderPcTotal(snapshot);
+  renderTrackedComponentEnergy(snapshot);
   const estimateNote = $("#sensor-estimate-note");
   if (estimateNote) estimateNote.textContent = (powerEstimateLabels[state.language] ?? powerEstimateLabels.en).disclosure;
   const messageKey = {

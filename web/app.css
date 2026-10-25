@@ -89,6 +89,10 @@ h2 { margin: 0; color: #203129; font-size: 20px; font-weight: 700; letter-spacin
 .pc-total-reading > span { padding: 3px 9px; color: #705a2e; background: #fbf5e8; border: 1px solid #ecdfc1; border-radius: 999px; font-size: 11px; font-weight: 700; }
 .pc-total-reading > span[data-state="measured"] { color: #286349; background: #eaf5ef; border-color: #cfe5d7; }
 .pc-total-reading > span[data-state="disconnected"] { color: #854738; background: #fcf0ed; border-color: #efd5ce; }
+.tracked-component-energy { margin-top: -11px; background: linear-gradient(115deg, #f1f5fa, #fbfcfe 70%); border-color: #dbe4ef; border-left-color: #647f9d; }
+.tracked-component-energy .pc-total-copy .eyebrow { color: #526b87; }
+.tracked-component-energy .pc-total-reading > strong { color: #365c7a; }
+.tracked-component-energy .pc-total-reading > span[data-state="tracked"] { color: #365c7a; background: #edf3f8; border-color: #d5e1ec; }
 .component-readings { margin-top: 4px; }
 .component-readings-heading { margin: 0 0 10px; color: #33463b; font-size: 15px; font-weight: 700; }
 .meter-setup-disclosure, .inventory-disclosure, .technical-disclosure { margin-top: 15px; padding-top: 13px; border-top: 1px solid #e9eeeb; }
