@@ -23,9 +23,9 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 
 - On Windows, discovers hardware exposed through the Windows Energy Metering Interface (EMI) and shows cumulative energy channels with average watts between samples.
 - On Windows, reads the last measured GPU board power from `nvidia-smi` when an NVIDIA driver provides it.
-- Shows a tracked component-energy subtotal in kWh while the app runs, using CPU package energy counters and supported NVIDIA GPU board readings. It is not a whole-PC outlet total.
+- Shows per-channel session energy where a sensor provides it; CPU, DRAM, and GPU channels stay separate and are not a whole-PC outlet total.
 - On Windows, optionally reads additional hardware `Power` sensors from the local LibreHardwareMonitor web server.
-- On Windows, optionally reads a compatible Shelly meter dedicated to the PC outlet and shows measured whole-PC active watts and meter energy. After a one-time local configuration, it polls automatically every three seconds.
+- On Windows, automatically looks for compatible Shelly meters advertised on the local network, then reads whole-PC active watts and energy every three seconds. If several meters are found, choose the one connected only to the PC.
 - Refreshes the live sensor dashboard automatically every three seconds while the local app is running.
 - Saves finite automatic sensor readings every 30 seconds to local daily history files and shows a chart for the past hour, six hours, day, or week. History is kept for seven days.
 - Lists hardware devices Windows can identify, including the processor, graphics, memory, drives, monitors, keyboards, mice, and USB devices; marks devices without live watt telemetry.
@@ -34,7 +34,7 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 
 **Measurement boundary:** hardware readings depend on sensors and vendor drivers installed on the computer. The DRAM channel is a shared memory domain and does not measure each DIMM separately. A device is marked measured only when telemetry can be tied to that exact device. EMI channels are separate domains and can overlap; the app shows each channel independently and never adds them into a whole-PC total. `nvidia-smi` reports the latest GPU board draw, not the computer's wall input. Windows does not expose live watts for every keyboard, mouse, drive, fan, display, or motherboard. Whole-PC input power requires a real AC outlet meter dedicated to the PC; without one, the total remains unavailable. Inline USB meters are required to isolate USB peripherals. On macOS/Linux, automatic hardware power sensing is not implemented; the dashboard reports the unsupported state.
 
-The tracked component-energy subtotal adds CPU package counter deltas and NVIDIA board energy integrated from sampled watts. PP0/PP1, DRAM, and other channels stay separate so overlapping domains are not counted twice. This subtotal resets when the server restarts and does not include time when the app is stopped. When a compatible AC meter is configured, the whole-PC card also shows that meter's cumulative kWh counter; its value follows the meter's own reset behavior.
+Sensor cards show separate per-channel energy for the current app session when available. The whole-PC card shows the outlet meter's cumulative kWh counter when connected; that value follows the meter's own reset behavior.
 
 ### Per-device measurement routes
 
@@ -53,17 +53,13 @@ The tracked component-energy subtotal adds CPU package counter deltas and NVIDIA
 
 ### Optional whole-PC outlet meter (Windows)
 
-The app can poll a compatible Shelly Gen2+ local meter through the read-only `GET /rpc/Shelly.GetStatus` endpoint. It uses the meter's `apower` field as active watts and `aenergy.total` as the absolute Wh counter. The meter must be dedicated to the PC's power cable; a shared strip would include every connected device. Enable Digest authentication on the meter and set its private IPv4 address and password in the same PowerShell session used to launch the app:
+The app listens for Shelly Gen2+ devices advertising `_shelly._tcp.local` on the local network. When one compatible meter is found, it automatically reads the read-only `GET /rpc/Shelly.GetStatus` endpoint. It uses the meter's `apower` field as active watts and `aenergy.total` as the absolute Wh counter. The meter must be dedicated to the PC's power cable; a shared strip would include every connected device. When the meter requires authentication, verify its displayed local IP and enter its password in the dashboard. The password stays in memory until the app closes. No watt value is entered manually.
 
 ```powershell
-$env:POWER_MONITOR_PC_METER_HOST = '192.168.1.20'
-$env:POWER_MONITOR_PC_METER_PASSWORD = '<meter-password>'
-# Optional when the meter exposes multiple outlets; select the PC outlet:
-$env:POWER_MONITOR_PC_METER_COMPONENT = 'pm1:0'
 npx power-monitor-lab
 ```
 
-The app polls every three seconds after startup. If the device reports multiple outlet channels, set `POWER_MONITOR_PC_METER_COMPONENT` to the exact `pm1:N` or `switch:N` component that powers only the PC; ambiguous channels are rejected instead of mislabeled. It does not scan the network, accept manual watt entries, or estimate the whole-PC total. Use a meter whose plug, mains voltage, and rated load are appropriate for the PC power supply. The adapter uses local HTTP with Digest authentication, so traffic is not encrypted; keep the meter on a trusted private network. Without a compatible connected and configured meter, the dashboard leaves whole-PC watts unavailable.
+Discovery sends only a local mDNS service query; it does not scan IP ranges or contact the internet. If multiple devices or meter channels are found, select the device/channel dedicated to the PC in the dashboard. Advanced users can set `POWER_MONITOR_PC_METER_HOST`, `POWER_MONITOR_PC_METER_PASSWORD`, and `POWER_MONITOR_PC_METER_COMPONENT` to bypass discovery. Use a meter whose plug, mains voltage, and rated load are appropriate for the PC power supply. Meter API traffic uses local HTTP and is not encrypted, so keep the meter on a trusted private network. Without a compatible outlet meter, whole-PC input watts remain unavailable; CPU and GPU sensor readings continue updating automatically.
 
 ### Separate device estimate mode
 
@@ -87,7 +83,7 @@ On Windows, the detected hardware inventory refreshes every 15 seconds so device
 
 ## Local data and privacy
 
-The server binds only to IPv4 loopback (`127.0.0.1`) on an OS-assigned port by default. It checks the request host and the origin of state-changing requests, serves only the bundled UI files, and sends a restrictive content security policy. When configured, the Windows sensor process makes bounded read-only requests to the meter's explicitly configured private IPv4 address; the app does not scan the network or make internet requests. Meter API traffic uses local HTTP and is not encrypted, so keep the meter on a trusted network.
+The server binds only to IPv4 loopback (`127.0.0.1`) on an OS-assigned port by default. It checks the request host and the origin of state-changing requests, serves only the bundled UI files, and sends a restrictive content security policy. On Windows, the app sends a local mDNS query for Shelly's advertised service, then makes read-only requests to discovered private IPv4 addresses; it does not scan IP ranges or contact the internet. Meter API traffic uses local HTTP and is not encrypted, so keep the meter on a trusted network.
 
 Manual readings and their history API are removed. Legacy `/api/readings`, `/api/meters`, `/api/summary`, and `/api/export.csv` routes are no longer served. Existing `readings.json` files are not imported or read. Automatic sensor samples are saved to daily `.jsonl` files in a `sensor-history` subfolder, kept for seven days, and contain only finite readings from hardware sensors; estimates are never stored:
 
@@ -126,7 +122,7 @@ npx power-monitor-lab
 
 Yêu cầu Node.js 22 trở lên. Máy chủ tự chọn cổng local, in địa chỉ truy cập và mở trình duyệt. Nhấn **Ctrl+C** để dừng. Có thể dùng `--no-open` để chỉ in địa chỉ hoặc `--port 4317` để yêu cầu cổng cụ thể.
 
-Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng cũng có thể đọc thêm cảm biến `Power` từ máy chủ web cục bộ của LibreHardwareMonitor và đồng hồ Shelly cục bộ đo riêng ổ cắm PC. Dashboard tự cập nhật số đo mỗi ba giây khi ứng dụng đang chạy. Ứng dụng liệt kê các thiết bị Windows nhận diện được, gồm CPU, card đồ họa, RAM, ổ đĩa, màn hình, bàn phím, chuột và thiết bị USB; thiết bị không có cảm biến watt sẽ được ghi rõ.
+Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng cũng đọc thêm cảm biến `Power` từ LibreHardwareMonitor nếu máy chủ cục bộ đang chạy, và tự tìm đồng hồ Shelly tương thích trong mạng nội bộ để đo điện đầu vào toàn PC. Dashboard tự cập nhật số đo mỗi ba giây khi ứng dụng đang chạy; không có chỗ nhập watt thủ công.
 
 **Giới hạn đo:** kênh DRAM là miền bộ nhớ dùng chung, không đo riêng từng thanh RAM. Thiết bị chỉ được đánh dấu có số đo khi dữ liệu cảm biến gắn được với đúng thiết bị. Kênh EMI có thể chồng lấp nên được hiển thị riêng, không cộng thành tổng công suất toàn PC. `nvidia-smi` báo công suất card đồ họa tại lần đo gần nhất, không phải điện đầu vào tại ổ cắm. Windows không cung cấp số watt trực tiếp cho mọi chuột, bàn phím, ổ đĩa, quạt, màn hình hoặc bo mạch. Cần đồng hồ AC cắm riêng PC và cấu hình một lần để tự đọc tổng; nếu chưa có đồng hồ, tổng vẫn để trống. Đồng hồ USB nối tiếp cần thiết để đo riêng thiết bị USB. Trên macOS/Linux, tính năng đo cảm biến tự động chưa được hỗ trợ và dashboard sẽ báo trạng thái này.
 
@@ -160,17 +156,13 @@ Các nguồn và giới hạn của từng mô hình được ghi cạnh thiết
 
 ### Đồng hồ đo đầu vào toàn PC (Windows)
 
-Ứng dụng có thể tự đọc đồng hồ Shelly tương thích qua `GET /rpc/Shelly.GetStatus`. Hãy cắm riêng PC qua đồng hồ, bật Digest authentication trên thiết bị, rồi đặt địa chỉ IPv4 nội bộ và mật khẩu trong cùng cửa sổ PowerShell dùng để chạy app:
+Ứng dụng tự tìm thiết bị Shelly Gen2+ quảng bá dịch vụ `_shelly._tcp.local` trong mạng nội bộ. Khi chỉ tìm thấy một đồng hồ tương thích, app tự đọc API chỉ-đọc `GET /rpc/Shelly.GetStatus`; nếu tìm thấy nhiều thiết bị, hãy chọn đồng hồ nối riêng với PC trong dashboard. Để đo tổng PC, dây nguồn của thùng máy phải đi qua đồng hồ; ổ chia chung sẽ tính cả thiết bị khác. Nếu đồng hồ bật xác thực, nhập mật khẩu tại dashboard; mật khẩu chỉ nằm trong bộ nhớ đến khi đóng app. Không cần nhập watt thủ công.
 
 ```powershell
-$env:POWER_MONITOR_PC_METER_HOST = '192.168.1.20'
-$env:POWER_MONITOR_PC_METER_PASSWORD = '<mat-khau-dong-ho>'
-# Tùy chọn nếu đồng hồ có nhiều kênh; chọn đúng cổng cấp nguồn cho PC:
-$env:POWER_MONITOR_PC_METER_COMPONENT = 'pm1:0'
 npx power-monitor-lab
 ```
 
-Sau khi mở lại ứng dụng, công suất watt và điện năng Wh được đọc tự động mỗi ba giây; không có chỗ nhập watt thủ công. Nếu đồng hồ có nhiều kênh, đặt `POWER_MONITOR_PC_METER_COMPONENT` thành đúng kênh `pm1:N` hoặc `switch:N` cấp điện riêng cho PC; app sẽ từ chối tự chọn nếu có nhiều kênh mơ hồ. Không dùng ổ chia chung nếu muốn số chỉ tính PC. Hãy kiểm tra phích cắm, điện áp và định mức tải có phù hợp với nguồn PC. Đồng hồ chưa kết nối/cấu hình thì tổng vẫn hiển thị “chưa đo”. API dùng HTTP cục bộ, không mã hóa lưu lượng; nên để thiết bị trong mạng tin cậy. Tham khảo [Shelly RPC](https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Shelly/) và [thông số Shelly Plug PM Gen3](https://us.shelly.com/blogs/documentation/shelly-plug-pm-gen3).
+App chỉ gửi truy vấn mDNS trong mạng nội bộ để tìm dịch vụ Shelly, không quét dải IP và không gọi Internet. Nếu nhiều đồng hồ hoặc kênh được tìm thấy, hãy kiểm tra IP hiển thị rồi chọn đúng đồng hồ/kênh chỉ cấp điện cho PC trước khi nhập mật khẩu. Có thể bỏ qua dò tự động bằng các biến `POWER_MONITOR_PC_METER_HOST`, `POWER_MONITOR_PC_METER_PASSWORD`, `POWER_MONITOR_PC_METER_COMPONENT`. Hãy chọn đồng hồ có phích cắm, điện áp và tải định mức phù hợp với bộ nguồn PC. API dùng HTTP cục bộ, không mã hóa lưu lượng; chỉ dùng trên mạng tin cậy. Tham khảo [Shelly RPC](https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Shelly/) và [thông số Shelly Plug PM Gen3](https://us.shelly.com/blogs/documentation/shelly-plug-pm-gen3).
 
 ### Nguồn LibreHardwareMonitor tùy chọn (Windows)
 
@@ -178,8 +170,6 @@ Sau khi mở lại ứng dụng, công suất watt và điện năng Wh được
 Số đo cảm biến tự cập nhật khi máy chủ ứng dụng đang chạy. Dashboard hiển thị watt hiện tại theo từng kênh; ứng dụng tự lưu số đo cảm biến thật mỗi 30 giây và giữ lịch sử 7 ngày. Năng lượng trong phiên vẫn bắt đầu lại khi khởi động server. Ước tính không trở thành số đo cảm biến và không được lưu.
 
 Lịch sử cảm biến tự động được lưu theo ngày trong thư mục `sensor-history` tại thư mục dữ liệu cục bộ (Windows: `%LOCALAPPDATA%\PowerMonitorLab`; macOS: `~/Library/Application Support/PowerMonitorLab`; Linux: `$XDG_DATA_HOME/power-monitor-lab` hoặc `~/.local/share/power-monitor-lab`). Lịch sử nhập tay và các API cũ (`/api/readings`, `/api/meters`, `/api/summary`, `/api/export.csv`) đã bị gỡ; tệp `readings.json` cũ không được ứng dụng đọc. Lịch sử cảm biến tự động vẫn được giữ trong bảy ngày.
-
-Lịch sử từ bản Windows thử nghiệm trước vẫn xem được. Giá trị đồng hồ đơn điệu cũ của .NET không được quy đổi sang Node.js, vì vậy Wh chỉ được tính cho các khoảng đo ghi bằng bản npm này.
 
 Mã nguồn hiện chưa có giấy phép sử dụng; package ghi `UNLICENSED`. Việc đưa lên npm không tự cấp quyền sử dụng lại, sửa đổi hoặc phân phối mã nguồn. Hãy chọn và thêm giấy phép trước khi công bố đây là gói mã nguồn mở.
 

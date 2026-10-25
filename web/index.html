@@ -66,35 +66,36 @@
             </div>
           </section>
 
-          <section class="pc-total-card tracked-component-energy" data-state="missing" aria-labelledby="component-energy-heading">
-            <div class="pc-total-copy">
-              <p class="eyebrow" data-i18n="componentEnergyEyebrow">TRACKED COMPONENTS</p>
-              <h3 id="component-energy-heading" data-i18n="componentEnergyHeading">Tracked component energy</h3>
-              <p id="component-energy-description" data-i18n="componentEnergyDescription">Subtotal from CPU package energy counters and sampled NVIDIA GPU board watts. DRAM and other channels stay separate; this is not whole-PC outlet input.</p>
-              <p id="component-energy-detail" class="pc-total-detail" hidden></p>
-            </div>
-            <div class="pc-total-reading">
-              <strong id="component-energy-value" data-state="unavailable">— kWh</strong>
-              <span id="component-energy-state" data-state="missing" data-i18n="componentEnergyWaitingState">Waiting for readings</span>
-            </div>
-          </section>
-          <section class="component-readings" aria-labelledby="component-readings-heading">
-            <h3 id="component-readings-heading" class="component-readings-heading" data-i18n="sensorReadingsHeading">Công suất đo trực tiếp</h3>
-            <div id="sensor-reading-grid" class="sensor-reading-grid"></div>
+          <section class="meter-connection" aria-label="Automatic meter connection">
+            <p id="meter-discovery-status" class="meter-discovery-status" role="status" aria-live="polite" data-state="searching">
+              Đang tự tìm đồng hồ đo trong mạng nội bộ.
+            </p>
+            <button id="meter-change-button" class="meter-change-button" type="button" hidden data-i18n="meterChangeButton">Đổi đồng hồ</button>
+            <form id="meter-connect-form" class="meter-connect-form" hidden>
+              <div id="meter-device-field" class="meter-form-field" hidden>
+                <label for="meter-device" data-i18n="meterDeviceLabel">Đồng hồ đo</label>
+                <select id="meter-device" name="deviceId" required></select>
+              </div>
+              <div id="meter-password-field" class="meter-form-field" hidden>
+                <label for="meter-password" data-i18n="meterPasswordLabel">Mật khẩu đồng hồ (nếu được yêu cầu)</label>
+                <input id="meter-password" name="password" type="password" autocomplete="current-password" maxlength="256">
+              </div>
+              <div id="meter-component-field" class="meter-form-field" hidden>
+                <label for="meter-component" data-i18n="meterComponentLabel">Kênh đo của PC</label>
+                <input id="meter-component" name="componentId" type="text" inputmode="text" placeholder="pm1:0" maxlength="32">
+              </div>
+              <div class="meter-form-actions">
+                <button id="meter-connect-button" type="submit" data-i18n="meterConnectButton">Kết nối đồng hồ</button>
+                <button id="meter-cancel-button" class="meter-cancel-button" type="button" hidden data-i18n="meterCancelButton">Hủy</button>
+              </div>
+            </form>
           </section>
 
-          <details class="meter-setup-disclosure">
-            <summary data-i18n="pcMeterSetupHeading">Kết nối đồng hồ để đo tự động</summary>
-            <div class="meter-setup-body">
-              <p data-i18n="pcMeterSetupBody">Dùng đồng hồ Shelly có API cục bộ, hỗ trợ đo tải phù hợp với điện lưới và bộ nguồn PC. Bật xác thực trên đồng hồ, rồi đặt hai biến sau trong PowerShell trước khi chạy ứng dụng:</p>
-              <pre><code>$env:POWER_MONITOR_PC_METER_HOST = '192.168.1.20'
-$env:POWER_MONITOR_PC_METER_PASSWORD = '&lt;mật-khẩu-đồng-hồ&gt;'
-# Tùy chọn / Optional on multi-channel meters:
-$env:POWER_MONITOR_PC_METER_COMPONENT = 'pm1:0'
-npx power-monitor-lab</code></pre>
-              <p class="meter-setup-security" data-i18n="pcMeterSetupSecurity">Máy chủ đọc dữ liệu cục bộ mỗi 3 giây. Kết nối HTTP trong mạng nội bộ không mã hóa; hãy đặt đồng hồ trong mạng tin cậy.</p>
-            </div>
-          </details>
+          <section class="component-readings" aria-labelledby="component-readings-heading">
+            <h3 id="component-readings-heading" class="component-readings-heading" data-i18n="sensorReadingsHeading">Công suất đo trực tiếp</h3>
+            <p class="component-readings-note" data-i18n="sensorReadingsNote">Mỗi số là một kênh riêng; không cộng các kênh để suy ra tổng PC.</p>
+            <div id="sensor-reading-grid" class="sensor-reading-grid"></div>
+          </section>
 
           <details class="inventory-disclosure" id="hardware-inventory">
             <summary>
@@ -109,9 +110,9 @@ npx power-monitor-lab</code></pre>
           </details>
 
           <details class="technical-disclosure">
-            <summary data-i18n="technicalSources">Nguồn cảm biến và cách đọc</summary>
+            <summary data-i18n="technicalSources">Chi tiết cảm biến</summary>
             <div id="sensor-provider-list" class="sensor-provider-list"></div>
-            <p class="sensor-integration-hint" data-i18n="sensorLhmHint">Có thể bật LibreHardwareMonitor để bổ sung kênh đo mà máy hỗ trợ.</p>
+            <p class="sensor-integration-hint" data-i18n="sensorLhmHint">Chi tiết nguồn đo và kênh được cảm biến cung cấp.</p>
           </details>
         </section>
 

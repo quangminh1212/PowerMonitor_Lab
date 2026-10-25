@@ -109,3 +109,54 @@ test("serves automatically collected local history and rejects manual watt posts
   });
   assert.equal(manualResponse.status, 404);
 });
+
+test("configures only an automatically discovered local meter", async (t) => {
+  const directory = await temporaryDirectory(t);
+  let selectedConfiguration = null;
+  const snapshot = { readings: [], meterDiscovery: { state: "multiple", devices: [{ id: "meter-a", name: "Shelly Plug PM" }] } };
+  const sensors = {
+    getSnapshot: () => snapshot,
+    configurePcMeter(configuration) {
+      selectedConfiguration = configuration;
+      return ["meter-a", "configured-meter"].includes(configuration.deviceId);
+    },
+    close() {}
+  };
+  const app = await startLocalApp({
+    port: 0,
+    sensors,
+    historyDirectory: directory,
+    historyPollIntervalMs: 60_000
+  });
+  t.after(() => app.close());
+
+  const response = await fetch(`${app.origin}/api/meter/configure`, {
+    method: "POST",
+    headers: { Origin: app.origin, "Content-Type": "application/json" },
+    body: JSON.stringify({ deviceId: "meter-a", password: "local-secret", componentId: "" })
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(selectedConfiguration, { deviceId: "meter-a", password: "local-secret", componentId: "" });
+  const responseBody = await response.json();
+  assert.equal(JSON.stringify(responseBody).includes("local-secret"), false);
+
+  const configuredOverride = await fetch(`${app.origin}/api/meter/configure`, {
+    method: "POST",
+    headers: { Origin: app.origin, "Content-Type": "application/json" },
+    body: JSON.stringify({ deviceId: "configured-meter", password: "override-secret", componentId: "pm1:0" })
+  });
+  assert.equal(configuredOverride.status, 200);
+  assert.deepEqual(selectedConfiguration, {
+    deviceId: "configured-meter",
+    password: "override-secret",
+    componentId: "pm1:0"
+  });
+  assert.equal(JSON.stringify(await configuredOverride.json()).includes("override-secret"), false);
+
+  const rejected = await fetch(`${app.origin}/api/meter/configure`, {
+    method: "POST",
+    headers: { Origin: "http://127.0.0.1:1", "Content-Type": "application/json" },
+    body: JSON.stringify({ deviceId: "meter-a", password: "local-secret" })
+  });
+  assert.equal(rejected.status, 403);
+});

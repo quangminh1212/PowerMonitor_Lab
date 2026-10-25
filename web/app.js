@@ -30,6 +30,7 @@ const translations = {
     sensorProviderConnected: "connected",
     sensorProviderUnavailable: "not connected",
     sensorReadingsHeading: "Measured power",
+    sensorReadingsNote: "Each value is a separate sensor channel. Do not add channels to get whole-PC power.",
     pcTotalEyebrow: "WHOLE PC",
     pcTotalHeading: "Input power at the outlet",
     pcTotalMeasuredState: "Measured live",
@@ -43,18 +44,32 @@ const translations = {
     pcTotalUnsupportedDescription: "Whole-PC meter integration currently runs on Windows. Component sensors available on this PC remain listed below.",
     pcTotalEnergy: "Energy this session: {energy} Wh",
     pcTotalMeterEnergyTotal: "Meter counter: {energy} kWh",
-    componentEnergyEyebrow: "TRACKED COMPONENTS",
-    componentEnergyHeading: "Tracked component energy",
-    componentEnergyDescription: "Subtotal from CPU package energy counters and sampled NVIDIA GPU board watts. DRAM and other channels stay separate; this is not whole-PC outlet input.",
-    componentEnergyTrackedState: "Tracking this session",
-    componentEnergyWaitingState: "Waiting for readings",
-    componentEnergySinceStart: "Since app start · {channels} channels",
-    pcMeterSetupHeading: "Connect a meter for automatic total power",
-    pcMeterSetupBody: "Use a Shelly meter with its local API, rated for your mains and PC power supply load. Enable device authentication, then set these variables in PowerShell before starting the app. The component line is needed only for meters with multiple outlets:",
-    pcMeterSetupSecurity: "The app reads the local meter every 3 seconds. Local HTTP is not encrypted; keep the meter on a trusted network.",
+    meterDiscoverySearching: "Searching this local network for a Shelly power meter…",
+    meterDiscoveryNotFound: "No meter found yet. CPU, graphics, and memory readings still update automatically. Whole-PC input needs a compatible outlet meter dedicated to the computer.",
+    meterDiscoveryMultiple: "Several Shelly devices were found. Choose the one connected only to this computer.",
+    meterDiscoveryDisconnected: "The selected meter is not responding. Check its power and local network connection.",
+    meterDiscoverySelectedUnavailable: "The selected meter is temporarily missing from discovery. It remains selected while the app keeps checking.",
+    meterDiscoveryAuthenticationRequired: "A Shelly device was found. Enter its device password to connect; the password stays in memory until this app closes.",
+    meterVerifyAddress: "Verify the meter's local address before entering its password: {address}.",
+    meterDiscoveryComponentSelection: "This meter has multiple power channels. Enter the channel connected only to this computer, such as pm1:0.",
+    meterDiscoveryConnecting: "Shelly device found. Checking its live power sensor…",
+    meterDiscoveryConnected: "Meter connected. Whole-PC power refreshes automatically every 3 seconds.",
+    meterDiscoveryUnavailable: "Local meter discovery is unavailable. Put the computer and meter on the same local network.",
+    meterDiscoveryNotAMeter: "Shelly device found, but it does not provide a supported live power channel.",
+    meterDiscoveryConfigured: "Using the configured local meter. Readings refresh automatically every 3 seconds.",
+    meterDiscoveryUnsupported: "Automatic outlet-meter discovery is currently supported on Windows.",
+    meterDeviceLabel: "Meter connected to this computer",
+    meterDeviceMissing: "not currently found",
+    meterPasswordLabel: "Meter password (if required)",
+    meterComponentLabel: "Power channel for this computer",
+    meterConnectButton: "Connect meter",
+    meterChangeButton: "Change meter",
+    meterCancelButton: "Cancel",
+    meterConnectionError: "Could not connect to that discovered meter. Check the password and try again.",
     sensorWaiting: "Waiting for the next sensor sample",
     sensorSource: "Source",
     sensorMethod: "Measurement",
+    sensorDetails: "Sensor details",
     sensorMeasuredEnergy: "Measured energy since app start",
     sensorEstimatedEnergy: "Estimated energy since app start",
     sensorLabelPackage: "CPU package",
@@ -140,6 +155,7 @@ const translations = {
     sensorProviderConnected: "đã kết nối",
     sensorProviderUnavailable: "chưa kết nối",
     sensorReadingsHeading: "Công suất đo trực tiếp",
+    sensorReadingsNote: "Mỗi số là một kênh cảm biến riêng; không cộng các kênh để tính tổng PC.",
     pcTotalEyebrow: "TOÀN BỘ PC",
     pcTotalHeading: "Điện đầu vào tại ổ cắm",
     pcTotalMeasuredState: "Đang đo trực tiếp",
@@ -153,18 +169,32 @@ const translations = {
     pcTotalUnsupportedDescription: "Tích hợp đồng hồ đo cả PC hiện chạy trên Windows. Các cảm biến linh kiện của máy vẫn hiển thị bên dưới.",
     pcTotalEnergy: "Điện năng phiên này: {energy} Wh",
     pcTotalMeterEnergyTotal: "Bộ đếm đồng hồ: {energy} kWh",
-    componentEnergyEyebrow: "LINH KIỆN ĐANG THEO DÕI",
-    componentEnergyHeading: "Điện năng linh kiện đã theo dõi",
-    componentEnergyDescription: "Tạm tính từ bộ đếm CPU package và công suất mẫu của bo mạch GPU NVIDIA. DRAM và kênh khác được giữ riêng; đây không phải điện đầu vào toàn PC.",
-    componentEnergyTrackedState: "Đang cộng dồn phiên này",
-    componentEnergyWaitingState: "Đang chờ cảm biến",
-    componentEnergySinceStart: "Từ lúc mở ứng dụng · {channels} kênh",
-    pcMeterSetupHeading: "Kết nối đồng hồ để tự đo tổng công suất",
-    pcMeterSetupBody: "Dùng đồng hồ Shelly có API cục bộ, chịu tải phù hợp với điện lưới và bộ nguồn PC. Bật xác thực trên đồng hồ, rồi đặt các biến sau trong PowerShell trước khi chạy ứng dụng. Dòng chọn kênh chỉ cần cho đồng hồ có nhiều ổ cắm:",
-    pcMeterSetupSecurity: "Ứng dụng đọc đồng hồ cục bộ mỗi 3 giây. HTTP nội bộ không mã hóa; chỉ đặt đồng hồ trong mạng tin cậy.",
+    meterDiscoverySearching: "Đang tự tìm đồng hồ Shelly trong mạng nội bộ…",
+    meterDiscoveryNotFound: "Chưa tìm thấy đồng hồ. CPU, đồ họa và RAM vẫn tự cập nhật. Muốn đo điện tổng của cả PC cần đồng hồ ổ cắm tương thích, chỉ cấp điện cho máy tính.",
+    meterDiscoveryMultiple: "Tìm thấy nhiều thiết bị Shelly. Hãy chọn thiết bị chỉ nối với máy tính này.",
+    meterDiscoveryDisconnected: "Đồng hồ đã chọn không phản hồi. Hãy kiểm tra nguồn và kết nối mạng nội bộ.",
+    meterDiscoverySelectedUnavailable: "Tạm thời chưa thấy đồng hồ đã chọn khi dò mạng. Ứng dụng vẫn giữ lựa chọn này và tiếp tục kiểm tra.",
+    meterDiscoveryAuthenticationRequired: "Đã tìm thấy thiết bị Shelly. Nhập mật khẩu của đồng hồ để kết nối; mật khẩu chỉ giữ trong bộ nhớ đến khi đóng ứng dụng.",
+    meterVerifyAddress: "Hãy xác nhận IP nội bộ của đồng hồ trước khi nhập mật khẩu: {address}.",
+    meterDiscoveryComponentSelection: "Đồng hồ có nhiều kênh. Nhập kênh chỉ cấp điện cho máy tính, ví dụ pm1:0.",
+    meterDiscoveryConnecting: "Đã tìm thấy Shelly. Đang kiểm tra cảm biến công suất…",
+    meterDiscoveryConnected: "Đã kết nối đồng hồ. Công suất toàn PC tự cập nhật mỗi 3 giây.",
+    meterDiscoveryUnavailable: "Không dò được đồng hồ cục bộ. Hãy kết nối máy tính và đồng hồ vào cùng mạng nội bộ.",
+    meterDiscoveryNotAMeter: "Đã tìm thấy Shelly nhưng thiết bị không có kênh đo công suất được hỗ trợ.",
+    meterDiscoveryConfigured: "Đang dùng đồng hồ cục bộ đã cấu hình. Số đo tự cập nhật mỗi 3 giây.",
+    meterDiscoveryUnsupported: "Hiện chỉ hỗ trợ tự tìm đồng hồ ổ cắm trên Windows.",
+    meterDeviceLabel: "Đồng hồ nối riêng với máy tính này",
+    meterDeviceMissing: "chưa tìm thấy lúc này",
+    meterPasswordLabel: "Mật khẩu đồng hồ (nếu được yêu cầu)",
+    meterComponentLabel: "Kênh đo cấp điện cho máy tính",
+    meterConnectButton: "Kết nối đồng hồ",
+    meterChangeButton: "Đổi đồng hồ",
+    meterCancelButton: "Hủy",
+    meterConnectionError: "Chưa kết nối được đồng hồ đã tìm thấy. Kiểm tra mật khẩu rồi thử lại.",
     sensorWaiting: "Đang chờ mẫu cảm biến tiếp theo",
     sensorSource: "Nguồn đo",
     sensorMethod: "Cách đo",
+    sensorDetails: "Chi tiết cảm biến",
     sensorMeasuredEnergy: "Năng lượng đo được từ lúc mở ứng dụng",
     sensorEstimatedEnergy: "Năng lượng ước tính từ lúc mở ứng dụng",
     sensorLabelPackage: "CPU package",
@@ -290,7 +320,14 @@ function getSavedLanguage() {
     return "vi";
   }
 }
-const state = { language: getSavedLanguage(), sensors: null, history: null, historyRange: "1h" };
+const state = {
+  language: getSavedLanguage(),
+  sensors: null,
+  history: null,
+  historyRange: "1h",
+  meterFormOpen: false,
+  meterConnectionErrorUntil: 0
+};
 const $ = (selector) => document.querySelector(selector);
 
 function tr(key, values = {}) {
@@ -567,28 +604,77 @@ function renderPcTotal(snapshot) {
   detailElement.hidden = detailParts.length === 0;
 }
 
-function renderTrackedComponentEnergy(snapshot) {
-  const cardElement = document.querySelector(".tracked-component-energy");
-  const valueElement = $("#component-energy-value");
-  const stateElement = $("#component-energy-state");
-  const detailElement = $("#component-energy-detail");
-  if (!cardElement || !valueElement || !stateElement || !detailElement) return;
+function renderMeterDiscovery(snapshot) {
+  const discovery = snapshot.meterDiscovery ?? { state: "not-found", devices: [] };
+  const unsupported = snapshot.status === "unsupported";
+  const knownStates = new Set([
+    "searching", "not-found", "multiple", "authentication-required", "component-selection",
+    "connecting", "connected", "unavailable", "not-a-meter", "configured", "disconnected", "selected-unavailable"
+  ]);
+  const stateKey = unsupported ? "unsupported" : knownStates.has(discovery.state) ? discovery.state : "not-found";
+  const status = $("#meter-discovery-status");
+  const form = $("#meter-connect-form");
+  const deviceField = $("#meter-device-field");
+  const deviceSelect = $("#meter-device");
+  const passwordField = $("#meter-password-field");
+  const componentField = $("#meter-component-field");
+  if (!status || !form || !deviceSelect) return;
 
-  const energyWh = snapshot.trackedComponentEnergyWhSinceStart;
-  const channels = Number.isInteger(snapshot.trackedComponentEnergyChannelCount)
-    ? snapshot.trackedComponentEnergyChannelCount
-    : 0;
-  const tracked = Number.isFinite(energyWh) && energyWh >= 0 && channels > 0;
-
-  cardElement.dataset.state = tracked ? "tracked" : "missing";
-  valueElement.dataset.state = tracked ? "measured" : "unavailable";
-  valueElement.textContent = tracked ? `${formatEnergy(energyWh / 1_000)} kWh` : "— kWh";
-  stateElement.dataset.state = tracked ? "tracked" : "missing";
-  stateElement.textContent = tr(tracked ? "componentEnergyTrackedState" : "componentEnergyWaitingState");
-  detailElement.textContent = tracked
-    ? tr("componentEnergySinceStart", { channels })
+  const devices = Array.isArray(discovery.devices) ? discovery.devices : [];
+  const selectedDevice = devices.find((device) => device.id === discovery.selectedDeviceId);
+  const selectedAddress = selectedDevice?.host
+    ? `${selectedDevice.host}${selectedDevice.port && selectedDevice.port !== 80 ? `:${selectedDevice.port}` : ""}`
     : "";
-  detailElement.hidden = !tracked;
+  const discoveryMessage = tr(`meterDiscovery${stateKey[0].toLocaleUpperCase("en-US")}${stateKey.slice(1).replace(/-([a-z])/g, (_match, letter) => letter.toLocaleUpperCase("en-US"))}`);
+  const hasConnectionError = state.meterConnectionErrorUntil > Date.now();
+  status.dataset.state = hasConnectionError ? "unavailable" : stateKey;
+  status.textContent = hasConnectionError
+    ? tr("meterConnectionError")
+    : stateKey === "authentication-required" && selectedAddress
+      ? `${discoveryMessage} ${tr("meterVerifyAddress", { address: selectedAddress })}`
+      : discoveryMessage;
+  const previousDeviceId = deviceSelect.value;
+  deviceSelect.replaceChildren();
+  for (const device of devices) {
+    const option = document.createElement("option");
+    option.value = device.id;
+    option.textContent = [
+      device.name,
+      device.model,
+      device.host ? `${device.host}${device.port && device.port !== 80 ? `:${device.port}` : ""}` : "",
+      device.discovered === false ? tr("meterDeviceMissing") : ""
+    ].filter(Boolean).join(" · ");
+    option.disabled = device.discovered === false;
+    deviceSelect.append(option);
+  }
+  const selectedDeviceId = discovery.selectedDeviceId;
+  const discoveredDevices = devices.filter((device) => device.discovered !== false);
+  const selectedIsDiscovered = discoveredDevices.some((device) => device.id === selectedDeviceId);
+  if (state.meterFormOpen && !discoveredDevices.some((device) => device.id === previousDeviceId)) {
+    deviceSelect.value = discoveredDevices[0]?.id ?? "";
+  } else if (discoveredDevices.some((device) => device.id === previousDeviceId)) {
+    deviceSelect.value = previousDeviceId;
+  } else if (selectedDeviceId && (selectedIsDiscovered || !discoveredDevices.length)) {
+    deviceSelect.value = selectedDeviceId;
+  } else if (discoveredDevices.length === 1) {
+    deviceSelect.value = discoveredDevices[0].id;
+  }
+
+  const needsDeviceChoice = stateKey === "multiple" || stateKey === "selected-unavailable" ||
+    state.meterFormOpen || (!selectedDeviceId && discoveredDevices.length > 1) ||
+    (selectedDeviceId && !selectedIsDiscovered && discoveredDevices.length > 0);
+  const needsPassword = stateKey === "authentication-required" || stateKey === "multiple" || state.meterFormOpen;
+  const needsComponent = stateKey === "component-selection";
+  const showForm = !unsupported && (needsDeviceChoice || needsPassword || needsComponent);
+  const changeButton = $("#meter-change-button");
+  const cancelButton = $("#meter-cancel-button");
+  const canChangeMeter = Boolean(selectedDeviceId) && discoveredDevices.some((device) => device.id !== selectedDeviceId);
+  form.hidden = !showForm;
+  deviceField.hidden = !needsDeviceChoice;
+  passwordField.hidden = !needsPassword;
+  componentField.hidden = !needsComponent;
+  if (changeButton) changeButton.hidden = !canChangeMeter || state.meterFormOpen;
+  if (cancelButton) cancelButton.hidden = !state.meterFormOpen;
 }
 
 function deviceMeasurementGuide(device) {
@@ -731,7 +817,7 @@ function renderSensors() {
   status.dataset.state = snapshot.status;
   status.textContent = tr(statusKey);
   renderPcTotal(snapshot);
-  renderTrackedComponentEnergy(snapshot);
+  renderMeterDiscovery(snapshot);
   const estimateNote = $("#sensor-estimate-note");
   if (estimateNote) estimateNote.textContent = (powerEstimateLabels[state.language] ?? powerEstimateLabels.en).disclosure;
   const messageKey = {
@@ -782,6 +868,11 @@ function renderSensors() {
     value.className = "sensor-value";
     value.textContent = Number.isFinite(reading.watts) ? `${formatPower(reading.watts)} W` : `— W · ${tr("sensorWaiting")}`;
 
+    const details = document.createElement("details");
+    details.className = "sensor-card-details";
+    const detailsSummary = document.createElement("summary");
+    detailsSummary.textContent = tr("sensorDetails");
+    details.append(detailsSummary);
     const source = document.createElement("p");
     source.className = "sensor-provenance";
     source.textContent = `${tr("sensorSource")}: ${reading.source ?? tr("none")}`;
@@ -791,7 +882,7 @@ function renderSensors() {
       ? sensorMethodLabels.vi[reading.method] ?? reading.method
       : reading.method;
     method.textContent = `${tr("sensorMethod")}: ${methodLabel ?? tr("none")}`;
-    card.append(heading, value, source, method);
+    details.append(source, method);
     if (Number.isFinite(reading.energyWhSinceStart)) {
       const energy = document.createElement("p");
       energy.className = "sensor-provenance";
@@ -799,21 +890,22 @@ function renderSensors() {
         ? tr("sensorMeasuredEnergy")
         : tr("sensorEstimatedEnergy");
       energy.textContent = `${energyLabel}: ${formatEnergy(reading.energyWhSinceStart)} Wh`;
-      card.append(energy);
+      details.append(energy);
     }
     const notes = sensorReadingNotes[state.language] ?? sensorReadingNotes.en;
     if (Number.isFinite(reading.powerLimitWatts)) {
       const limit = document.createElement("p");
       limit.className = "sensor-provenance";
       limit.textContent = `${notes.powerLimit}: ${formatPower(reading.powerLimitWatts)} W`;
-      card.append(limit);
+      details.append(limit);
     }
     if (reading.name === "RAPL_Package0_DRAM") {
       const shared = document.createElement("p");
       shared.className = "sensor-provenance";
       shared.textContent = notes.sharedDram;
-      card.append(shared);
+      details.append(shared);
     }
+    card.append(heading, value, details);
     readingGrid.append(card);
   }
 
@@ -918,6 +1010,41 @@ document.querySelectorAll("[data-language]").forEach((button) => button.addEvent
   } catch {}
   applyLanguage();
 }));
+$("#meter-connect-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const deviceId = $("#meter-device").value || (state.sensors?.meterDiscovery?.configured ? "configured-meter" : "");
+  const password = $("#meter-password").value;
+  const componentId = $("#meter-component").value.trim();
+  const button = $("#meter-connect-button");
+  if (!deviceId) return;
+  button.disabled = true;
+  try {
+    await requestJson("/api/meter/configure", {
+      method: "POST",
+      body: JSON.stringify({ deviceId, password, componentId })
+    });
+    $("#meter-password").value = "";
+    $("#meter-component").value = "";
+    state.meterFormOpen = false;
+    state.meterConnectionErrorUntil = 0;
+    await refreshSensors();
+  } catch {
+    state.meterConnectionErrorUntil = Date.now() + 6_000;
+    renderMeterDiscovery(state.sensors ?? {});
+  } finally {
+    button.disabled = false;
+  }
+});
+$("#meter-change-button").addEventListener("click", () => {
+  state.meterFormOpen = true;
+  renderMeterDiscovery(state.sensors ?? {});
+});
+$("#meter-cancel-button").addEventListener("click", () => {
+  state.meterFormOpen = false;
+  $("#meter-password").value = "";
+  renderMeterDiscovery(state.sensors ?? {});
+});
 $("#history-range").addEventListener("change", (event) => {
   state.historyRange = event.currentTarget.value;
   void refreshHistory();

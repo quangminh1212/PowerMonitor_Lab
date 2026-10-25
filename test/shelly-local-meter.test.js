@@ -47,6 +47,56 @@ test("does not contact the network when no PC meter is configured", async () => 
   }
 });
 
+test("automatically reads an unprotected meter after device discovery", async () => {
+  const { ShellyLocalMeterSource } = await loadAdapter();
+  const requests = [];
+  const server = createServer((request, response) => {
+    requests.push({ method: request.method, url: request.url, authorization: request.headers.authorization ?? null });
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ "pm1:0": { apower: 37.25, aenergy: { total: 18.5 } } }));
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  let resolveSnapshot;
+  const availableSnapshot = new Promise((resolve) => { resolveSnapshot = resolve; });
+  const source = new ShellyLocalMeterSource({ onSnapshot: (snapshot) => {
+    if (snapshot.available) resolveSnapshot(snapshot);
+  } });
+
+  try {
+    source.configure({ address: `127.0.0.1:${address.port}` });
+    const snapshot = await Promise.race([
+      availableSnapshot,
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Meter did not respond")), 1_000))
+    ]);
+    assert.equal(snapshot.readings[0].watts, 37.25);
+    assert.deepEqual(requests, [{ method: "GET", url: "/rpc/Shelly.GetStatus", authorization: null }]);
+  } finally {
+    source.close();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+});
+
+test("reports when an automatically discovered meter requires a password", async () => {
+  const { ShellyLocalMeterSource } = await loadAdapter();
+  const server = createServer((_request, response) => {
+    response.writeHead(401, { "WWW-Authenticate": 'Digest realm="shelly-test", nonce="nonce-3", algorithm=SHA-256, qop="auth"' });
+    response.end();
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const source = new ShellyLocalMeterSource({ address: `127.0.0.1:${address.port}` });
+
+  try {
+    const snapshot = await source.pollOnce();
+    assert.equal(snapshot.reason, "authentication-required");
+    assert.equal(snapshot.configured, true);
+  } finally {
+    source.close();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+});
+
 test("parses a Shelly PM1 reading as whole-PC active power and energy", async () => {
   const { parseShellyStatus } = await loadAdapter();
   const sampledAtUtc = "2026-10-25T14:00:00.000Z";
