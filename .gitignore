@@ -1,6 +1,8 @@
-**/bin/
 **/obj/
 artifacts/
 .vs/
 *.user
 *.suo
+node_modules/
+coverage/
+*.log

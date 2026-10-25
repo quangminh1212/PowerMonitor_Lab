@@ -1,0 +1,42 @@
+{
+  "name": "power-monitor-lab",
+  "version": "0.1.0",
+  "description": "A local-first power-reading notebook with a localhost web interface.",
+  "type": "module",
+  "bin": {
+    "power-monitor-lab": "./cli/power-monitor-lab.js"
+  },
+  "files": [
+    "cli/",
+    "lib/",
+    "web/",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node ./cli/power-monitor-lab.js",
+    "check": "node --check cli/power-monitor-lab.js && node --check lib/server.js && node --check lib/store.js && node --check lib/metrics.js && node --check web/app.js",
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quangminh1212/PowerMonitor_Lab.git"
+  },
+  "homepage": "https://github.com/quangminh1212/PowerMonitor_Lab#readme",
+  "bugs": {
+    "url": "https://github.com/quangminh1212/PowerMonitor_Lab/issues"
+  },
+  "keywords": [
+    "power-monitor",
+    "energy",
+    "localhost",
+    "local-first",
+    "measurement"
+  ]
+}
