@@ -1,5 +1,6 @@
 const translations = {
   en: {
+    sensorSharedPowerPath: "Same Windows USB device group as: {devices}; measure its branch once.",
     workspace: "WORKSPACE", workspaceShort: "Workspace", overview: "Overview", readingLog: "Reading log",
     privateTitle: "Your data stays here", privateBody: "Saved on this PC. Nothing is sent to a cloud service.", localHost: "Local host active", onThisDevice: "On this device",
     measurementNotebook: "MEASUREMENT NOTEBOOK", title: "Power, with context.", subtitle: "A local notebook for power readings and energy estimates.",
@@ -16,6 +17,7 @@ const translations = {
     noReadingsPeriod: "No readings in this period", latestAt: "Logged {time}", noEnergy: "Add two readings less than 30 minutes apart in this app session to estimate energy.", energyDetail: "{minutes} min covered · {gaps} long gaps omitted", energyDetailNoGaps: "{minutes} min between readings", readingsCaption: "{count} readings in this period", meterCount: "{count} meters tracked", showingCount: "Showing {count} recent readings · newest first", refreshed: "Updated {time}", deleteLabel: "Delete reading", meterRequired: "Unnamed meter", none: "—", meterPlaceholder: "e.g. Desk plug meter", notePlaceholder: "e.g. Idle, display on", clearHistory: "Clear history", confirmClear: "Permanently clear all readings saved on this device? Export a CSV first if you need a backup.", historyCleared: "Local reading history cleared.", clearFailed: "Could not clear the local history."
   },
   vi: {
+    sensorSharedPowerPath: "Cùng nhóm thiết bị USB của Windows với: {devices}; chỉ cần đo một nhánh nguồn.",
     workspace: "KHÔNG GIAN LÀM VIỆC", workspaceShort: "Không gian", overview: "Tổng quan", readingLog: "Nhật ký đo",
     privateTitle: "Dữ liệu ở trên máy này", privateBody: "Lưu trên PC này, không gửi lên dịch vụ đám mây.", localHost: "Máy chủ cục bộ đang chạy", onThisDevice: "Trên thiết bị này",
     measurementNotebook: "SỔ THEO DÕI SỐ ĐO", title: "Công suất, có ngữ cảnh.", subtitle: "Sổ ghi cục bộ cho số đo công suất và năng lượng ước tính.",
@@ -34,6 +36,46 @@ const translations = {
 };
 
 const chartColors = ["#258b65", "#e39b44", "#7187b7", "#cf6f73", "#8768a8", "#3d9aa2"];
+const additionalKindLabels = {
+  en: { network: "Network adapter", audio: "Audio device" },
+  vi: { network: "Card mạng", audio: "Thiết bị âm thanh" }
+};
+const deviceMeasurementGuides = {
+  en: {
+    processor: "CPU package and PP0 domains are measured; individual core watts are not exposed.",
+    graphics: "A supported GPU driver can report board watts; that does not equal wall input.",
+    memory: "DRAM watts are a shared domain; Windows cannot split them by DIMM.",
+    storageSata: "Per-drive watts need an inline DC meter on this SATA drive's power lead; Windows reports no live watts here.",
+    storage: "Per-drive watts need actual drive telemetry or an inline DC power meter.",
+    monitor: "Use a true-watt AC outlet meter on each monitor; DDC/CI does not report live watts.",
+    usbPeripheral: "Use one data-pass-through USB meter per power path. Composite devices share a reading; wireless peripherals use their own batteries.",
+    usbDevice: "An inline USB meter reads this device's power branch. USB bMaxPower is only a declared maximum, not live current.",
+    usbHub: "This PC exposes no live current per hub port; meter the specific downstream power branch.",
+    usbController: "Windows exposes no host-controller watts; use a whole-PC AC meter or instrumented DC rails.",
+    motherboard: "This board reports voltage and fan RPM, not current or watts. Use a wall meter for whole-PC input.",
+    cooling: "Fan RPM is not watts. A current meter on the fan power lead is needed.",
+    network: "No adapter-specific watt sensor is exposed; measure the system DC rail or whole-PC AC input.",
+    audio: "No audio-chip watt sensor is exposed; its power is part of the host board or GPU rail.",
+    powerSupply: "A wall meter measures whole-PC AC input; PSU rail telemetry needs a supported digital PSU."
+  },
+  vi: {
+    processor: "Đang đo miền CPU package và PP0; Windows không cung cấp watt riêng từng lõi.",
+    graphics: "Driver GPU tương thích có thể báo watt toàn card; số này không phải điện đầu vào ổ cắm.",
+    memory: "Watt DRAM là miền bộ nhớ dùng chung; Windows không tách được từng thanh RAM.",
+    storageSata: "Muốn đo riêng ổ SATA cần đồng hồ DC nối tiếp trên dây nguồn của ổ; Windows hiện không báo watt trực tiếp.",
+    storage: "Muốn đo riêng ổ cần telemetry công suất thật từ firmware hoặc đồng hồ DC nối tiếp.",
+    monitor: "Dùng đồng hồ đo watt AC ở ổ cắm cho từng màn hình; DDC/CI không báo watt trực tiếp.",
+    usbPeripheral: "Dùng một đồng hồ USB có truyền dữ liệu cho mỗi nhánh nguồn. Thiết bị ghép chung sẽ có số đo gộp; thiết bị không dây dùng pin riêng.",
+    usbDevice: "Đồng hồ USB nối tiếp đo nhánh nguồn này. USB bMaxPower chỉ là dòng tối đa khai báo, không phải dòng đang dùng.",
+    usbHub: "PC này không báo dòng trực tiếp từng cổng hub; cần đo riêng nhánh USB phía sau.",
+    usbController: "Windows không báo watt bộ điều khiển USB; cần đồng hồ AC toàn máy hoặc đo các đường nguồn DC.",
+    motherboard: "Bo mạch này báo điện áp và tốc độ quạt, không báo dòng hay watt. Dùng đồng hồ ổ cắm để đo cả PC.",
+    cooling: "RPM quạt không cho biết watt; cần đo dòng trên dây cấp nguồn quạt.",
+    network: "Không có cảm biến watt riêng cho card mạng; chỉ đo được qua đường nguồn DC hoặc điện AC của cả máy.",
+    audio: "Không có cảm biến watt riêng cho chip âm thanh; công suất nằm trong đường nguồn bo mạch hoặc GPU.",
+    powerSupply: "Đồng hồ ổ cắm đo điện AC cả PC; đo từng đường PSU cần bộ nguồn số có telemetry tương thích."
+  }
+};
 const state = { language: "en", range: "24h", meter: "", readings: [], summary: null, meters: [], sensors: null, toastTimer: null };
 const $ = (selector) => document.querySelector(selector);
 
@@ -141,6 +183,18 @@ function sensorLabel(reading) {
   return name || tr("sensorLabelOther");
 }
 
+function deviceMeasurementGuide(device) {
+  const keys = {
+    processor: "processor", graphics: "graphics", memory: "memory",
+    storage: device.busType === "SATA" ? "storageSata" : "storage",
+    monitor: "monitor", keyboard: "usbPeripheral", mouse: "usbPeripheral",
+    usb: "usbDevice", "usb-hub": "usbHub", "usb-controller": "usbController",
+    motherboard: "motherboard", cooling: "cooling", network: "network",
+    audio: "audio", "power-supply": "powerSupply"
+  };
+  return deviceMeasurementGuides[state.language]?.[keys[device.kind]] ?? "";
+}
+
 function renderSensors() {
   const snapshot = state.sensors;
   if (!snapshot) return;
@@ -225,7 +279,9 @@ function renderSensors() {
     const name = document.createElement("strong");
     name.textContent = device.name ?? tr("sensorKindOther");
     const kind = document.createElement("span");
-    kind.textContent = tr(kindKeys[device.kind] ?? "sensorKindOther");
+    kind.textContent = kindKeys[device.kind]
+      ? tr(kindKeys[device.kind])
+      : additionalKindLabels[state.language]?.[device.kind] ?? tr("sensorKindOther");
     details.append(name, kind);
     const capability = document.createElement("div");
     capability.className = `device-capability ${device.measurementStatus === "measured" ? "is-measured" : "is-unavailable"}`;
@@ -240,6 +296,17 @@ function renderSensors() {
         return channel ? sensorLabel(channel) : name;
       }).join(", ") });
       capability.append(coverage);
+    }
+    const guideParts = device.measurementStatus === "measured" ? [] : [deviceMeasurementGuide(device)];
+    if (device.sharedPowerPathWith?.length) {
+      guideParts.push(tr("sensorSharedPowerPath", { devices: device.sharedPowerPathWith.join(", ") }));
+    }
+    const guideText = guideParts.filter(Boolean).join(" ");
+    if (guideText) {
+      const guide = document.createElement("span");
+      guide.className = "device-measurement-guide";
+      guide.textContent = guideText;
+      capability.append(guide);
     }
     row.append(details, capability);
     deviceList.append(row);

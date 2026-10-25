@@ -116,6 +116,7 @@ h1 { margin-bottom: 7px; color: #172823; font-size: clamp(25px, 2.6vw, 34px); fo
 .device-capability { display: grid; flex: 0 0 auto; gap: 3px; text-align: right; }
 .device-capability strong { color: #53735d; font-size: 7px; font-weight: 650; }
 .device-capability span { max-width: 180px; overflow: hidden; color: #8b9890; font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+.device-capability .device-measurement-guide { max-width: 240px; overflow: visible; color: #927e61; line-height: 1.45; text-overflow: clip; white-space: normal; }
 .device-capability.is-unavailable strong { color: #9a7954; }
 .metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-bottom: 15px; }
 .metric-card { position: relative; min-height: 152px; overflow: hidden; padding: 16px 18px 12px; background: var(--surface); border: 1px solid #e7ece9; border-radius: 10px; box-shadow: 0 2px 7px rgba(21,46,35,.018); }

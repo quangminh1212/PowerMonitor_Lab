@@ -218,6 +218,40 @@ function Add-InventoryClass($items, $className, $kind, $nameSelector) {
     }
 }
 
+function Add-PhysicalStorage($items) {
+    $disks = @()
+    try {
+        $disks = @(Get-PhysicalDisk -ErrorAction Stop | Where-Object {
+            [string]$_.BusType -notin @("Spaces", "File Backed Virtual")
+        })
+    } catch {
+        $disks = @()
+    }
+    if ($disks.Count -eq 0) {
+        try {
+            $disks = @(Get-CimInstance -ClassName Win32_DiskDrive -ErrorAction Stop | Where-Object {
+                [string]$_.Model -notmatch "(?i)storage space device|virtual disk|vhd"
+            })
+        } catch {
+            return
+        }
+    }
+    $index = 0
+    foreach ($disk in $disks) {
+        $name = [string]$disk.FriendlyName
+        if ([string]::IsNullOrWhiteSpace($name)) { $name = [string]$disk.Model }
+        if ([string]::IsNullOrWhiteSpace($name)) { $name = "Physical disk" }
+        $items.Add([pscustomobject]@{
+            id = "storage-$index"
+            kind = "storage"
+            name = $name.Trim()
+            busType = [string]$disk.BusType
+            capability = "inventory-only"
+        })
+        $index++
+    }
+}
+
 function Get-ComputerInventory {
     $items = [System.Collections.Generic.List[object]]::new()
     Add-InventoryClass $items "Win32_Processor" "processor" { param($item) $item.Name }
@@ -230,12 +264,15 @@ function Get-ComputerInventory {
     Add-InventoryClass $items "Win32_BaseBoard" "motherboard" { param($item) "$($item.Manufacturer) $($item.Product)" }
     Add-InventoryClass $items "Win32_Fan" "cooling" { param($item) $item.Name }
     Add-InventoryClass $items "Win32_PowerSupply" "power-supply" { param($item) $item.Name }
-    $pnpClassMap = @{ DiskDrive = "storage"; Keyboard = "keyboard"; Mouse = "mouse"; Monitor = "monitor" }
+    Add-PhysicalStorage $items
+    $pnpClassMap = @{ Keyboard = "keyboard"; Mouse = "mouse"; Monitor = "monitor"; Net = "network"; MEDIA = "audio" }
+    $seenPnpEndpoints = @{}
     try {
         foreach ($device in (Get-PnpDevice -PresentOnly -ErrorAction Stop)) {
             $deviceClass = [string]$device.Class
             $friendlyName = [string]$device.FriendlyName
             $kind = $pnpClassMap[$deviceClass]
+            if ($kind -eq "network" -and [string]$device.InstanceId -notmatch "(?i)^(PCI|USB)\\") { continue }
             if ($deviceClass -eq "USB") {
                 if ($friendlyName -match "(?i)root hub|\bhub\b") { $kind = "usb-hub" }
                 elseif ($friendlyName -match "(?i)controller") { $kind = "usb-controller" }
@@ -243,16 +280,30 @@ function Get-ComputerInventory {
             }
             if ($kind) {
                 if ([string]::IsNullOrWhiteSpace($friendlyName)) { $friendlyName = "$($device.Class) device" }
+                $containerId = $null
+                if ($kind -in @("keyboard", "mouse", "usb")) {
+                    try {
+                        $containerId = [string](Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName "DEVPKEY_Device_ContainerId" -ErrorAction Stop).Data
+                        if ($containerId -match "(?i)^\{?0{8}-0{4}-0{4}-0{4}-0{12}\}?$") { $containerId = $null }
+                    } catch {
+                        $containerId = $null
+                    }
+                }
+                if ($containerId) {
+                    $endpointKey = "$containerId|$kind|$($friendlyName.Trim())".ToLowerInvariant()
+                    if ($seenPnpEndpoints.ContainsKey($endpointKey)) { continue }
+                    $seenPnpEndpoints[$endpointKey] = $true
+                }
                 $items.Add([pscustomobject]@{
                     id = "$kind-$($items.Count)"
                     kind = $kind
                     name = $friendlyName.Trim()
+                    containerId = $containerId
                     capability = "inventory-only"
                 })
             }
         }
     } catch {
-        Add-InventoryClass $items "Win32_DiskDrive" "storage" { param($item) $item.Model }
         Add-InventoryClass $items "Win32_Keyboard" "keyboard" { param($item) $item.Name }
         Add-InventoryClass $items "Win32_PointingDevice" "mouse" { param($item) $item.Name }
         Add-InventoryClass $items "Win32_DesktopMonitor" "monitor" { param($item) $item.Name }
