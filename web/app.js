@@ -35,6 +35,182 @@ const translations = {
   }
 };
 
+Object.assign(translations.en, {
+  documentTitle: "Power Monitor · Computer power",
+  skipToContent: "Skip to content",
+  localApp: "LOCAL MONITOR",
+  mainNavigation: "Main navigation",
+  deviceNav: "Devices",
+  autoRefresh: "Auto-updating every 3 seconds",
+  sensorUpdatedAt: "Updated at {time} · automatic",
+  language: "Language",
+  chartAndEntry: "Chart and manual entry",
+  manualNav: "Manual entry",
+  technicalSources: "Sensor sources and details",
+  estimateDetails: "Estimate details · not measured",
+  measurementGuide: "How to measure",
+  deviceCount: "{count} detected devices",
+  loggedDataSummary: "Manual-entry summary",
+  measurementNotebook: "THIS COMPUTER",
+  title: "Computer power",
+  subtitle: "Automatically updated readings from the sensors available on this PC.",
+  sensorEyebrow: "LIVE SENSOR READINGS",
+  sensorHeading: "Power being measured",
+  sensorIntro: "Looking for power sensors on this computer.",
+  sensorLhmHint: "LibreHardwareMonitor can add any additional live power channels this PC exposes.",
+  sensorAvailableMessage: "Live readings are coming from sensors in this PC.",
+  sensorPartialMessage: "Some devices were found, but they do not expose live watt readings.",
+  sensorUnavailableMessage: "No supported live power sensor was found on this PC.",
+  sensorReadingsHeading: "Measured power",
+  sensorTotalBody: "Internal sensors cover only some components and can overlap. Use an AC outlet meter to measure power drawn by the whole PC.",
+  sensorInventoryHeading: "Detected devices",
+  sensorInventoryScope: "Scanned again every 15 seconds",
+  sensorMeasured: "Live sensor reading",
+  sensorNoLivePower: "No live watt reading",
+  sensorNeedsUsbMeter: "Needs a separate meter",
+  sensorNoReadings: "No live sensor readings are available.",
+  powerTrend: "READING HISTORY",
+  readingsOverTime: "Power readings over time",
+  chartEmptyTitle: "The chart appears after you add readings",
+  chartEmptyBody: "Add two readings to see a trend.",
+  loggedPower: "Logged readings",
+  wattsOverSelectedPeriod: "Watts · selected period",
+  manualEntry: "READ FROM AN EXTERNAL METER",
+  logReading: "Add a manual reading",
+  formIntro: "Enter a value from a real meter. Do not enter an estimate.",
+  meterOrDevice: "Meter or device",
+  powerReading: "Measured power",
+  noteOptional: "Note",
+  optional: "Optional",
+  saveReading: "Save reading",
+  savedLocally: "Saved on this PC · No account needed",
+  measurementHistory: "MANUAL READING HISTORY",
+  recentReadings: "Saved readings",
+  dateTime: "Date and time",
+  meter: "Meter",
+  power: "Power",
+  source: "Source",
+  note: "Note",
+  actions: "Actions",
+  historyEmptyTitle: "No readings in this period",
+  historyEmptyBody: "Enter a value from a meter to start your history.",
+  showingLatest: "Showing the newest readings in this period",
+  latestLoggedPower: "LATEST MANUAL READING",
+  estimatedEnergy: "ESTIMATED ENERGY",
+  loggedReadings: "READINGS SAVED",
+  entries: "readings",
+  metersConfigured: "{count} meters",
+  noReadings: "No readings yet",
+  needTwoReadings: "Add two readings close together to estimate energy",
+  footerRight: "Energy is estimated from manual readings; gaps over 30 minutes are excluded.",
+  footerLeft: "POWER MONITOR LAB · STORED LOCALLY",
+  localHost: "Running on this PC",
+  privateTitle: "Saved on this PC",
+  privateBody: "Your data stays on this computer.",
+  overview: "Live power",
+  readingLog: "History",
+  sensorTotalTitle: "Whole-PC input power is not measured",
+  meterPlaceholder: "e.g. outlet power meter",
+  notePlaceholder: "e.g. idle, monitor on",
+  clearHistory: "Clear history",
+  filterMeter: "Filter by meter",
+  timeRange: "Time range",
+  allMeters: "All meters",
+  last24Hours: "Last 24 hours",
+  last7Days: "Last 7 days",
+  last30Days: "Last 30 days",
+  exportCsv: "Export CSV",
+  decimalWattHint: "Use a period or comma for decimal values."
+});
+
+Object.assign(translations.vi, {
+  documentTitle: "Power Monitor · Công suất máy tính",
+  skipToContent: "Bỏ qua điều hướng",
+  localApp: "THEO DÕI CỤC BỘ",
+  mainNavigation: "Điều hướng chính",
+  deviceNav: "Thiết bị",
+  autoRefresh: "Tự cập nhật mỗi 3 giây",
+  sensorUpdatedAt: "Cập nhật lúc {time} · tự động",
+  language: "Ngôn ngữ",
+  chartAndEntry: "Biểu đồ và nhập số đo",
+  manualNav: "Ghi thủ công",
+  technicalSources: "Nguồn cảm biến và chi tiết",
+  estimateDetails: "Chi tiết ước tính · không phải số đo",
+  measurementGuide: "Cách đo",
+  deviceCount: "{count} thiết bị được nhận diện",
+  loggedDataSummary: "Tóm tắt số liệu nhập tay",
+  measurementNotebook: "MÁY TÍNH NÀY",
+  title: "Công suất máy tính",
+  subtitle: "Tự động cập nhật số đo từ các cảm biến có trên PC này.",
+  sensorEyebrow: "SỐ ĐO CẢM BIẾN",
+  sensorHeading: "Công suất đang đo",
+  sensorIntro: "Đang tìm cảm biến công suất trên máy tính này.",
+  sensorLhmHint: "LibreHardwareMonitor có thể bổ sung các kênh đo trực tiếp mà PC này hỗ trợ.",
+  sensorAvailableMessage: "Đang nhận số đo trực tiếp từ cảm biến của máy tính.",
+  sensorPartialMessage: "Đã nhận diện một số thiết bị, nhưng chúng không cung cấp số watt trực tiếp.",
+  sensorUnavailableMessage: "Chưa tìm thấy cảm biến công suất trực tiếp được hỗ trợ trên PC này.",
+  sensorReadingsHeading: "Công suất đo trực tiếp",
+  sensorTotalTitle: "Chưa đo được điện đầu vào của cả máy",
+  sensorTotalBody: "Cảm biến bên trong chỉ đo một số phần và có thể chồng lấp. Muốn biết PC lấy bao nhiêu điện từ ổ cắm, cần đồng hồ đo AC.",
+  sensorInventoryHeading: "Thiết bị được nhận diện",
+  sensorInventoryScope: "Tự quét lại mỗi 15 giây",
+  sensorMeasured: "Có số đo trực tiếp",
+  sensorNoLivePower: "Chưa có số đo watt",
+  sensorNeedsUsbMeter: "Cần đồng hồ đo riêng",
+  sensorNoReadings: "Chưa có số đo cảm biến trực tiếp.",
+  powerTrend: "LỊCH SỬ SỐ ĐO",
+  readingsOverTime: "Công suất theo thời gian",
+  chartEmptyTitle: "Biểu đồ sẽ hiện sau khi có số đo",
+  chartEmptyBody: "Ghi hai lần đo để xem xu hướng.",
+  loggedPower: "Số đã ghi",
+  wattsOverSelectedPeriod: "Watt · khoảng thời gian đã chọn",
+  manualEntry: "NHẬP TỪ ĐỒNG HỒ NGOÀI",
+  logReading: "Ghi số đo thủ công",
+  formIntro: "Chỉ nhập số đọc từ đồng hồ thật. Không nhập ước tính.",
+  meterOrDevice: "Đồng hồ hoặc thiết bị",
+  powerReading: "Công suất đọc được",
+  noteOptional: "Ghi chú",
+  optional: "Không bắt buộc",
+  saveReading: "Lưu số đo",
+  savedLocally: "Lưu trên PC này · Không cần tài khoản",
+  measurementHistory: "LỊCH SỬ NHẬP TAY",
+  recentReadings: "Các số đo đã ghi",
+  dateTime: "Thời gian",
+  meter: "Đồng hồ",
+  power: "Công suất",
+  source: "Nguồn",
+  note: "Ghi chú",
+  actions: "Thao tác",
+  historyEmptyTitle: "Chưa có số đo trong khoảng này",
+  historyEmptyBody: "Nhập số từ đồng hồ để bắt đầu lưu lịch sử.",
+  showingLatest: "Hiện các số đo mới nhất trong khoảng này",
+  latestLoggedPower: "SỐ GHI TAY GẦN NHẤT",
+  estimatedEnergy: "NĂNG LƯỢNG ƯỚC TÍNH",
+  loggedReadings: "SỐ LẦN ĐÃ GHI",
+  entries: "lần",
+  metersConfigured: "{count} đồng hồ",
+  noReadings: "Chưa có số đo",
+  needTwoReadings: "Ghi hai lần gần nhau để ước tính năng lượng",
+  footerRight: "Năng lượng được ước tính từ các số nhập tay; khoảng cách trên 30 phút được bỏ qua.",
+  footerLeft: "POWER MONITOR LAB · LƯU CỤC BỘ",
+  localHost: "Đang chạy trên máy này",
+  privateTitle: "Lưu trên máy này",
+  privateBody: "Dữ liệu chỉ được lưu cục bộ trên máy tính.",
+  overview: "Đang đo",
+  readingLog: "Lịch sử",
+  meterPlaceholder: "Ví dụ: đồng hồ ổ cắm",
+  notePlaceholder: "Ví dụ: máy nghỉ, màn hình bật",
+  clearHistory: "Xóa lịch sử",
+  filterMeter: "Lọc theo đồng hồ",
+  timeRange: "Khoảng thời gian",
+  allMeters: "Tất cả đồng hồ",
+  last24Hours: "24 giờ qua",
+  last7Days: "7 ngày qua",
+  last30Days: "30 ngày qua",
+  exportCsv: "Xuất CSV",
+  decimalWattHint: "Dùng dấu phẩy hoặc dấu chấm cho số thập phân."
+});
+
 const chartColors = ["#258b65", "#e39b44", "#7187b7", "#cf6f73", "#8768a8", "#3d9aa2"];
 const additionalKindLabels = {
   en: { network: "Network adapter", audio: "Audio device" },
@@ -54,6 +230,13 @@ const sensorReadingNotes = {
     powerLimit: "Giới hạn công suất GPU (mức trần, không phải mức đang dùng)",
     sharedDram: "Số đo miền bộ nhớ dùng chung, không phải watt riêng từng thanh RAM.",
     unusedPp1: "CPU dòng F này không có đồ họa tích hợp; PP1 không đo card NVIDIA."
+  }
+};
+const sensorMethodLabels = {
+  vi: {
+    "Average from the cumulative energy counter between samples": "Tính trung bình từ năng lượng tích lũy giữa hai lần lấy mẫu.",
+    "Last measured GPU board power draw": "Công suất bo mạch GPU ở lần đo gần nhất.",
+    "Latest hardware power sensor value (watts)": "Giá trị watt mới nhất từ cảm biến phần cứng."
   }
 };
 const deviceMeasurementGuides = {
@@ -92,7 +275,15 @@ const deviceMeasurementGuides = {
     powerSupply: "Đồng hồ ổ cắm đo điện AC cả PC; đo từng đường PSU cần bộ nguồn số có telemetry tương thích."
   }
 };
-const state = { language: "en", range: "24h", meter: "", readings: [], summary: null, meters: [], sensors: null, toastTimer: null };
+function getSavedLanguage() {
+  try {
+    const saved = localStorage.getItem("power-monitor-lab.language");
+    return saved === "en" || saved === "vi" ? saved : "vi";
+  } catch {
+    return "vi";
+  }
+}
+const state = { language: getSavedLanguage(), sensors: null };
 const $ = (selector) => document.querySelector(selector);
 
 function tr(key, values = {}) {
@@ -104,41 +295,18 @@ function tr(key, values = {}) {
 function applyLanguage() {
   document.documentElement.lang = state.language;
   document.querySelectorAll("[data-i18n]").forEach((element) => {
-    const key = element.dataset.i18n;
-    if (key === "footerLeft") {
-      element.replaceChildren(document.createTextNode(state.language === "vi" ? "POWER MONITOR LAB " : "POWER MONITOR LAB "));
-      const dot = document.createElement("span");
-      dot.className = "footer-dot";
-      dot.textContent = "·";
-      element.append(dot, document.createTextNode(state.language === "vi" ? " RIÊNG TƯ THEO THIẾT KẾ" : " PRIVATE BY DESIGN"));
-    } else {
-      element.textContent = tr(key);
-    }
+    element.textContent = tr(element.dataset.i18n);
   });
   document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => { element.placeholder = tr(element.dataset.i18nPlaceholder); });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    element.setAttribute("aria-label", tr(element.dataset.i18nAriaLabel));
+  });
   document.querySelectorAll("[data-language]").forEach((button) => {
     const active = button.dataset.language === state.language;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
-  const meterFilter = $("#meter-filter");
-  meterFilter.setAttribute("aria-label", tr("filterMeter"));
-  const rangeFilter = $("#range-filter");
-  rangeFilter.setAttribute("aria-label", tr("timeRange"));
-  renderMeters();
-  if (state.summary) renderSummary();
-  renderReadings();
-  drawChart();
   renderSensors();
-}
-
-function setToast(message, error = false) {
-  const toast = $("#toast");
-  toast.textContent = message;
-  toast.classList.toggle("error", error);
-  toast.classList.add("visible");
-  clearTimeout(state.toastTimer);
-  state.toastTimer = setTimeout(() => toast.classList.remove("visible"), 3200);
 }
 
 async function requestJson(path, options = {}) {
@@ -152,33 +320,6 @@ async function requestJson(path, options = {}) {
   return body;
 }
 
-function queryString() {
-  const query = new URLSearchParams({ range: state.range });
-  if (state.meter) query.set("meter", state.meter);
-  return query.toString();
-}
-
-async function refresh() {
-  try {
-    const query = queryString();
-    const [summary, readings, meters] = await Promise.all([
-      requestJson(`/api/summary?${query}`),
-      requestJson(`/api/readings?${query}`),
-      requestJson("/api/meters")
-    ]);
-    state.summary = summary;
-    state.readings = readings;
-    state.meters = meters;
-    renderMeters();
-    renderSummary();
-    renderReadings();
-    drawChart();
-    $("#refresh-caption").textContent = tr("refreshed", { time: formatTime(new Date()) });
-  } catch (error) {
-    setToast(error.message || tr("saveFailed"), true);
-  }
-}
-
 async function refreshSensors() {
   try {
     state.sensors = await requestJson("/api/sensors");
@@ -186,6 +327,13 @@ async function refreshSensors() {
   } catch {
     state.sensors = { status: "unavailable", providers: [], readings: [], devices: [], message: "" };
     renderSensors();
+  }
+  const caption = $("#refresh-caption");
+  if (caption) {
+    const sampledAt = Date.parse(state.sensors.sampledAtUtc ?? "");
+    caption.textContent = Number.isFinite(sampledAt)
+      ? tr("sensorUpdatedAt", { time: formatTime(new Date(sampledAt)) })
+      : tr("autoRefresh");
   }
 }
 
@@ -392,18 +540,16 @@ function renderSensors() {
     value.className = "sensor-value";
     value.textContent = Number.isFinite(reading.watts) ? `${formatPower(reading.watts)} W` : `— W · ${tr("sensorWaiting")}`;
 
-    const energy = document.createElement("div");
-    energy.className = "sensor-energy";
-    const formattedEnergy = formatEnergy(Number(reading.energyWhSinceStart) || 0);
-    energy.textContent = `${formattedEnergy.value} ${formattedEnergy.unit} · ${tr("sensorSessionEnergy")}`;
-
     const source = document.createElement("p");
     source.className = "sensor-provenance";
     source.textContent = `${tr("sensorSource")}: ${reading.source ?? tr("none")}`;
     const method = document.createElement("p");
     method.className = "sensor-provenance";
-    method.textContent = `${tr("sensorMethod")}: ${reading.method ?? tr("none")}`;
-    card.append(heading, value, energy, source, method);
+    const methodLabel = state.language === "vi"
+      ? sensorMethodLabels.vi[reading.method] ?? reading.method
+      : reading.method;
+    method.textContent = `${tr("sensorMethod")}: ${methodLabel ?? tr("none")}`;
+    card.append(heading, value, source, method);
     const notes = sensorReadingNotes[state.language] ?? sensorReadingNotes.en;
     if (Number.isFinite(reading.powerLimitWatts)) {
       const limit = document.createElement("p");
@@ -429,6 +575,8 @@ function renderSensors() {
   const deviceList = $("#hardware-device-list");
   deviceList.replaceChildren();
   const devices = Array.isArray(snapshot.devices) ? snapshot.devices : [];
+  const deviceCount = $("#hardware-device-count");
+  if (deviceCount) deviceCount.textContent = tr("deviceCount", { count: devices.length });
   if (devices.length === 0) {
     const empty = document.createElement("p");
     empty.className = "sensor-empty";
@@ -479,311 +627,45 @@ function renderSensors() {
     }
     const guideText = guideParts.filter(Boolean).join(" ");
     if (guideText) {
+      const guideDisclosure = document.createElement("details");
+      guideDisclosure.className = "device-guide-disclosure";
+      const guideSummary = document.createElement("summary");
+      guideSummary.textContent = tr("measurementGuide");
       const guide = document.createElement("span");
       guide.className = "device-measurement-guide";
       guide.textContent = guideText;
-      capability.append(guide);
+      guideDisclosure.append(guideSummary, guide);
+      capability.append(guideDisclosure);
     }
     const estimate = renderPowerEstimate(device, state.language);
-    if (estimate) capability.append(estimate);
+    if (estimate) {
+      const estimateDisclosure = document.createElement("details");
+      estimateDisclosure.className = "device-estimate-disclosure";
+      const estimateSummary = document.createElement("summary");
+      estimateSummary.textContent = tr("estimateDetails");
+      estimateDisclosure.append(estimateSummary, estimate);
+      capability.append(estimateDisclosure);
+    }
     row.append(details, capability);
     deviceList.append(row);
   }
-}
-
-function renderMeters() {
-  const select = $("#meter-filter");
-  const selected = state.meter;
-  select.replaceChildren(new Option(tr("allMeters"), ""));
-  const suggestions = $("#meter-suggestions");
-  suggestions.replaceChildren();
-  for (const meter of state.meters) {
-    select.add(new Option(meter, meter));
-    suggestions.append(new Option(meter, meter));
-  }
-  select.value = state.meters.includes(selected) ? selected : "";
-  if (select.value !== selected) state.meter = select.value;
 }
 
 function formatPower(value) {
   return new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", { maximumFractionDigits: 1 }).format(value);
 }
 
-function formatEnergy(value) {
-  if (value >= 1000) return { value: formatPower(value / 1000), unit: "kWh" };
-  return { value: formatPower(value), unit: "Wh" };
-}
-
 function formatTime(date) {
   return new Intl.DateTimeFormat(state.language === "vi" ? "vi-VN" : "en-US", { hour: "2-digit", minute: "2-digit" }).format(date);
 }
 
-function formatDateTime(value) {
-  const date = new Date(value);
-  return new Intl.DateTimeFormat(state.language === "vi" ? "vi-VN" : "en-US", {
-    year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit"
-  }).format(date);
-}
-
-function renderSummary() {
-  const summary = state.summary;
-  if (!summary) return;
-  const latest = summary.latestReading;
-  $("#latest-value").textContent = latest ? formatPower(latest.watts) : "—";
-  $("#latest-caption").textContent = latest ? tr("latestAt", { time: formatDateTime(latest.recordedAtUtc) }) : tr("noReadings");
-  const energy = formatEnergy(summary.wattHours);
-  $("#energy-value").textContent = summary.intervalsUsed > 0 ? energy.value : "—";
-  $("#energy-unit").textContent = summary.intervalsUsed > 0 ? energy.unit : "Wh";
-  if (summary.intervalsUsed > 0) {
-    const minutes = formatPower(summary.coveredMinutes);
-    $("#energy-caption").textContent = summary.gapsOmitted > 0
-      ? tr("energyDetail", { minutes, gaps: summary.gapsOmitted })
-      : tr("energyDetailNoGaps", { minutes });
-  } else {
-    $("#energy-caption").textContent = tr("noEnergy");
-  }
-  $("#reading-count").textContent = String(summary.readingsInRange);
-  $("#meter-count").textContent = tr("meterCount", { count: summary.meterCount });
-  $("#clear-history-button").hidden = summary.meterCount === 0;
-  $("#history-caption").textContent = tr("readingsCaption", { count: summary.readingsInRange });
-}
-
-function createCell(text, className = "") {
-  const cell = document.createElement("td");
-  cell.textContent = text || tr("none");
-  if (className) cell.className = className;
-  cell.title = text || "";
-  return cell;
-}
-
-function renderReadings() {
-  const body = $("#reading-rows");
-  body.replaceChildren();
-  const readings = state.readings.slice(0, 50);
-  $("#history-empty").hidden = readings.length > 0;
-  $("#showing-caption").textContent = tr("showingCount", { count: readings.length });
-  for (const reading of readings) {
-    const row = document.createElement("tr");
-    row.append(createCell(formatDateTime(reading.recordedAtUtc)));
-    row.append(createCell(reading.meterName, "meter-cell"));
-    row.append(createCell(`${formatPower(reading.watts)} W`, "power-cell"));
-    const source = document.createElement("td");
-    const pill = document.createElement("span");
-    pill.className = "source-pill";
-    pill.textContent = reading.source;
-    source.append(pill);
-    row.append(source);
-    row.append(createCell(reading.note));
-    const action = document.createElement("td");
-    const remove = document.createElement("button");
-    remove.type = "button";
-    remove.className = "delete-reading";
-    remove.textContent = "×";
-    remove.title = tr("deleteLabel");
-    remove.setAttribute("aria-label", `${tr("deleteLabel")}: ${reading.meterName}, ${formatPower(reading.watts)} W`);
-    remove.addEventListener("click", () => deleteReading(reading.id));
-    action.append(remove);
-    row.append(action);
-    body.append(row);
-  }
-}
-
-async function deleteReading(id) {
-  if (!window.confirm(tr("confirmDelete"))) return;
-  try {
-    await requestJson(`/api/readings/${id}`, { method: "DELETE" });
-    setToast(tr("deleted"));
-    await refresh();
-  } catch (error) {
-    setToast(error.message || tr("deleteFailed"), true);
-  }
-}
-
-async function clearHistory() {
-  if (!window.confirm(tr("confirmClear"))) return;
-  try {
-    await requestJson("/api/readings", { method: "DELETE" });
-    state.meter = "";
-    setToast(tr("historyCleared"));
-    await refresh();
-  } catch (error) {
-    setToast(error.message || tr("clearFailed"), true);
-  }
-}
-
-function drawChart() {
-  const canvas = $("#power-chart");
-  if (!canvas) return;
-  const rectangle = canvas.getBoundingClientRect();
-  if (rectangle.width < 10 || rectangle.height < 10) return;
-  const ratio = window.devicePixelRatio || 1;
-  canvas.width = Math.round(rectangle.width * ratio);
-  canvas.height = Math.round(rectangle.height * ratio);
-  const context = canvas.getContext("2d");
-  context.setTransform(ratio, 0, 0, ratio, 0, 0);
-  const width = rectangle.width;
-  const height = rectangle.height;
-  const left = 40;
-  const right = width - 9;
-  const top = 12;
-  const bottom = height - 26;
-  const now = Date.now();
-  const duration = state.range === "7d" ? 7 * 86_400_000 : state.range === "30d" ? 30 * 86_400_000 : 86_400_000;
-  const start = now - duration;
-  const values = state.readings.map((reading) => Number(reading.watts)).filter(Number.isFinite);
-  const maximum = Math.max(10, ...values);
-  const axisMaximum = Math.max(10, Math.ceil(maximum / (maximum > 500 ? 100 : maximum > 100 ? 25 : 10)) * (maximum > 500 ? 100 : maximum > 100 ? 25 : 10));
-
-  context.clearRect(0, 0, width, height);
-  context.font = "9px Segoe UI, sans-serif";
-  context.textAlign = "right";
-  context.textBaseline = "middle";
-  for (let index = 0; index <= 3; index++) {
-    const y = top + (bottom - top) * index / 3;
-    context.strokeStyle = "#edf1ee";
-    context.lineWidth = 1;
-    context.beginPath();
-    context.moveTo(left, y);
-    context.lineTo(right, y);
-    context.stroke();
-    context.fillStyle = "#9aa69f";
-    context.fillText(formatPower(axisMaximum * (1 - index / 3)), left - 8, y);
-  }
-
-  context.textAlign = "center";
-  context.textBaseline = "top";
-  for (let index = 0; index <= 3; index++) {
-    const x = left + (right - left) * index / 3;
-    const date = new Date(start + duration * index / 3);
-    const label = state.range === "24h"
-      ? formatTime(date)
-      : new Intl.DateTimeFormat(state.language === "vi" ? "vi-VN" : "en-US", { month: "short", day: "numeric" }).format(date);
-    context.fillStyle = "#9aa69f";
-    context.fillText(label, x, bottom + 8);
-  }
-
-  const groups = new Map();
-  for (const reading of state.readings) {
-    const time = new Date(reading.recordedAtUtc).getTime();
-    if (!Number.isFinite(time) || time < start || time > now) continue;
-    if (!groups.has(reading.meterName)) groups.set(reading.meterName, []);
-    groups.get(reading.meterName).push({ time, watts: reading.watts });
-  }
-  const legend = $("#chart-legend");
-  legend.replaceChildren();
-  let seriesIndex = 0;
-  for (const [name, samples] of groups) {
-    samples.sort((a, b) => a.time - b.time);
-    const color = chartColors[seriesIndex % chartColors.length];
-    const legendItem = document.createElement("span");
-    legendItem.className = "chart-legend-item";
-    legendItem.title = name;
-    const swatch = document.createElement("span");
-    swatch.className = "chart-legend-swatch";
-    swatch.classList.add(`series-${seriesIndex % chartColors.length}`);
-    legendItem.append(swatch, document.createTextNode(name));
-    legend.append(legendItem);
-
-    const segments = [];
-    let segment = [];
-    for (const sample of samples) {
-      if (segment.length > 0 && sample.time - segment[segment.length - 1].time > 30 * 60_000) {
-        segments.push(segment);
-        segment = [];
-      }
-      segment.push(sample);
-    }
-    if (segment.length > 0) segments.push(segment);
-
-    context.strokeStyle = color;
-    context.fillStyle = color;
-    context.lineWidth = 2;
-    context.lineJoin = "round";
-    context.lineCap = "round";
-    for (const samplesInSegment of segments) {
-      if (samplesInSegment.length > 1) {
-        context.beginPath();
-        samplesInSegment.forEach((sample, index) => {
-          const x = left + ((sample.time - start) / duration) * (right - left);
-          const y = bottom - Math.max(0, Math.min(axisMaximum, sample.watts)) / axisMaximum * (bottom - top);
-          if (index === 0) context.moveTo(x, y);
-          else context.lineTo(x, y);
-        });
-        context.stroke();
-      }
-      for (const sample of samplesInSegment) {
-        const x = left + ((sample.time - start) / duration) * (right - left);
-        const y = bottom - Math.max(0, Math.min(axisMaximum, sample.watts)) / axisMaximum * (bottom - top);
-        context.beginPath();
-        context.arc(x, y, 2.6, 0, Math.PI * 2);
-        context.fill();
-      }
-    }
-    seriesIndex++;
-  }
-
-  const empty = state.readings.length === 0;
-  $("#chart-empty").hidden = !empty;
-  if (empty) {
-    $("#chart-legend").replaceChildren();
-    canvas.setAttribute("aria-label", tr("chartEmptyBody"));
-  } else {
-    canvas.setAttribute("aria-label", tr("readingsOverTime"));
-  }
-}
-
-async function submitReading(event) {
-  event.preventDefault();
-  const meterName = $("#meter-name").value.trim();
-  const watts = Number($("#watts-input").value);
-  const note = $("#note-input").value.trim();
-  if (!meterName) { setToast(tr("enterMeter"), true); $("#meter-name").focus(); return; }
-  if (!Number.isFinite(watts) || watts < 0 || watts > 100000) { setToast(tr("invalidWatts"), true); $("#watts-input").focus(); return; }
-  try {
-    await requestJson("/api/readings", { method: "POST", body: JSON.stringify({ meterName, watts, note }) });
-    $("#watts-input").value = "";
-    $("#note-input").value = "";
-    setToast(tr("saved"));
-    await refresh();
-    $("#watts-input").focus();
-  } catch (error) {
-    setToast(error.message || tr("saveFailed"), true);
-  }
-}
-
-async function exportCsv() {
-  try {
-    const response = await fetch(`/api/export.csv?${queryString()}`);
-    if (!response.ok) throw new Error(tr("exportFailed"));
-    const csvText = await response.text();
-    if (csvText.trim().split(/\r?\n/).length <= 1) { setToast(tr("exportEmpty"), true); return; }
-    const content = new Blob([csvText], { type: "text/csv;charset=utf-8" });
-    const objectUrl = URL.createObjectURL(content);
-    const link = document.createElement("a");
-    link.href = objectUrl;
-    link.download = "power-monitor-readings.csv";
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-  } catch (error) {
-    setToast(error.message || tr("exportFailed"), true);
-  }
-}
-
-$("#reading-form").addEventListener("submit", submitReading);
-$("#meter-filter").addEventListener("change", (event) => { state.meter = event.target.value; refresh(); });
-$("#range-filter").addEventListener("change", (event) => { state.range = event.target.value; refresh(); });
-$("#export-button").addEventListener("click", exportCsv);
-$("#clear-history-button").addEventListener("click", clearHistory);
 document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => {
-  state.language = button.dataset.language;
+  state.language = button.dataset.language === "en" ? "en" : "vi";
+  try {
+    localStorage.setItem("power-monitor-lab.language", state.language);
+  } catch {}
   applyLanguage();
 }));
-window.addEventListener("resize", drawChart);
-if ("ResizeObserver" in window) new ResizeObserver(drawChart).observe($(".chart-wrap"));
 applyLanguage();
-refresh();
 refreshSensors();
-setInterval(refresh, 30000);
 setInterval(refreshSensors, 3000);

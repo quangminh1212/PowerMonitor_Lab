@@ -1,200 +1,93 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#f4f7f6">
-  <title>Power Monitor Lab</title>
+  <meta name="theme-color" content="#f3f6f4">
+  <meta name="description" content="Theo dõi tự động công suất các cảm biến có trên máy tính của bạn.">
+  <title data-i18n="documentTitle">Power Monitor · Công suất máy tính</title>
   <link rel="stylesheet" href="/app.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content" data-i18n="skipToContent">Bỏ qua điều hướng</a>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Primary">
-      <a class="brand" href="#overview" aria-label="Power Monitor Lab home">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="Power Monitor">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none"><path d="M17.4 2.8 7.2 17.1h7.1l-.7 12.1 11.2-16h-7.4l2.1-10.4Z" fill="currentColor"/></svg>
         </span>
-        <span class="brand-copy"><strong>Power Monitor</strong><small>LAB · LOCAL</small></span>
+        <span class="brand-copy"><strong>Power Monitor</strong><small data-i18n="localApp">THEO DÕI CỤC BỘ</small></span>
       </a>
-
-      <div class="nav-label" data-i18n="workspace">WORKSPACE</div>
-      <nav class="main-nav">
-        <a class="nav-link active" href="#overview" aria-current="page">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="4" rx="1.5"/><rect x="13.5" y="10.5" width="7" height="10" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/></svg>
-          <span data-i18n="overview">Overview</span>
-        </a>
-        <a class="nav-link" href="#readings">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14v15H5z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
-          <span data-i18n="readingLog">Reading log</span>
-        </a>
+      <nav class="main-nav" aria-label="Điều hướng chính" data-i18n-aria-label="mainNavigation">
+        <a href="#overview" data-i18n="overview">Đang đo</a>
+        <a href="#hardware-inventory" data-i18n="deviceNav">Thiết bị</a>
       </nav>
-
-      <div class="sidebar-bottom">
-        <div class="privacy-card">
-          <span class="privacy-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.7c0 4.2-2.9 7.5-7 9.1-4.1-1.6-7-4.9-7-9.1V6l7-2.5Z"/><path d="m9 12 2 2 4-4"/></svg>
-          </span>
-          <strong data-i18n="privateTitle">Your data stays here</strong>
-          <p data-i18n="privateBody">Saved on this PC. Nothing is sent to a cloud service.</p>
+      <div class="topbar-actions">
+        <div class="language-toggle" role="group" aria-label="Ngôn ngữ" data-i18n-aria-label="language">
+          <button type="button" class="language-button" data-language="vi" aria-pressed="true">VI</button>
+          <button type="button" class="language-button" data-language="en" aria-pressed="false">EN</button>
         </div>
-        <div class="sidebar-meta"><span class="status-dot"></span><span data-i18n="localHost">Local host active</span></div>
-        <div class="sidebar-version">POWER MONITOR LAB <span>·</span> 1.0</div>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span><span data-i18n="localHost">Đang chạy trên máy này</span></span>
       </div>
-    </aside>
+    </header>
 
-    <main class="main-content" id="overview">
-      <header class="topbar">
-        <div class="breadcrumb"><span data-i18n="workspaceShort">Workspace</span><span class="crumb-slash">/</span><strong data-i18n="overview">Overview</strong></div>
-        <div class="topbar-actions">
-          <div class="language-toggle" role="group" aria-label="Language">
-            <button type="button" class="language-button active" data-language="en" aria-pressed="true">EN</button>
-            <button type="button" class="language-button" data-language="vi" aria-pressed="false">VI</button>
-          </div>
-          <span class="topbar-divider" aria-hidden="true"></span>
-          <span class="local-badge"><span class="status-dot"></span><span data-i18n="onThisDevice">On this device</span></span>
-        </div>
-      </header>
-
-      <section class="page-content">
-        <div class="page-heading">
+    <main class="main-content" id="main-content">
+      <div class="page-content" id="overview">
+        <section class="page-heading" aria-labelledby="page-title">
           <div>
-            <p class="eyebrow" data-i18n="measurementNotebook">MEASUREMENT NOTEBOOK</p>
-            <h1 data-i18n="title">Power, with context.</h1>
-            <p class="page-subtitle" data-i18n="subtitle">A local notebook for power readings and energy estimates.</p>
+            <p class="eyebrow" data-i18n="measurementNotebook">MÁY TÍNH NÀY</p>
+            <h1 id="page-title" data-i18n="title">Công suất máy tính</h1>
+            <p class="page-subtitle" data-i18n="subtitle">Tự động cập nhật số đo từ cảm biến của PC này.</p>
           </div>
-          <div class="heading-controls">
-            <label class="select-wrap" for="meter-filter">
-              <span class="sr-only" data-i18n="filterMeter">Filter by meter</span>
-              <select id="meter-filter" aria-label="Filter by meter">
-                <option value="" data-i18n="allMeters">All meters</option>
-              </select>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 5 4.5-5"/></svg>
-            </label>
-            <label class="select-wrap range-select" for="range-filter">
-              <span class="sr-only" data-i18n="timeRange">Time range</span>
-              <select id="range-filter" aria-label="Time range">
-                <option value="24h" data-i18n="last24Hours">Last 24 hours</option>
-                <option value="7d" data-i18n="last7Days">Last 7 days</option>
-                <option value="30d" data-i18n="last30Days">Last 30 days</option>
-              </select>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5.5 7.5 4.5 5 4.5-5"/></svg>
-            </label>
-            <button type="button" id="export-button" class="button button-secondary">
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3.5v9m0 0 3.5-3.5M10 12.5 6.5 9M4 13.5v3h12v-3"/></svg>
-              <span data-i18n="exportCsv">Export CSV</span>
-            </button>
-          </div>
-        </div>
-
-        <section class="notice" role="status" aria-live="polite">
-          <span class="notice-symbol" aria-hidden="true">i</span>
-          <p><strong data-i18n="sensorNoticeTitle">Automatic hardware readings are available.</strong> <span data-i18n="sensorNoticeBody">The app shows only watts exposed by this PC's sensors. Manual meter entries stay separate.</span></p>
-          <span class="notice-tag" data-i18n="sensorNoticeTag">LIVE SENSORS</span>
+          <p class="refresh-caption" id="refresh-caption" data-i18n="autoRefresh">Tự cập nhật mỗi 3 giây</p>
         </section>
 
         <section class="panel sensor-panel" aria-labelledby="sensor-heading">
           <div class="panel-heading sensor-heading">
-            <div><p class="eyebrow" data-i18n="sensorEyebrow">AUTOMATIC HARDWARE DISCOVERY</p><h2 id="sensor-heading" data-i18n="sensorHeading">Live sensors and detected devices</h2></div>
-            <span id="sensor-status" class="sensor-status" data-state="starting" data-i18n="sensorStatusStarting">Discovering</span>
+            <div>
+              <p class="eyebrow" data-i18n="sensorEyebrow">SỐ ĐO CẢM BIẾN</p>
+              <h2 id="sensor-heading" data-i18n="sensorHeading">Công suất đang đo</h2>
+            </div>
+            <span id="sensor-status" class="sensor-status" data-state="starting" data-i18n="sensorStatusStarting">Đang dò</span>
           </div>
-          <p id="sensor-description" class="sensor-description" data-i18n="sensorIntro">Looking for power readings exposed by this computer.</p>
-          <p class="sensor-integration-hint" data-i18n="sensorLhmHint">Optional: run LibreHardwareMonitor and enable its Remote Web Server on port 8085 to add any additional live power channels it exposes.</p>
-          <div id="sensor-provider-list" class="sensor-provider-list" aria-live="polite" aria-label="Hardware sensor providers"></div>
-          <h3 class="sensor-subheading" data-i18n="sensorReadingsHeading">Current measured power</h3>
-          <div id="sensor-reading-grid" class="sensor-reading-grid" aria-live="polite"></div>
-          <div class="sensor-total-note"><strong data-i18n="sensorTotalTitle">Whole PC total</strong><span data-i18n="sensorTotalBody">Sensor channels can overlap, so they are shown separately. A wall outlet power meter is required to measure the full PC input.</span></div>
-          <div class="hardware-inventory">
-            <div class="inventory-heading"><h3 data-i18n="sensorInventoryHeading">Detected computer devices</h3><span data-i18n="sensorInventoryScope">This PC only</span></div>
-            <p id="sensor-estimate-note" class="sensor-estimate-note"></p>
-            <div id="hardware-device-list" class="hardware-device-list"></div>
-          </div>
+          <p id="sensor-description" class="sensor-description" data-i18n="sensorIntro">Đang tìm cảm biến công suất trên máy tính này.</p>
+          <div id="sensor-reading-grid" class="sensor-reading-grid"></div>
+
+          <aside class="sensor-total-note" role="note">
+            <span class="total-note-icon" aria-hidden="true">i</span>
+            <div>
+              <strong data-i18n="sensorTotalTitle">Chưa đo được điện đầu vào của cả máy</strong>
+              <p data-i18n="sensorTotalBody">Cảm biến bên trong chỉ đo một số phần và có thể chồng lấp. Muốn biết PC lấy bao nhiêu điện từ ổ cắm, cần đồng hồ đo AC.</p>
+            </div>
+          </aside>
+
+          <details class="inventory-disclosure" id="hardware-inventory">
+            <summary>
+              <span data-i18n="sensorInventoryHeading">Thiết bị được nhận diện</span>
+              <span id="hardware-device-count" class="disclosure-meta">Đang tải</span>
+            </summary>
+            <div class="inventory-body">
+              <p class="inventory-scope" data-i18n="sensorInventoryScope">Tự quét lại mỗi 15 giây</p>
+              <p id="sensor-estimate-note" class="sensor-estimate-note"></p>
+              <div id="hardware-device-list" class="hardware-device-list"></div>
+            </div>
+          </details>
+
+          <details class="technical-disclosure">
+            <summary data-i18n="technicalSources">Nguồn cảm biến và cách đọc</summary>
+            <div id="sensor-provider-list" class="sensor-provider-list"></div>
+            <p class="sensor-integration-hint" data-i18n="sensorLhmHint">Có thể bật LibreHardwareMonitor để bổ sung kênh đo mà máy hỗ trợ.</p>
+          </details>
         </section>
 
-        <section class="metrics-grid" aria-label="Power summary">
-          <article class="metric-card metric-primary">
-            <div class="metric-topline"><span class="metric-label" data-i18n="latestLoggedPower">LATEST LOGGED POWER</span><span class="metric-icon bolt-icon" aria-hidden="true">ϟ</span></div>
-            <div class="metric-value-row"><strong id="latest-value" class="metric-value">—</strong><span class="metric-unit">W</span></div>
-            <p id="latest-caption" class="metric-caption" data-i18n="noReadings">No readings yet</p>
-            <div class="metric-bottom"><span class="metric-footnote" data-i18n="manualEntry">MANUALLY RECORDED</span><span class="metric-arrow" aria-hidden="true">↗</span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-topline"><span class="metric-label" data-i18n="estimatedEnergy">ESTIMATED ENERGY</span><span class="metric-icon energy-icon" aria-hidden="true">◉</span></div>
-            <div class="metric-value-row"><strong id="energy-value" class="metric-value">—</strong><span id="energy-unit" class="metric-unit">Wh</span></div>
-            <p id="energy-caption" class="metric-caption" data-i18n="needTwoReadings">Add two close readings to calculate energy</p>
-            <div class="metric-bottom"><span class="metric-footnote" data-i18n="calculatedFromReadings">CALCULATED FROM READINGS</span><span class="metric-arrow" aria-hidden="true">⌁</span></div>
-          </article>
-          <article class="metric-card">
-            <div class="metric-topline"><span class="metric-label" data-i18n="loggedReadings">LOGGED READINGS</span><span class="metric-icon samples-icon" aria-hidden="true">▤</span></div>
-            <div class="metric-value-row"><strong id="reading-count" class="metric-value">0</strong><span class="metric-unit" data-i18n="entries">entries</span></div>
-            <p id="meter-count" class="metric-caption" data-i18n="metersConfigured">0 meters tracked</p>
-            <div class="metric-bottom"><span class="metric-footnote" data-i18n="savedOnDevice">SAVED ON THIS DEVICE</span><span class="metric-arrow" aria-hidden="true">⌂</span></div>
-          </article>
-        </section>
-
-        <section class="content-grid">
-          <article class="panel chart-panel">
-            <div class="panel-heading">
-              <div><p class="eyebrow" data-i18n="powerTrend">POWER TREND</p><h2 data-i18n="readingsOverTime">Readings over time</h2></div>
-              <div id="chart-legend" class="chart-legend" aria-label="Meters"></div>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="power-chart" role="img" aria-label="Power readings over time"></canvas>
-              <div id="chart-empty" class="chart-empty" hidden>
-                <span class="empty-icon" aria-hidden="true">⌁</span>
-                <strong data-i18n="chartEmptyTitle">Your trend starts with a reading</strong>
-                <span data-i18n="chartEmptyBody">Record two readings to see a power trend.</span>
-              </div>
-            </div>
-            <div class="chart-footer"><span><span class="legend-dot" aria-hidden="true"></span><span data-i18n="loggedPower">Logged power</span></span><span data-i18n="wattsOverSelectedPeriod">Watts · selected period</span></div>
-          </article>
-
-          <article class="panel record-panel">
-            <div class="panel-heading record-heading">
-              <div><p class="eyebrow" data-i18n="addToNotebook">ADD TO NOTEBOOK</p><h2 data-i18n="logReading">Log a reading</h2></div>
-              <span class="record-icon" aria-hidden="true">＋</span>
-            </div>
-            <p class="form-intro" data-i18n="formIntro">Enter a value shown by your external power meter.</p>
-            <form id="reading-form" novalidate>
-              <label class="field-label" for="meter-name" data-i18n="meterOrDevice">Meter or device</label>
-              <input id="meter-name" name="meterName" list="meter-suggestions" maxlength="100" autocomplete="off" required placeholder="e.g. Desk plug meter" data-i18n-placeholder="meterPlaceholder">
-              <datalist id="meter-suggestions"></datalist>
-
-              <label class="field-label field-label-spaced" for="watts-input"><span data-i18n="powerReading">Power reading</span><span class="field-unit">W</span></label>
-              <div class="number-input-wrap"><input id="watts-input" name="watts" type="number" min="0" max="100000" step="any" inputmode="decimal" required placeholder="0.0"><span class="number-unit">WATTS</span></div>
-
-              <label class="field-label field-label-spaced" for="note-input"><span data-i18n="noteOptional">Note</span><span class="optional-label" data-i18n="optional">OPTIONAL</span></label>
-              <input id="note-input" name="note" maxlength="250" placeholder="e.g. Idle, display on" data-i18n-placeholder="notePlaceholder">
-              <button type="submit" class="button button-primary submit-button"><span data-i18n="saveReading">Save reading</span><span aria-hidden="true">→</span></button>
-              <p class="form-footnote"><span class="form-lock" aria-hidden="true">⌑</span><span data-i18n="savedLocally">Saved locally · No account needed</span></p>
-            </form>
-          </article>
-        </section>
-
-        <section class="panel history-panel" id="readings">
-          <div class="panel-heading history-heading">
-            <div><p class="eyebrow" data-i18n="measurementHistory">MEASUREMENT HISTORY</p><h2 data-i18n="recentReadings">Recent readings</h2></div>
-            <div class="history-actions"><button type="button" id="clear-history-button" class="clear-history-button" data-i18n="clearHistory" hidden>Clear history</button><span id="history-caption" class="history-caption" data-i18n="mostRecentFirst">Most recent first</span></div>
-          </div>
-          <div class="table-scroll">
-            <table>
-              <thead><tr><th scope="col" data-i18n="dateTime">DATE &amp; TIME</th><th scope="col" data-i18n="meter">METER</th><th scope="col" data-i18n="power">POWER</th><th scope="col" data-i18n="source">SOURCE</th><th scope="col" data-i18n="note">NOTE</th><th scope="col"><span class="sr-only" data-i18n="actions">Actions</span></th></tr></thead>
-              <tbody id="reading-rows"></tbody>
-            </table>
-            <div id="history-empty" class="history-empty" hidden>
-              <span class="empty-icon" aria-hidden="true">▤</span>
-              <strong data-i18n="historyEmptyTitle">No readings in this period</strong>
-              <span data-i18n="historyEmptyBody">Add a reading from your meter to start your local history.</span>
-            </div>
-          </div>
-          <div class="history-footer"><span id="showing-caption" data-i18n="showingLatest">Showing the latest readings in this period</span><span id="refresh-caption" class="refresh-caption"></span></div>
-        </section>
-
-        <footer class="page-footer"><span data-i18n="footerLeft">POWER MONITOR LAB <span class="footer-dot">·</span> PRIVATE BY DESIGN</span><span data-i18n="footerRight">Energy is estimated from logged power readings. Long gaps are excluded.</span></footer>
-      </section>
+        <footer class="page-footer">
+          <span data-i18n="footerLeft">POWER MONITOR LAB · LƯU CỤC BỘ</span>
+          <span data-i18n="privateBody">Dữ liệu chỉ được lưu cục bộ trên máy tính.</span>
+        </footer>
+      </div>
     </main>
   </div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
