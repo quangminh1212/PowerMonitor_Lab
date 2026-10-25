@@ -43,6 +43,11 @@ const translations = {
     pcTotalSelectDescription: "This meter reports several power channels. Select the exact channel feeding only this PC before showing its total.",
     pcTotalUnsupportedDescription: "Whole-PC meter integration currently runs on Windows. Component sensors available on this PC remain listed below.",
     pcTotalEnergy: "Energy this session: {energy} Wh",
+    componentSubtotalEyebrow: "MEASURED SUBTOTAL",
+    componentSubtotalHeading: "CPU + graphics card",
+    componentSubtotalDescription: "Adds only the directly measured CPU package and NVIDIA GPU channels. This is not the whole PC's power at the outlet.",
+    componentSubtotalMissing: "Waiting for supported CPU or GPU sensors",
+    componentSubtotalChannels: "{count} live sensor channels · updates automatically",
     pcTotalMeterEnergyTotal: "Meter counter: {energy} kWh",
     meterDiscoverySearching: "Searching this local network for a Shelly power meter…",
     meterDiscoveryNotFound: "No meter found yet. CPU, graphics, and memory readings still update automatically. Whole-PC input needs a compatible outlet meter dedicated to the computer.",
@@ -174,6 +179,11 @@ const translations = {
     pcTotalSelectDescription: "Đồng hồ đang báo nhiều kênh công suất. Hãy chọn đúng kênh chỉ cấp cho PC trước khi hiện tổng.",
     pcTotalUnsupportedDescription: "Tích hợp đồng hồ đo cả PC hiện chạy trên Windows. Các cảm biến linh kiện của máy vẫn hiển thị bên dưới.",
     pcTotalEnergy: "Điện năng phiên này: {energy} Wh",
+    componentSubtotalEyebrow: "PHẦN ĐO TRỰC TIẾP",
+    componentSubtotalHeading: "CPU + card đồ họa",
+    componentSubtotalDescription: "Chỉ tính watt đo trực tiếp từ CPU và card NVIDIA; đây chưa phải tổng điện cả máy.",
+    componentSubtotalMissing: "Đang chờ cảm biến CPU hoặc GPU được hỗ trợ",
+    componentSubtotalChannels: "{count} kênh cảm biến · tự cập nhật",
     pcTotalMeterEnergyTotal: "Bộ đếm đồng hồ: {energy} kWh",
     meterDiscoverySearching: "Đang tự tìm đồng hồ Shelly trong mạng nội bộ…",
     meterDiscoveryNotFound: "Chưa tìm thấy đồng hồ. CPU, đồ họa và RAM vẫn tự cập nhật. Muốn đo điện tổng của cả PC cần đồng hồ ổ cắm tương thích, chỉ cấp điện cho máy tính.",
@@ -616,6 +626,27 @@ function renderPcTotal(snapshot) {
   detailElement.hidden = detailParts.length === 0;
 }
 
+function renderMeasuredSubtotal(snapshot) {
+  const valueElement = $("#component-subtotal-value");
+  const stateElement = $("#component-subtotal-state");
+  const cardElement = document.querySelector(".component-subtotal-card");
+  if (!valueElement || !stateElement || !cardElement) return;
+
+  const watts = Number.isFinite(snapshot.measuredSubtotalWatts) && snapshot.measuredSubtotalWatts >= 0
+    ? snapshot.measuredSubtotalWatts
+    : null;
+  const channelCount = Number.isSafeInteger(snapshot.measuredSubtotalChannelCount) && snapshot.measuredSubtotalChannelCount > 0
+    ? snapshot.measuredSubtotalChannelCount
+    : 0;
+
+  cardElement.dataset.state = watts === null ? "missing" : "measured";
+  valueElement.dataset.state = watts === null ? "unavailable" : "measured";
+  valueElement.textContent = watts === null ? "— W" : `${formatPower(watts)} W`;
+  stateElement.textContent = channelCount > 0
+    ? tr("componentSubtotalChannels", { count: channelCount })
+    : tr("componentSubtotalMissing");
+}
+
 function renderMeterDiscovery(snapshot) {
   const discovery = snapshot.meterDiscovery ?? { state: "not-found", devices: [] };
   const unsupported = snapshot.status === "unsupported";
@@ -847,6 +878,7 @@ function renderSensors() {
   status.dataset.state = snapshot.status;
   status.textContent = tr(statusKey);
   renderPcTotal(snapshot);
+  renderMeasuredSubtotal(snapshot);
   renderMeterDiscovery(snapshot);
   const estimateNote = $("#sensor-estimate-note");
   if (estimateNote) estimateNote.textContent = (powerEstimateLabels[state.language] ?? powerEstimateLabels.en).disclosure;

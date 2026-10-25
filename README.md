@@ -65,6 +65,8 @@ Discovery sends only a local mDNS service query; it does not scan IP ranges or c
 
 The sensor API attaches a `powerEstimate` object to each detected device without changing the `readings` array. The UI renders estimates in a separate column and labels their type and confidence. They are not persisted, graphed, integrated into watt-hours, or summed into a whole-PC figure.
 
+The API also exposes `measuredSubtotalWatts` and `measuredSubtotalChannelCount`, which sum only the live CPU package and discrete NVIDIA GPU channels selected by the component energy tracker. This is a partial component subtotal; `totalPowerWatts` stays `null` until a dedicated PC outlet meter measures AC input.
+
 - The two DIMM estimates allocate the measured shared DRAM channel by installed capacity. They do not represent per-DIMM telemetry.
 - The Kingston A400 range uses the published idle/read/write figures. When Windows exposes physical-disk byte rates, a linear throughput model estimates a point within that specification range. This is a low-confidence model, not a watt sensor.
 - The Hikvision/HIKSEMI E100 shows the manufacturer's maximum-power envelope only because no idle value for this unit was verified.
@@ -146,6 +148,8 @@ Danh sách thiết bị Windows được dò lại mỗi 15 giây để nhận t
 ### Ước tính công suất theo thiết bị
 
 API `/api/sensors` bổ sung trường `powerEstimate` riêng trên từng thiết bị. Trường này không thay đổi danh sách `readings`, không được lưu vào lịch sử, biểu đồ, Wh hay tổng PC. Màn hình gắn nhãn rõ số đo, phân bổ cảm biến dùng chung, mô hình, khoảng tham khảo, giới hạn tài liệu hoặc chưa đủ căn cứ.
+
+API cũng trả `measuredSubtotalWatts` và `measuredSubtotalChannelCount`, chỉ cộng các kênh CPU package và GPU NVIDIA rời đang đo trực tiếp. Đây là tổng phụ của một số linh kiện; `totalPowerWatts` vẫn là `null` cho đến khi đồng hồ AC riêng của PC đo điện đầu vào.
 
 - Hai thanh RAM được phân bổ số đo DRAM dùng chung theo dung lượng. Đây không phải số đo từng DIMM và không được cộng lại với kênh DRAM gốc.
 - Kingston A400 dùng thông số nhà sản xuất; khi Windows có bộ đếm I/O ổ đĩa, ứng dụng nội suy một mô hình công suất hoạt động có độ tin cậy thấp. HIKSEMI E100 chỉ hiển thị giới hạn tối đa 2,9 W vì chưa có thông số nhàn rỗi phù hợp.
