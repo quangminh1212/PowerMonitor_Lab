@@ -1,216 +1,155 @@
 const translations = {
   en: {
+    documentTitle: "Power Monitor · Computer power",
+    skipToContent: "Skip to content",
+    localApp: "LOCAL MONITOR",
+    mainNavigation: "Main navigation",
+    deviceNav: "Devices",
+    overview: "Live readings",
+    language: "Language",
+    localHost: "Running on this PC",
+    privateBody: "Data stays on this computer.",
+    footerLeft: "POWER MONITOR LAB · LOCAL ONLY",
+    autoRefresh: "Auto-updating every 3 seconds",
+    sensorUpdatedAt: "Auto-refresh every 3 seconds · {time}",
+    measurementNotebook: "THIS COMPUTER",
+    title: "Computer power",
+    subtitle: "Automatically updated readings from the sensors available on this PC.",
+    sensorEyebrow: "LIVE SENSOR READINGS",
+    sensorHeading: "Power being measured",
+    sensorIntro: "Looking for power sensors on this computer.",
+    sensorStatusStarting: "Discovering",
+    sensorStatusAvailable: "Measuring",
+    sensorStatusPartial: "Partial",
+    sensorStatusUnavailable: "No live readings",
+    sensorStatusUnsupported: "Windows only",
+    sensorAvailableMessage: "Live readings are coming from sensors in this PC.",
+    sensorPartialMessage: "Some devices were found, but they do not expose live watt readings.",
+    sensorUnavailableMessage: "No supported live power sensor was found on this PC.",
+    sensorUnsupportedMessage: "Automatic hardware readings are currently supported on Windows.",
+    sensorProviderConnected: "connected",
+    sensorProviderUnavailable: "not connected",
+    sensorReadingsHeading: "Measured power",
+    sensorWaiting: "Waiting for the next sensor sample",
+    sensorSource: "Source",
+    sensorMethod: "Measurement",
+    sensorMeasuredEnergy: "Measured energy since app start",
+    sensorEstimatedEnergy: "Estimated energy since app start",
+    sensorLabelPackage: "CPU package",
+    sensorLabelCores: "CPU cores",
+    sensorLabelDram: "Memory domain (DRAM)",
+    sensorLabelGraphicsDomain: "Graphics domain (PP1)",
+    sensorLabelGpu: "Graphics card",
+    sensorLabelOther: "Energy channel",
+    sensorKindProcessor: "Processor",
+    sensorKindGraphics: "Graphics",
+    sensorKindMemory: "Memory",
+    sensorKindStorage: "Storage",
+    sensorKindKeyboard: "Keyboard",
+    sensorKindMouse: "Mouse / pointing device",
+    sensorKindMonitor: "Monitor",
+    sensorKindUsb: "USB device",
+    sensorKindUsbHub: "USB hub",
+    sensorKindUsbController: "USB controller",
+    sensorKindBattery: "Battery",
+    sensorKindMotherboard: "Motherboard",
+    sensorKindCooling: "Fans / cooling",
+    sensorKindPowerSupply: "Power supply",
+    sensorKindOther: "Device",
+    sensorTotalTitle: "Whole-PC input power is not measured",
+    sensorTotalBody: "Internal sensors cover only some components and can overlap. Use an AC outlet meter to measure power drawn by the whole PC.",
+    sensorInventoryHeading: "Detected devices",
+    sensorInventoryScope: "Scanned again every 15 seconds",
+    deviceCount: "{count} detected devices",
+    sensorMeasured: "Live sensor reading",
+    sensorNoLivePower: "No live watt reading",
+    sensorNeedsUsbMeter: "Needs a separate meter",
+    sensorCoverage: "Sensor channels: {channels}",
+    sensorNoDevices: "Windows returned no hardware devices.",
+    sensorNoReadings: "No live sensor readings are available.",
     sensorSharedPowerPath: "Same Windows USB device group as: {devices}; measure its branch once.",
-    workspace: "WORKSPACE", workspaceShort: "Workspace", overview: "Overview", readingLog: "Reading log",
-    privateTitle: "Your data stays here", privateBody: "Saved on this PC. Nothing is sent to a cloud service.", localHost: "Local host active", onThisDevice: "On this device",
-    measurementNotebook: "MEASUREMENT NOTEBOOK", title: "Power, with context.", subtitle: "A local notebook for power readings and energy estimates.",
-    filterMeter: "Filter by meter", allMeters: "All meters", timeRange: "Time range", last24Hours: "Last 24 hours", last7Days: "Last 7 days", last30Days: "Last 30 days", exportCsv: "Export CSV",
-    manualOnlyTitle: "Manual readings only.", manualOnlyBody: "This MVP has no automatic sensor integration. Enter readings from an external meter; the app does not invent live watt values.", honestData: "HONEST DATA",
-    sensorNoticeTitle: "Automatic hardware discovery is enabled.", sensorNoticeBody: "Live readings appear only when local sensors provide real watts. Manual meter entries stay separate.", sensorNoticeTag: "HARDWARE STATUS",
-    sensorEyebrow: "AUTOMATIC HARDWARE DISCOVERY", sensorHeading: "Live sensors and detected devices", sensorStatusStarting: "Discovering", sensorStatusAvailable: "Live readings", sensorStatusPartial: "Partial", sensorStatusUnavailable: "Unavailable", sensorStatusUnsupported: "Windows only",
-    sensorIntro: "Looking for power readings exposed by this computer.", sensorLhmHint: "Optional: run LibreHardwareMonitor and enable its Remote Web Server on port 8085 to add any extra live power channels it exposes.", sensorProviderConnected: "connected", sensorProviderUnavailable: "not connected", sensorAvailableMessage: "Live readings are available for the hardware channels exposed by this PC.", sensorPartialMessage: "Devices were detected, but Windows did not expose a live watt sensor for them.", sensorUnavailableMessage: "No supported live hardware power sensors were found on this PC.", sensorUnsupportedMessage: "Automatic hardware readings are currently supported on Windows.", sensorReadingsHeading: "Current measured power", sensorWaiting: "Waiting for the next sensor sample", sensorSource: "Source", sensorMethod: "Measurement", sensorSessionEnergy: "Energy observed since the app started", sensorTotalTitle: "Whole PC total", sensorTotalBody: "Sensor channels may overlap, so each is shown separately. A wall outlet power meter is needed to measure the full PC input.", sensorInventoryHeading: "Detected computer devices", sensorInventoryScope: "This PC · rescans every 15 sec", sensorMeasured: "Live watts available", sensorNoLivePower: "No live watt sensor", sensorNeedsUsbMeter: "Requires an inline USB meter", sensorCoverage: "Sensor channels: {channels}", sensorNoDevices: "No devices were returned by Windows hardware inventory.", sensorNoReadings: "No live sensor readings are available yet.", sensorLabelPackage: "CPU package", sensorLabelCores: "CPU cores", sensorLabelDram: "Memory domain (DRAM)", sensorLabelGraphicsDomain: "Graphics domain (PP1)", sensorLabelGpu: "Graphics card", sensorLabelOther: "Energy channel", sensorKindProcessor: "Processor", sensorKindGraphics: "Graphics", sensorKindMemory: "Memory", sensorKindStorage: "Storage", sensorKindKeyboard: "Keyboard", sensorKindMouse: "Mouse / pointing device", sensorKindMonitor: "Monitor", sensorKindUsb: "USB device", sensorKindUsbHub: "USB hub", sensorKindUsbController: "USB controller", sensorKindBattery: "Battery", sensorKindMotherboard: "Motherboard", sensorKindCooling: "Fans / cooling", sensorKindPowerSupply: "Power supply", sensorKindOther: "Device",
-    latestLoggedPower: "LATEST LOGGED POWER", noReadings: "No readings yet", manualEntry: "MANUALLY RECORDED", estimatedEnergy: "ESTIMATED ENERGY", needTwoReadings: "Add two close readings to calculate energy", calculatedFromReadings: "CALCULATED FROM READINGS", loggedReadings: "LOGGED READINGS", entries: "entries", metersConfigured: "{count} meters tracked", savedOnDevice: "SAVED ON THIS DEVICE",
-    powerTrend: "POWER TREND", readingsOverTime: "Readings over time", chartEmptyTitle: "Your trend starts with a reading", chartEmptyBody: "Record two readings to see a power trend.", loggedPower: "Logged power", wattsOverSelectedPeriod: "Watts · selected period",
-    addToNotebook: "ADD TO NOTEBOOK", logReading: "Log a reading", formIntro: "Enter a value shown by your external power meter.", meterOrDevice: "Meter or device", powerReading: "Power reading", noteOptional: "Note", optional: "OPTIONAL", saveReading: "Save reading", savedLocally: "Saved locally · No account needed",
-    measurementHistory: "MEASUREMENT HISTORY", recentReadings: "Recent readings", mostRecentFirst: "Most recent first", dateTime: "DATE & TIME", meter: "METER", power: "POWER", source: "SOURCE", note: "NOTE", actions: "Actions", historyEmptyTitle: "No readings in this period", historyEmptyBody: "Add a reading from your meter to start your local history.", showingLatest: "Showing the latest readings in this period", footerLeft: "POWER MONITOR LAB · PRIVATE BY DESIGN", footerRight: "Energy uses readings from this app session; gaps over 30 minutes are excluded.",
-    enterMeter: "Enter a meter or device name.", invalidWatts: "Enter a power value from 0 to 100,000 W.", saveFailed: "Could not save the reading.", saved: "Reading saved on this device.", confirmDelete: "Delete this reading from your local history?", deleteFailed: "Could not delete the reading.", deleted: "Reading deleted.", exportFailed: "CSV export could not be created.", exportEmpty: "There are no readings to export in this period.",
-    noReadingsPeriod: "No readings in this period", latestAt: "Logged {time}", noEnergy: "Add two readings less than 30 minutes apart in this app session to estimate energy.", energyDetail: "{minutes} min covered · {gaps} long gaps omitted", energyDetailNoGaps: "{minutes} min between readings", readingsCaption: "{count} readings in this period", meterCount: "{count} meters tracked", showingCount: "Showing {count} recent readings · newest first", refreshed: "Updated {time}", deleteLabel: "Delete reading", meterRequired: "Unnamed meter", none: "—", meterPlaceholder: "e.g. Desk plug meter", notePlaceholder: "e.g. Idle, display on", clearHistory: "Clear history", confirmClear: "Permanently clear all readings saved on this device? Export a CSV first if you need a backup.", historyCleared: "Local reading history cleared.", clearFailed: "Could not clear the local history."
+    measurementGuide: "How to measure",
+    estimateDetails: "Estimate details · not measured",
+    technicalSources: "Sensor sources and details",
+    sensorLhmHint: "LibreHardwareMonitor can add any additional live power channels this PC exposes.",
+    none: "—"
   },
   vi: {
+    documentTitle: "Power Monitor · Công suất máy tính",
+    skipToContent: "Bỏ qua điều hướng",
+    localApp: "THEO DÕI CỤC BỘ",
+    mainNavigation: "Điều hướng chính",
+    deviceNav: "Thiết bị",
+    overview: "Đang đo",
+    language: "Ngôn ngữ",
+    localHost: "Đang chạy trên máy này",
+    privateBody: "Dữ liệu chỉ lưu cục bộ trên máy tính.",
+    footerLeft: "POWER MONITOR LAB · LƯU CỤC BỘ",
+    autoRefresh: "Tự cập nhật mỗi 3 giây",
+    sensorUpdatedAt: "Tự cập nhật mỗi 3 giây · {time}",
+    measurementNotebook: "MÁY TÍNH NÀY",
+    title: "Công suất máy tính",
+    subtitle: "Tự động cập nhật số đo từ các cảm biến có trên PC này.",
+    sensorEyebrow: "SỐ ĐO CẢM BIẾN",
+    sensorHeading: "Công suất đang đo",
+    sensorIntro: "Đang tìm cảm biến công suất trên máy tính này.",
+    sensorStatusStarting: "Đang dò",
+    sensorStatusAvailable: "Đang đo",
+    sensorStatusPartial: "Một phần",
+    sensorStatusUnavailable: "Chưa có số đo",
+    sensorStatusUnsupported: "Chỉ hỗ trợ Windows",
+    sensorAvailableMessage: "Đang nhận số đo trực tiếp từ cảm biến của máy tính.",
+    sensorPartialMessage: "Đã nhận diện một số thiết bị, nhưng chúng không cung cấp số watt trực tiếp.",
+    sensorUnavailableMessage: "Chưa tìm thấy cảm biến công suất trực tiếp được hỗ trợ trên PC này.",
+    sensorUnsupportedMessage: "Hiện chỉ hỗ trợ tự động đọc cảm biến phần cứng trên Windows.",
+    sensorProviderConnected: "đã kết nối",
+    sensorProviderUnavailable: "chưa kết nối",
+    sensorReadingsHeading: "Công suất đo trực tiếp",
+    sensorWaiting: "Đang chờ mẫu cảm biến tiếp theo",
+    sensorSource: "Nguồn đo",
+    sensorMethod: "Cách đo",
+    sensorMeasuredEnergy: "Năng lượng đo được từ lúc mở ứng dụng",
+    sensorEstimatedEnergy: "Năng lượng ước tính từ lúc mở ứng dụng",
+    sensorLabelPackage: "CPU package",
+    sensorLabelCores: "Lõi CPU",
+    sensorLabelDram: "Miền bộ nhớ (DRAM)",
+    sensorLabelGraphicsDomain: "Miền đồ họa (PP1)",
+    sensorLabelGpu: "Card đồ họa",
+    sensorLabelOther: "Kênh năng lượng",
+    sensorKindProcessor: "Bộ xử lý",
+    sensorKindGraphics: "Đồ họa",
+    sensorKindMemory: "Bộ nhớ",
+    sensorKindStorage: "Ổ lưu trữ",
+    sensorKindKeyboard: "Bàn phím",
+    sensorKindMouse: "Chuột / thiết bị trỏ",
+    sensorKindMonitor: "Màn hình",
+    sensorKindUsb: "Thiết bị USB",
+    sensorKindUsbHub: "Hub USB",
+    sensorKindUsbController: "Bộ điều khiển USB",
+    sensorKindBattery: "Pin",
+    sensorKindMotherboard: "Bo mạch chủ",
+    sensorKindCooling: "Quạt / tản nhiệt",
+    sensorKindPowerSupply: "Bộ nguồn",
+    sensorKindOther: "Thiết bị",
+    sensorTotalTitle: "Chưa đo được điện đầu vào của cả máy",
+    sensorTotalBody: "Cảm biến bên trong chỉ đo một số phần và có thể chồng lấp. Muốn biết PC lấy bao nhiêu điện từ ổ cắm, cần đồng hồ đo AC.",
+    sensorInventoryHeading: "Thiết bị được nhận diện",
+    sensorInventoryScope: "Tự quét lại mỗi 15 giây",
+    deviceCount: "{count} thiết bị được nhận diện",
+    sensorMeasured: "Có số đo trực tiếp",
+    sensorNoLivePower: "Chưa có số đo watt",
+    sensorNeedsUsbMeter: "Cần đồng hồ đo riêng",
+    sensorCoverage: "Kênh cảm biến: {channels}",
+    sensorNoDevices: "Windows chưa trả về danh sách thiết bị phần cứng.",
+    sensorNoReadings: "Chưa có số đo cảm biến trực tiếp.",
     sensorSharedPowerPath: "Cùng nhóm thiết bị USB của Windows với: {devices}; chỉ cần đo một nhánh nguồn.",
-    workspace: "KHÔNG GIAN LÀM VIỆC", workspaceShort: "Không gian", overview: "Tổng quan", readingLog: "Nhật ký đo",
-    privateTitle: "Dữ liệu ở trên máy này", privateBody: "Lưu trên PC này, không gửi lên dịch vụ đám mây.", localHost: "Máy chủ cục bộ đang chạy", onThisDevice: "Trên thiết bị này",
-    measurementNotebook: "SỔ THEO DÕI SỐ ĐO", title: "Công suất, có ngữ cảnh.", subtitle: "Sổ ghi cục bộ cho số đo công suất và năng lượng ước tính.",
-    filterMeter: "Lọc theo đồng hồ", allMeters: "Tất cả đồng hồ", timeRange: "Khoảng thời gian", last24Hours: "24 giờ qua", last7Days: "7 ngày qua", last30Days: "30 ngày qua", exportCsv: "Xuất CSV",
-    manualOnlyTitle: "Chỉ ghi số đo thủ công.", manualOnlyBody: "Phiên bản này chưa tích hợp cảm biến tự động. Hãy nhập số từ đồng hồ ngoài; ứng dụng không tự tạo số watt trực tiếp.", honestData: "SỐ LIỆU RÕ NGUỒN",
-    sensorNoticeTitle: "Đã bật tự nhận diện phần cứng.", sensorNoticeBody: "Chỉ hiện số đo khi cảm biến cục bộ cung cấp watt thật; số đo nhập tay vẫn tách riêng.", sensorNoticeTag: "TRẠNG THÁI PHẦN CỨNG",
-    sensorEyebrow: "TỰ NHẬN DIỆN PHẦN CỨNG", sensorHeading: "Cảm biến và thiết bị đã nhận diện", sensorStatusStarting: "Đang dò", sensorStatusAvailable: "Đang đo", sensorStatusPartial: "Một phần", sensorStatusUnavailable: "Chưa có số đo", sensorStatusUnsupported: "Chỉ hỗ trợ Windows",
-    sensorIntro: "Đang tìm các nguồn đo công suất mà máy tính cung cấp.", sensorLhmHint: "Có thể bật LibreHardwareMonitor và Remote Web Server cổng 8085 để bổ sung các kênh công suất trực tiếp mà phần cứng cung cấp.", sensorProviderConnected: "đã kết nối", sensorProviderUnavailable: "chưa kết nối", sensorAvailableMessage: "Đang nhận số đo trực tiếp từ các kênh phần cứng có trên PC này.", sensorPartialMessage: "Đã nhận diện thiết bị, nhưng Windows không cung cấp số watt trực tiếp cho chúng.", sensorUnavailableMessage: "Không tìm thấy cảm biến công suất trực tiếp được hỗ trợ trên PC này.", sensorUnsupportedMessage: "Hiện chỉ hỗ trợ tự động đọc cảm biến phần cứng trên Windows.", sensorReadingsHeading: "Công suất đo được hiện tại", sensorWaiting: "Đang chờ mẫu cảm biến tiếp theo", sensorSource: "Nguồn đo", sensorMethod: "Cách đo", sensorSessionEnergy: "Năng lượng ghi nhận từ lúc mở ứng dụng", sensorTotalTitle: "Tổng công suất cả máy", sensorTotalBody: "Các kênh có thể chồng lấp nên được hiển thị riêng. Cần đồng hồ đo điện ở ổ cắm để đo điện đầu vào của toàn PC.", sensorInventoryHeading: "Thiết bị trên máy tính đã nhận diện", sensorInventoryScope: "Chỉ máy này · dò lại mỗi 15 giây", sensorMeasured: "Có số watt trực tiếp", sensorNoLivePower: "Không có cảm biến watt trực tiếp", sensorNeedsUsbMeter: "Cần đồng hồ USB nối tiếp", sensorCoverage: "Kênh cảm biến: {channels}", sensorNoDevices: "Windows chưa trả về danh sách thiết bị phần cứng.", sensorNoReadings: "Chưa có số đo cảm biến trực tiếp.", sensorLabelPackage: "CPU package", sensorLabelCores: "Lõi CPU", sensorLabelDram: "Miền bộ nhớ (DRAM)", sensorLabelGraphicsDomain: "Miền đồ họa (PP1)", sensorLabelGpu: "Card đồ họa", sensorLabelOther: "Kênh năng lượng", sensorKindProcessor: "Bộ xử lý", sensorKindGraphics: "Đồ họa", sensorKindMemory: "Bộ nhớ", sensorKindStorage: "Ổ lưu trữ", sensorKindKeyboard: "Bàn phím", sensorKindMouse: "Chuột / thiết bị trỏ", sensorKindMonitor: "Màn hình", sensorKindUsb: "Thiết bị USB", sensorKindUsbHub: "Hub USB", sensorKindUsbController: "Bộ điều khiển USB", sensorKindBattery: "Pin", sensorKindMotherboard: "Bo mạch chủ", sensorKindCooling: "Quạt / tản nhiệt", sensorKindPowerSupply: "Bộ nguồn", sensorKindOther: "Thiết bị",
-    latestLoggedPower: "SỐ ĐO CÔNG SUẤT MỚI NHẤT", noReadings: "Chưa có số đo", manualEntry: "GHI NHẬN THỦ CÔNG", estimatedEnergy: "NĂNG LƯỢNG ƯỚC TÍNH", needTwoReadings: "Cần hai số đo gần nhau để tính năng lượng", calculatedFromReadings: "TÍNH TỪ CÁC SỐ ĐO", loggedReadings: "SỐ ĐO ĐÃ GHI", entries: "lần", metersConfigured: "Đang theo dõi {count} đồng hồ", savedOnDevice: "LƯU TRÊN THIẾT BỊ NÀY",
-    powerTrend: "XU HƯỚNG CÔNG SUẤT", readingsOverTime: "Số đo theo thời gian", chartEmptyTitle: "Bắt đầu biểu đồ bằng một số đo", chartEmptyBody: "Ghi hai số đo để xem xu hướng công suất.", loggedPower: "Công suất đã ghi", wattsOverSelectedPeriod: "Watt · khoảng đã chọn",
-    addToNotebook: "THÊM VÀO SỔ ĐO", logReading: "Ghi số đo", formIntro: "Nhập số hiển thị trên đồng hồ công suất ngoài.", meterOrDevice: "Đồng hồ hoặc thiết bị", powerReading: "Số đo công suất", noteOptional: "Ghi chú", optional: "KHÔNG BẮT BUỘC", saveReading: "Lưu số đo", savedLocally: "Lưu cục bộ · Không cần tài khoản",
-    measurementHistory: "LỊCH SỬ ĐO", recentReadings: "Số đo gần đây", mostRecentFirst: "Mới nhất trước", dateTime: "NGÀY & GIỜ", meter: "ĐỒNG HỒ", power: "CÔNG SUẤT", source: "NGUỒN", note: "GHI CHÚ", actions: "Thao tác", historyEmptyTitle: "Chưa có số đo trong khoảng này", historyEmptyBody: "Thêm số đo từ đồng hồ để bắt đầu lịch sử cục bộ.", showingLatest: "Hiển thị số đo gần đây trong khoảng này", footerLeft: "POWER MONITOR LAB · RIÊNG TƯ THEO THIẾT KẾ", footerRight: "Năng lượng chỉ tính trong lần chạy này; khoảng trống trên 30 phút bị loại.",
-    enterMeter: "Nhập tên đồng hồ hoặc thiết bị.", invalidWatts: "Nhập công suất từ 0 đến 100.000 W.", saveFailed: "Không lưu được số đo.", saved: "Đã lưu số đo trên thiết bị này.", confirmDelete: "Xóa số đo này khỏi lịch sử cục bộ?", deleteFailed: "Không xóa được số đo.", deleted: "Đã xóa số đo.", exportFailed: "Không tạo được tệp CSV.", exportEmpty: "Không có số đo nào trong khoảng này để xuất.",
-    noReadingsPeriod: "Chưa có số đo trong khoảng này", latestAt: "Ghi lúc {time}", noEnergy: "Ghi hai số đo trong cùng lần chạy, cách nhau dưới 30 phút để ước tính năng lượng.", energyDetail: "Đã tính {minutes} phút · bỏ qua {gaps} khoảng trống dài", energyDetailNoGaps: "{minutes} phút giữa các số đo", readingsCaption: "{count} số đo trong khoảng này", meterCount: "Đang theo dõi {count} đồng hồ", showingCount: "Hiển thị {count} số đo gần nhất · mới nhất trước", refreshed: "Cập nhật {time}", deleteLabel: "Xóa số đo", meterRequired: "Đồng hồ chưa đặt tên", none: "—", meterPlaceholder: "VD: Ổ cắm đo công suất bàn làm việc", notePlaceholder: "VD: Chờ, màn hình bật", clearHistory: "Xóa lịch sử", confirmClear: "Xóa vĩnh viễn toàn bộ số đo lưu trên thiết bị này? Hãy xuất CSV trước nếu cần bản sao lưu.", historyCleared: "Đã xóa lịch sử số đo cục bộ.", clearFailed: "Không xóa được lịch sử cục bộ."
+    measurementGuide: "Cách đo",
+    estimateDetails: "Chi tiết ước tính · không phải số đo",
+    technicalSources: "Nguồn cảm biến và chi tiết",
+    sensorLhmHint: "LibreHardwareMonitor có thể bổ sung các kênh công suất trực tiếp mà PC này hỗ trợ.",
+    none: "—"
   }
 };
-
-Object.assign(translations.en, {
-  documentTitle: "Power Monitor · Computer power",
-  skipToContent: "Skip to content",
-  localApp: "LOCAL MONITOR",
-  mainNavigation: "Main navigation",
-  deviceNav: "Devices",
-  autoRefresh: "Auto-updating every 3 seconds",
-  sensorUpdatedAt: "Auto-refresh every 3 seconds · {time}",
-  language: "Language",
-  chartAndEntry: "Chart and manual entry",
-  manualNav: "Manual entry",
-  technicalSources: "Sensor sources and details",
-  estimateDetails: "Estimate details · not measured",
-  measurementGuide: "How to measure",
-  deviceCount: "{count} detected devices",
-  loggedDataSummary: "Manual-entry summary",
-  measurementNotebook: "THIS COMPUTER",
-  title: "Computer power",
-  subtitle: "Automatically updated readings from the sensors available on this PC.",
-  sensorEyebrow: "LIVE SENSOR READINGS",
-  sensorHeading: "Power being measured",
-  sensorIntro: "Looking for power sensors on this computer.",
-  sensorLhmHint: "LibreHardwareMonitor can add any additional live power channels this PC exposes.",
-  sensorAvailableMessage: "Live readings are coming from sensors in this PC.",
-  sensorPartialMessage: "Some devices were found, but they do not expose live watt readings.",
-  sensorUnavailableMessage: "No supported live power sensor was found on this PC.",
-  sensorReadingsHeading: "Measured power",
-  sensorTotalBody: "Internal sensors cover only some components and can overlap. Use an AC outlet meter to measure power drawn by the whole PC.",
-  sensorInventoryHeading: "Detected devices",
-  sensorInventoryScope: "Scanned again every 15 seconds",
-  sensorMeasured: "Live sensor reading",
-  sensorNoLivePower: "No live watt reading",
-  sensorNeedsUsbMeter: "Needs a separate meter",
-  sensorNoReadings: "No live sensor readings are available.",
-  powerTrend: "READING HISTORY",
-  readingsOverTime: "Power readings over time",
-  chartEmptyTitle: "The chart appears after you add readings",
-  chartEmptyBody: "Add two readings to see a trend.",
-  loggedPower: "Logged readings",
-  wattsOverSelectedPeriod: "Watts · selected period",
-  manualEntry: "READ FROM AN EXTERNAL METER",
-  logReading: "Add a manual reading",
-  formIntro: "Enter a value from a real meter. Do not enter an estimate.",
-  meterOrDevice: "Meter or device",
-  powerReading: "Measured power",
-  noteOptional: "Note",
-  optional: "Optional",
-  saveReading: "Save reading",
-  savedLocally: "Saved on this PC · No account needed",
-  measurementHistory: "MANUAL READING HISTORY",
-  recentReadings: "Saved readings",
-  dateTime: "Date and time",
-  meter: "Meter",
-  power: "Power",
-  source: "Source",
-  note: "Note",
-  actions: "Actions",
-  historyEmptyTitle: "No readings in this period",
-  historyEmptyBody: "Enter a value from a meter to start your history.",
-  showingLatest: "Showing the newest readings in this period",
-  latestLoggedPower: "LATEST MANUAL READING",
-  estimatedEnergy: "ESTIMATED ENERGY",
-  loggedReadings: "READINGS SAVED",
-  entries: "readings",
-  metersConfigured: "{count} meters",
-  noReadings: "No readings yet",
-  needTwoReadings: "Add two readings close together to estimate energy",
-  footerRight: "Energy is estimated from manual readings; gaps over 30 minutes are excluded.",
-  footerLeft: "POWER MONITOR LAB · STORED LOCALLY",
-  localHost: "Running on this PC",
-  privateTitle: "Saved on this PC",
-  privateBody: "Your data stays on this computer.",
-  overview: "Live power",
-  readingLog: "History",
-  sensorTotalTitle: "Whole-PC input power is not measured",
-  meterPlaceholder: "e.g. outlet power meter",
-  notePlaceholder: "e.g. idle, monitor on",
-  clearHistory: "Clear history",
-  filterMeter: "Filter by meter",
-  timeRange: "Time range",
-  allMeters: "All meters",
-  last24Hours: "Last 24 hours",
-  last7Days: "Last 7 days",
-  last30Days: "Last 30 days",
-  exportCsv: "Export CSV",
-  decimalWattHint: "Use a period or comma for decimal values."
-});
-
-Object.assign(translations.vi, {
-  documentTitle: "Power Monitor · Công suất máy tính",
-  skipToContent: "Bỏ qua điều hướng",
-  localApp: "THEO DÕI CỤC BỘ",
-  mainNavigation: "Điều hướng chính",
-  deviceNav: "Thiết bị",
-  autoRefresh: "Tự cập nhật mỗi 3 giây",
-  sensorUpdatedAt: "Tự cập nhật mỗi 3 giây · {time}",
-  language: "Ngôn ngữ",
-  chartAndEntry: "Biểu đồ và nhập số đo",
-  manualNav: "Ghi thủ công",
-  technicalSources: "Nguồn cảm biến và chi tiết",
-  estimateDetails: "Chi tiết ước tính · không phải số đo",
-  measurementGuide: "Cách đo",
-  deviceCount: "{count} thiết bị được nhận diện",
-  loggedDataSummary: "Tóm tắt số liệu nhập tay",
-  measurementNotebook: "MÁY TÍNH NÀY",
-  title: "Công suất máy tính",
-  subtitle: "Tự động cập nhật số đo từ các cảm biến có trên PC này.",
-  sensorEyebrow: "SỐ ĐO CẢM BIẾN",
-  sensorHeading: "Công suất đang đo",
-  sensorIntro: "Đang tìm cảm biến công suất trên máy tính này.",
-  sensorLhmHint: "LibreHardwareMonitor có thể bổ sung các kênh đo trực tiếp mà PC này hỗ trợ.",
-  sensorAvailableMessage: "Đang nhận số đo trực tiếp từ cảm biến của máy tính.",
-  sensorPartialMessage: "Đã nhận diện một số thiết bị, nhưng chúng không cung cấp số watt trực tiếp.",
-  sensorUnavailableMessage: "Chưa tìm thấy cảm biến công suất trực tiếp được hỗ trợ trên PC này.",
-  sensorReadingsHeading: "Công suất đo trực tiếp",
-  sensorTotalTitle: "Chưa đo được điện đầu vào của cả máy",
-  sensorTotalBody: "Cảm biến bên trong chỉ đo một số phần và có thể chồng lấp. Muốn biết PC lấy bao nhiêu điện từ ổ cắm, cần đồng hồ đo AC.",
-  sensorInventoryHeading: "Thiết bị được nhận diện",
-  sensorInventoryScope: "Tự quét lại mỗi 15 giây",
-  sensorMeasured: "Có số đo trực tiếp",
-  sensorNoLivePower: "Chưa có số đo watt",
-  sensorNeedsUsbMeter: "Cần đồng hồ đo riêng",
-  sensorNoReadings: "Chưa có số đo cảm biến trực tiếp.",
-  powerTrend: "LỊCH SỬ SỐ ĐO",
-  readingsOverTime: "Công suất theo thời gian",
-  chartEmptyTitle: "Biểu đồ sẽ hiện sau khi có số đo",
-  chartEmptyBody: "Ghi hai lần đo để xem xu hướng.",
-  loggedPower: "Số đã ghi",
-  wattsOverSelectedPeriod: "Watt · khoảng thời gian đã chọn",
-  manualEntry: "NHẬP TỪ ĐỒNG HỒ NGOÀI",
-  logReading: "Ghi số đo thủ công",
-  formIntro: "Chỉ nhập số đọc từ đồng hồ thật. Không nhập ước tính.",
-  meterOrDevice: "Đồng hồ hoặc thiết bị",
-  powerReading: "Công suất đọc được",
-  noteOptional: "Ghi chú",
-  optional: "Không bắt buộc",
-  saveReading: "Lưu số đo",
-  savedLocally: "Lưu trên PC này · Không cần tài khoản",
-  measurementHistory: "LỊCH SỬ NHẬP TAY",
-  recentReadings: "Các số đo đã ghi",
-  dateTime: "Thời gian",
-  meter: "Đồng hồ",
-  power: "Công suất",
-  source: "Nguồn",
-  note: "Ghi chú",
-  actions: "Thao tác",
-  historyEmptyTitle: "Chưa có số đo trong khoảng này",
-  historyEmptyBody: "Nhập số từ đồng hồ để bắt đầu lưu lịch sử.",
-  showingLatest: "Hiện các số đo mới nhất trong khoảng này",
-  latestLoggedPower: "SỐ GHI TAY GẦN NHẤT",
-  estimatedEnergy: "NĂNG LƯỢNG ƯỚC TÍNH",
-  loggedReadings: "SỐ LẦN ĐÃ GHI",
-  entries: "lần",
-  metersConfigured: "{count} đồng hồ",
-  noReadings: "Chưa có số đo",
-  needTwoReadings: "Ghi hai lần gần nhau để ước tính năng lượng",
-  footerRight: "Năng lượng được ước tính từ các số nhập tay; khoảng cách trên 30 phút được bỏ qua.",
-  footerLeft: "POWER MONITOR LAB · LƯU CỤC BỘ",
-  localHost: "Đang chạy trên máy này",
-  privateTitle: "Lưu trên máy này",
-  privateBody: "Dữ liệu chỉ được lưu cục bộ trên máy tính.",
-  overview: "Đang đo",
-  readingLog: "Lịch sử",
-  meterPlaceholder: "Ví dụ: đồng hồ ổ cắm",
-  notePlaceholder: "Ví dụ: máy nghỉ, màn hình bật",
-  clearHistory: "Xóa lịch sử",
-  filterMeter: "Lọc theo đồng hồ",
-  timeRange: "Khoảng thời gian",
-  allMeters: "Tất cả đồng hồ",
-  last24Hours: "24 giờ qua",
-  last7Days: "7 ngày qua",
-  last30Days: "30 ngày qua",
-  exportCsv: "Xuất CSV",
-  decimalWattHint: "Dùng dấu phẩy hoặc dấu chấm cho số thập phân."
-});
-
 const chartColors = ["#258b65", "#e39b44", "#7187b7", "#cf6f73", "#8768a8", "#3d9aa2"];
 const additionalKindLabels = {
   en: { network: "Network adapter", audio: "Audio device" },
@@ -223,13 +162,11 @@ const sharedMeasurementLabels = {
 const sensorReadingNotes = {
   en: {
     powerLimit: "GPU power limit (cap, not current draw)",
-    sharedDram: "Shared memory-domain reading; not per-DIMM power.",
-    unusedPp1: "This F-series CPU has no integrated graphics; PP1 does not measure the NVIDIA card."
+    sharedDram: "Shared memory-domain reading; not per-DIMM power."
   },
   vi: {
     powerLimit: "Giới hạn công suất GPU (mức trần, không phải mức đang dùng)",
-    sharedDram: "Số đo miền bộ nhớ dùng chung, không phải watt riêng từng thanh RAM.",
-    unusedPp1: "CPU dòng F này không có đồ họa tích hợp; PP1 không đo card NVIDIA."
+    sharedDram: "Số đo miền bộ nhớ dùng chung, không phải watt riêng từng thanh RAM."
   }
 };
 const sensorMethodLabels = {
@@ -514,11 +451,6 @@ function renderSensors() {
   const readingGrid = $("#sensor-reading-grid");
   readingGrid.replaceChildren();
   const readings = Array.isArray(snapshot.readings) ? snapshot.readings : [];
-  const hasIntelFSeriesCpu = (Array.isArray(snapshot.devices) ? snapshot.devices : []).some((device) =>
-    device.kind === "processor" &&
-    /intel/i.test(device.name ?? "") &&
-    /\b\d{4,5}(?:KF|F)\b/i.test(device.name ?? "")
-  );
   if (readings.length === 0) {
     const empty = document.createElement("p");
     empty.className = "sensor-empty";
@@ -550,6 +482,15 @@ function renderSensors() {
       : reading.method;
     method.textContent = `${tr("sensorMethod")}: ${methodLabel ?? tr("none")}`;
     card.append(heading, value, source, method);
+    if (Number.isFinite(reading.energyWhSinceStart)) {
+      const energy = document.createElement("p");
+      energy.className = "sensor-provenance";
+      const energyLabel = typeof reading.absoluteEnergyPwh === "string"
+        ? tr("sensorMeasuredEnergy")
+        : tr("sensorEstimatedEnergy");
+      energy.textContent = `${energyLabel}: ${formatEnergy(reading.energyWhSinceStart)} Wh`;
+      card.append(energy);
+    }
     const notes = sensorReadingNotes[state.language] ?? sensorReadingNotes.en;
     if (Number.isFinite(reading.powerLimitWatts)) {
       const limit = document.createElement("p");
@@ -562,12 +503,6 @@ function renderSensors() {
       shared.className = "sensor-provenance";
       shared.textContent = notes.sharedDram;
       card.append(shared);
-    }
-    if (reading.name === "RAPL_Package0_PP1" && hasIntelFSeriesCpu) {
-      const inactive = document.createElement("p");
-      inactive.className = "sensor-provenance";
-      inactive.textContent = notes.unusedPp1;
-      card.append(inactive);
     }
     readingGrid.append(card);
   }
@@ -653,6 +588,13 @@ function renderSensors() {
 
 function formatPower(value) {
   return new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", { maximumFractionDigits: 1 }).format(value);
+}
+
+function formatEnergy(value) {
+  return new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", {
+    minimumFractionDigits: value < 1 ? 3 : 2,
+    maximumFractionDigits: 3
+  }).format(value);
 }
 
 function formatTime(date) {
