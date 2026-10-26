@@ -111,9 +111,9 @@ The package has no npm runtime dependencies. Windows hardware discovery uses the
 
 ## License
 
-The repository currently has no usage license. The package metadata is set to `UNLICENSED`; publishing it to npm does not grant permission to reuse, modify, or redistribute the code. Choose and add a license before presenting this as an open-source package.
+This project is licensed under the MIT License; see [LICENSE](LICENSE). The package metadata uses the SPDX identifier `MIT`.
 
-To publish after choosing the package's license, authenticate with `npm login`, inspect the files using `npm pack --dry-run`, then run `npm publish --access public`.
+The npm package has not yet been published. When preparing a release, authenticate with `npm login`, inspect the files using `npm pack --dry-run`, then run `npm publish --access public`.
 
 ## Tiếng Việt
 
@@ -176,6 +176,6 @@ Số đo cảm biến tự cập nhật khi máy chủ ứng dụng đang chạy
 
 Lịch sử cảm biến tự động được lưu theo ngày trong thư mục `sensor-history` tại thư mục dữ liệu cục bộ (Windows: `%LOCALAPPDATA%\PowerMonitorLab`; macOS: `~/Library/Application Support/PowerMonitorLab`; Linux: `$XDG_DATA_HOME/power-monitor-lab` hoặc `~/.local/share/power-monitor-lab`). Lịch sử nhập tay và các API cũ (`/api/readings`, `/api/meters`, `/api/summary`, `/api/export.csv`) đã bị gỡ; tệp `readings.json` cũ không được ứng dụng đọc. Lịch sử cảm biến tự động vẫn được giữ trong bảy ngày.
 
-Mã nguồn hiện chưa có giấy phép sử dụng; package ghi `UNLICENSED`. Việc đưa lên npm không tự cấp quyền sử dụng lại, sửa đổi hoặc phân phối mã nguồn. Hãy chọn và thêm giấy phép trước khi công bố đây là gói mã nguồn mở.
+Mã nguồn được cấp phép theo MIT; xem tệp [LICENSE](LICENSE). Metadata package ghi giấy phép SPDX `MIT`.
 
-Sau khi chọn giấy phép, đăng nhập bằng `npm login`, kiểm tra tệp phát hành bằng `npm pack --dry-run`, rồi chạy `npm publish --access public`.
+Package npm chưa được phát hành. Khi chuẩn bị phát hành, đăng nhập bằng `npm login`, kiểm tra tệp phát hành bằng `npm pack --dry-run`, rồi chạy `npm publish --access public`.

@@ -10,7 +10,8 @@
     "cli/",
     "lib/",
     "web/",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "start": "node ./cli/power-monitor-lab.js",
@@ -21,7 +22,7 @@
   "engines": {
     "node": ">=22"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
