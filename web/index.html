@@ -132,6 +132,40 @@
           </details>
         </section>
 
+        <section class="energy-panel panel" aria-labelledby="energy-heading">
+          <div class="panel-heading energy-heading">
+            <div>
+              <p class="eyebrow" data-i18n="energyEyebrow">TỔNG NĂNG LƯỢNG</p>
+              <h2 id="energy-heading" data-i18n="energyHeading">Điện năng theo thời gian</h2>
+              <p class="history-caption" data-i18n="energyCaption">Tổng theo khoảng đã chọn, được tính từ dữ liệu cảm biến tự lưu.</p>
+            </div>
+            <div class="energy-actions">
+              <label class="sr-only" for="energy-range" data-i18n="energyRangeLabel">Khoảng thời gian</label>
+              <div class="select-wrap">
+                <select id="energy-range" name="energy-range">
+                  <option value="1h" data-i18n="energyRange1h">1 giờ qua</option>
+                  <option value="24h" data-i18n="energyRange24h">24 giờ qua</option>
+                  <option value="7d" data-i18n="energyRange7d">7 ngày qua</option>
+                  <option value="30d" data-i18n="energyRange30d">30 ngày qua</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="energy-body">
+            <p id="energy-note" class="history-note" data-i18n="energyNote">Mỗi thẻ là một kênh đo riêng. Các miền CPU/RAM/GPU có thể chồng lấp nên không cộng thành tổng PC; tổng cả PC chỉ xuất hiện khi có đồng hồ AC riêng. Ưu tiên chênh lệch bộ đếm Wh; nếu chỉ có watt, tính tích phân giữa các mẫu đo. Khoảng trống dài bị loại khỏi tổng.</p>
+            <div id="energy-summary" class="energy-summary" data-i18n-aria-label="energySummaryLabel"></div>
+            <div class="history-plot energy-plot">
+              <svg id="energy-chart" class="history-chart energy-chart" viewBox="0 0 760 280" role="img" aria-label="Biểu đồ điện năng theo thời gian" data-i18n-aria-label="energyChartLabel"></svg>
+              <p id="energy-empty" class="history-empty" data-i18n="energyEmpty">Chưa có dữ liệu điện năng cho khoảng này. Hãy để ứng dụng chạy để bắt đầu lưu lịch sử.</p>
+            </div>
+            <div id="energy-legend" class="chart-legend" data-i18n-aria-label="energyLegendLabel"></div>
+          </div>
+          <footer class="history-footer">
+            <span id="energy-retention"></span>
+            <span id="energy-sample-rate"></span>
+          </footer>
+        </section>
+
         <section class="history-panel panel" aria-labelledby="history-heading">
           <div class="panel-heading history-heading">
             <div>

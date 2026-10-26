@@ -198,17 +198,28 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .chart-footer > span:first-child { display: inline-flex; align-items: center; gap: 7px; }
 .legend-dot { display: inline-block; width: 8px; height: 8px; background: #328761; border-radius: 50%; }
 
-.history-panel { overflow: hidden; margin-bottom: 14px; }
+.history-panel, .energy-panel { overflow: hidden; margin-bottom: 14px; }
 .history-heading { padding: 20px; }
 .history-caption { margin: 5px 0 0; color: #637168; font-size: 13px; }
 .history-actions { display: flex; align-items: center; gap: 8px; }
 .history-actions select { min-width: 130px; min-height: 38px; padding: 0 28px 0 10px; color: #37483d; background: #fff; border: 1px solid #d9e2dc; border-radius: 7px; cursor: pointer; font-size: 13px; }
+.energy-heading { padding: 20px; }
+.energy-actions { display: flex; align-items: center; gap: 8px; }
+.energy-actions select { min-width: 150px; min-height: 38px; padding: 0 28px 0 10px; color: #37483d; background: #fff; border: 1px solid #d9e2dc; border-radius: 7px; cursor: pointer; font-size: 13px; }
+.energy-body { padding: 0 20px 8px; }
+.energy-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 10px; margin: 14px 0 8px; }
+.energy-total-card { min-width: 0; padding: 14px; background: #f8faf9; border: 1px solid #e5ebe7; border-radius: 8px; }
+.energy-total-card--whole-pc { background: #f2f8f4; border-color: #c8ddce; }
+.energy-total-label { overflow: hidden; color: #526158; font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.energy-total-value { display: block; margin-top: 9px; color: #1d3327; font-size: clamp(22px, 3vw, 30px); font-variant-numeric: tabular-nums; font-weight: 750; letter-spacing: -.04em; line-height: 1; }
+.energy-total-meta { margin: 8px 0 0; color: #66746b; font-size: 12px; line-height: 1.4; }
 .history-body { padding: 0 20px 8px; }
 .history-note { margin: 0; color: #637168; font-size: 12px; line-height: 1.5; }
 .history-plot { position: relative; min-height: 190px; margin: 8px 0 0; }
 .history-chart { display: block; width: 100%; height: auto; overflow: visible; }
 .history-gridline { stroke: #e4ebe6; stroke-width: 1; }
 .history-axis-label { fill: #748078; font-size: 12px; }
+.energy-chart-bar { stroke: #fff; stroke-width: .5; }
 .history-series { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .history-plot .history-empty { position: absolute; inset: 12px 0; min-height: 150px; }
 .table-scroll { width: 100%; overflow-x: auto; }
@@ -284,12 +295,18 @@ td.meter-cell { color: #304237; font-weight: 650; }
   .chart-controls { width: 100%; justify-content: flex-start; }
   .chart-controls .select-wrap, .chart-controls select { flex: 1; min-width: 0; width: 100%; }
   .history-actions, .history-actions .select-wrap, .history-actions select { width: 100%; }
+  .energy-actions, .energy-actions .select-wrap, .energy-actions select { width: 100%; }
   .history-heading { align-items: flex-start; flex-direction: column; }
+  .energy-heading { align-items: flex-start; flex-direction: column; }
   .history-body { padding: 0 15px 8px; }
+  .energy-body { padding: 0 15px 8px; }
+  .energy-summary { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
   .history-footer { align-items: flex-start; flex-direction: column; justify-content: center; gap: 4px; padding: 9px 15px; }
   .chart-wrap { height: 220px; }
   .history-heading { align-items: flex-start; flex-direction: column; padding: 17px; }
+  .energy-heading { align-items: flex-start; flex-direction: column; padding: 17px; }
   .history-actions { width: 100%; flex-wrap: wrap; }
+  .energy-actions { width: 100%; flex-wrap: wrap; }
   .history-footer { align-items: flex-start; flex-direction: column; justify-content: center; padding: 8px 17px; }
   .metrics-grid { grid-template-columns: 1fr; }
   .page-footer { flex-direction: column; gap: 4px; }

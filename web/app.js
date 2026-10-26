@@ -118,6 +118,29 @@ const translations = {
     estimateDetails: "Estimate details · not measured",
     technicalSources: "Sensor sources and details",
     sensorLhmHint: "LibreHardwareMonitor can add any additional live power channels this PC exposes.",
+    energyEyebrow: "ENERGY USE",
+    energyHeading: "Energy consumption",
+    energyCaption: "Totals are calculated for the selected period from automatically saved sensor readings.",
+    energyRangeLabel: "Energy period",
+    energyRange1h: "Last hour",
+    energyRange24h: "Last 24 hours",
+    energyRange7d: "Last 7 days",
+    energyRange30d: "Last 30 days",
+    energyNote: "Each card is one sensor channel. CPU, memory, and GPU domains can overlap, so they are never added into a whole-PC total. A whole-PC total requires a dedicated AC outlet meter. The outlet meter counter is used when available; other channels use accumulated session energy or integrate measured watts. Gaps over 60 seconds are excluded.",
+    energyEmpty: "No measured sensor readings were recorded in this period. Keep the app running to build a local history.",
+    energyError: "Could not load local energy history.",
+    energyInsufficient: "More consecutive readings are needed to calculate energy.",
+    energySummaryLabel: "Energy totals for each measured sensor channel",
+    energyCoverage: "Data coverage {percent}%",
+    energyMethodMeter: "Meter counter difference",
+    energyMethodSession: "Accumulated session energy",
+    energyMethodIntegrated: "Integrated from measured watts",
+    energyMethodMixed: "Mixed counter and power readings",
+    energyMethodNone: "Not enough consecutive readings",
+    energyChartLabel: "Energy by time interval, in watt-hours or kilowatt-hours",
+    energyLegendLabel: "Measured sensor channels in the energy chart",
+    energyRetention: "Kept locally for {days} days",
+    energySampleRate: "Saved every {seconds} seconds",
     historyEyebrow: "AUTOMATIC HISTORY",
     historyHeading: "Power history",
     historyCaption: "Sensor readings are saved automatically while the app runs.",
@@ -254,6 +277,29 @@ const translations = {
     estimateDetails: "Chi tiết ước tính · không phải số đo",
     technicalSources: "Nguồn cảm biến và chi tiết",
     sensorLhmHint: "LibreHardwareMonitor có thể bổ sung các kênh công suất trực tiếp mà PC này hỗ trợ.",
+    energyEyebrow: "TỔNG NĂNG LƯỢNG",
+    energyHeading: "Điện năng theo thời gian",
+    energyCaption: "Tổng theo khoảng đã chọn, được tính từ dữ liệu cảm biến tự lưu.",
+    energyRangeLabel: "Khoảng thời gian",
+    energyRange1h: "1 giờ qua",
+    energyRange24h: "24 giờ qua",
+    energyRange7d: "7 ngày qua",
+    energyRange30d: "30 ngày qua",
+    energyNote: "Mỗi thẻ là một kênh đo riêng. Các miền CPU/RAM/GPU có thể chồng lấp nên không cộng thành tổng PC; tổng cả PC chỉ xuất hiện khi có đồng hồ AC riêng. Nếu có đồng hồ ở ổ cắm, app dùng chênh lệch bộ đếm Wh; các kênh khác dùng năng lượng tích lũy trong phiên hoặc tính tích phân từ watt đã đo. Khoảng trống trên 60 giây bị loại khỏi tổng.",
+    energyEmpty: "Chưa có dữ liệu cảm biến được ghi trong khoảng này. Hãy để ứng dụng chạy để bắt đầu tích lũy lịch sử cục bộ.",
+    energyError: "Không tải được lịch sử điện năng cục bộ.",
+    energyInsufficient: "Cần thêm mẫu đo liên tiếp để tính điện năng.",
+    energySummaryLabel: "Tổng điện năng riêng của từng kênh cảm biến",
+    energyCoverage: "Độ phủ dữ liệu {percent}%",
+    energyMethodMeter: "Chênh lệch bộ đếm đồng hồ",
+    energyMethodSession: "Năng lượng tích lũy trong phiên",
+    energyMethodIntegrated: "Tích phân từ watt đã đo",
+    energyMethodMixed: "Kết hợp bộ đếm và số đo watt",
+    energyMethodNone: "Chưa đủ mẫu liên tiếp",
+    energyChartLabel: "Biểu đồ điện năng theo khoảng thời gian, tính bằng Wh hoặc kWh",
+    energyLegendLabel: "Các kênh cảm biến đo được trên biểu đồ điện năng",
+    energyRetention: "Lưu cục bộ {days} ngày",
+    energySampleRate: "Ghi mỗi {seconds} giây",
     historyEyebrow: "LỊCH SỬ TỰ ĐỘNG",
     historyHeading: "Lịch sử công suất",
     historyCaption: "Ứng dụng tự lưu số đo cảm biến khi đang chạy.",
@@ -345,6 +391,8 @@ function getSavedLanguage() {
 const state = {
   language: getSavedLanguage(),
   sensors: null,
+  energyHistory: null,
+  energyRange: "24h",
   history: null,
   historyRange: "1h",
   meterFormOpen: false,
@@ -373,6 +421,7 @@ function applyLanguage() {
     button.setAttribute("aria-pressed", String(active));
   });
   renderSensors();
+  renderEnergyHistory();
   renderHistory();
 }
 
@@ -411,6 +460,17 @@ async function refreshHistory() {
     state.history = { samples: [], error: true };
   }
   renderHistory();
+}
+
+async function refreshEnergyHistory() {
+  try {
+    state.energyHistory = await requestJson(
+      "/api/energy-history?range=" + encodeURIComponent(state.energyRange)
+    );
+  } catch {
+    state.energyHistory = { channels: [], error: true };
+  }
+  renderEnergyHistory();
 }
 
 function renderHistory() {
@@ -532,6 +592,210 @@ function renderHistory() {
   });
 }
 
+function renderEnergyHistory() {
+  const chart = $("#energy-chart");
+  const empty = $("#energy-empty");
+  const legend = $("#energy-legend");
+  const summary = $("#energy-summary");
+  if (!chart || !empty || !legend || !summary) return;
+
+  const channels = Array.isArray(state.energyHistory?.channels)
+    ? state.energyHistory.channels
+    : [];
+  $("#energy-note").textContent = tr("energyNote");
+  $("#energy-retention").textContent = tr("energyRetention", {
+    days: state.energyHistory?.retentionDays ?? 35
+  });
+  $("#energy-sample-rate").textContent = tr("energySampleRate", {
+    seconds: state.energyHistory?.sampleIntervalSeconds ?? 30
+  });
+  chart.setAttribute("aria-label", tr("energyChartLabel"));
+  legend.setAttribute("aria-label", tr("energyLegendLabel"));
+  summary.setAttribute("aria-label", tr("energySummaryLabel"));
+  chart.replaceChildren();
+  legend.replaceChildren();
+  summary.replaceChildren();
+
+  for (const channel of channels) {
+    const card = document.createElement("article");
+    card.className = channel.sensorId === "shelly-pc-input"
+      ? "energy-total-card energy-total-card--whole-pc"
+      : "energy-total-card";
+    const label = document.createElement("div");
+    label.className = "energy-total-label";
+    label.textContent = energyChannelLabel(channel);
+    const value = document.createElement("strong");
+    value.className = "energy-total-value";
+    value.textContent = formatEnergyValue(channel.energyWh);
+    const method = document.createElement("p");
+    method.className = "energy-total-meta";
+    method.textContent = energyMethodLabel(channel.method);
+    const coverage = document.createElement("p");
+    coverage.className = "energy-total-meta";
+    coverage.textContent = tr("energyCoverage", {
+      percent: formatPercent(channel.coveragePercent)
+    });
+    card.append(label, value, method, coverage);
+    summary.append(card);
+  }
+
+  const chartChannels = channels.filter((channel) =>
+    Number.isFinite(channel.energyWh) &&
+    Array.isArray(channel.buckets) &&
+    channel.buckets.some((bucket) => Number.isFinite(bucket.energyWh))
+  );
+  if (chartChannels.length === 0) {
+    chart.hidden = true;
+    empty.hidden = false;
+    empty.textContent = state.energyHistory?.error
+      ? tr("energyError")
+      : channels.length > 0
+        ? tr("energyInsufficient")
+        : tr("energyEmpty");
+    return;
+  }
+
+  chart.hidden = false;
+  empty.hidden = true;
+  const svgNamespace = "http://www.w3.org/2000/svg";
+  const width = 760;
+  const height = 280;
+  const padding = { top: 18, right: 16, bottom: 42, left: 70 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const buckets = chartChannels[0].buckets;
+  const maxEnergyWh = Math.max(0, ...chartChannels.flatMap((channel) =>
+    channel.buckets.map((bucket) => Number.isFinite(bucket.energyWh) ? bucket.energyWh : 0)
+  ));
+  const useKwh = maxEnergyWh >= 1_000;
+  const unitDivisor = useKwh ? 1_000 : 1;
+  const maxValue = Math.max(1, maxEnergyWh / unitDivisor);
+  const pointY = (energyWh) => padding.top +
+    (1 - Math.min(energyWh / unitDivisor, maxValue) / maxValue) * plotHeight;
+
+  for (let tick = 0; tick <= 2; tick += 1) {
+    const value = maxValue * (1 - tick / 2);
+    const y = padding.top + (tick / 2) * plotHeight;
+    const line = document.createElementNS(svgNamespace, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("class", "history-gridline");
+    chart.append(line);
+
+    const label = document.createElementNS(svgNamespace, "text");
+    label.setAttribute("x", String(padding.left - 9));
+    label.setAttribute("y", String(y + 4));
+    label.setAttribute("text-anchor", "end");
+    label.setAttribute("class", "history-axis-label");
+    label.textContent = formatEnergyAxis(value, useKwh);
+    chart.append(label);
+  }
+
+  const bucketWidth = plotWidth / buckets.length;
+  const barGroupWidth = bucketWidth * 0.76;
+  const barWidth = Math.max(1, barGroupWidth / chartChannels.length);
+  const colors = ["#21825d", "#d88b31", "#667ca8", "#bd6265", "#8061a0", "#318b91", "#4d809e", "#9b7557"];
+  chartChannels.forEach((channel, channelIndex) => {
+    const color = colors[channelIndex % colors.length];
+    channel.buckets.forEach((bucket, bucketIndex) => {
+      if (!Number.isFinite(bucket.energyWh)) return;
+      const bar = document.createElementNS(svgNamespace, "rect");
+      const x = padding.left + bucketIndex * bucketWidth +
+        (bucketWidth - barGroupWidth) / 2 + channelIndex * barWidth;
+      const y = pointY(bucket.energyWh);
+      bar.setAttribute("x", String(x));
+      bar.setAttribute("y", String(bucket.energyWh === 0 ? padding.top + plotHeight - 1.5 : y));
+      bar.setAttribute("width", String(Math.max(1, barWidth - 1)));
+      bar.setAttribute("height", String(bucket.energyWh === 0 ? 1.5 : padding.top + plotHeight - y));
+      bar.setAttribute("rx", "1.5");
+      bar.setAttribute("fill", color);
+      bar.setAttribute("class", "energy-chart-bar");
+      const title = document.createElementNS(svgNamespace, "title");
+      title.textContent = energyChannelLabel(channel) + " · " +
+        formatEnergyBucketTime(bucket.fromUtc, state.energyRange) + " · " +
+        formatEnergyValue(bucket.energyWh) + " · " +
+        tr("energyCoverage", { percent: formatPercent(bucket.coveragePercent) });
+      bar.append(title);
+      chart.append(bar);
+    });
+
+    const legendItem = document.createElement("span");
+    legendItem.className = "chart-legend-item";
+    const swatch = document.createElement("span");
+    swatch.className = "chart-legend-swatch";
+    swatch.style.backgroundColor = color;
+    const label = document.createElement("span");
+    label.textContent = energyChannelLabel(channel);
+    legendItem.append(swatch, label);
+    legend.append(legendItem);
+  });
+
+  const labelStride = Math.max(1, Math.ceil(buckets.length / 6));
+  buckets.forEach((bucket, index) => {
+    if (index % labelStride !== 0 && index !== buckets.length - 1) return;
+    const label = document.createElementNS(svgNamespace, "text");
+    label.setAttribute("x", String(padding.left + (index + 0.5) * bucketWidth));
+    label.setAttribute("y", String(height - 9));
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("class", "history-axis-label");
+    label.textContent = formatEnergyBucketTime(bucket.fromUtc, state.energyRange);
+    chart.append(label);
+  });
+}
+
+function energyChannelLabel(channel) {
+  return channel.sensorId === "shelly-pc-input"
+    ? tr("pcTotalHeading")
+    : sensorLabel(channel);
+}
+
+function energyMethodLabel(method) {
+  const keys = {
+    "meter-counter": "energyMethodMeter",
+    "session-counter": "energyMethodSession",
+    "measured-power-integration": "energyMethodIntegrated",
+    mixed: "energyMethodMixed",
+    none: "energyMethodNone"
+  };
+  return tr(keys[method] ?? "energyMethodNone");
+}
+
+function formatEnergyValue(energyWh) {
+  if (!Number.isFinite(energyWh) || energyWh < 0) return tr("none");
+  const useKwh = energyWh >= 1_000;
+  const value = useKwh ? energyWh / 1_000 : energyWh;
+  const formatted = new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", {
+    maximumFractionDigits: useKwh ? 3 : 1
+  }).format(value);
+  return formatted + " " + (useKwh ? "kWh" : "Wh");
+}
+
+function formatEnergyAxis(value, useKwh) {
+  const formatted = new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", {
+    maximumFractionDigits: useKwh ? 2 : 1
+  }).format(value);
+  return formatted + " " + (useKwh ? "kWh" : "Wh");
+}
+
+function formatPercent(value) {
+  if (!Number.isFinite(value)) return "0";
+  return new Intl.NumberFormat(state.language === "vi" ? "vi-VN" : "en-US", {
+    maximumFractionDigits: 1
+  }).format(Math.max(0, Math.min(100, value)));
+}
+
+function formatEnergyBucketTime(timestamp, range) {
+  const options = range === "1h"
+    ? { hour: "2-digit", minute: "2-digit" }
+    : range === "24h"
+      ? { hour: "2-digit" }
+      : { month: "short", day: "numeric" };
+  return new Intl.DateTimeFormat(state.language === "vi" ? "vi-VN" : "en-US", options)
+    .format(new Date(timestamp));
+}
+
 function formatHistoryTime(timestamp, range) {
   const options = { hour: "2-digit", minute: "2-digit" };
   if (range === "7d") {
@@ -550,6 +814,7 @@ function downsampleHistory(samples, limit = 500) {
 
 function sensorLabel(reading) {
   const name = String(reading.name ?? "");
+  if (reading.sensorId === "shelly-pc-input") return tr("pcTotalHeading");
   if (name === "RAPL_Package0_PKG") return tr("sensorLabelPackage");
   if (name === "RAPL_Package0_PP0") return tr("sensorLabelCores");
   if (name === "RAPL_Package0_DRAM") return tr("sensorLabelDram");
@@ -1143,8 +1408,14 @@ $("#history-range").addEventListener("change", (event) => {
   state.historyRange = event.currentTarget.value;
   void refreshHistory();
 });
+$("#energy-range").addEventListener("change", (event) => {
+  state.energyRange = event.currentTarget.value;
+  void refreshEnergyHistory();
+});
 applyLanguage();
 refreshSensors();
 refreshHistory();
+refreshEnergyHistory();
 setInterval(refreshSensors, 3000);
 setInterval(refreshHistory, 30000);
+setInterval(refreshEnergyHistory, 30000);
