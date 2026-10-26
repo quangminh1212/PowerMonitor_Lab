@@ -394,7 +394,7 @@ function Get-NvidiaPowerReadings {
 }
 
 $inventory = if ($IncludeInventory) { Get-ComputerInventory } else { $null }
-$inventoryRefreshInterval = [TimeSpan]::FromSeconds(15)
+$inventoryRefreshInterval = [TimeSpan]::FromMinutes(10)
 $lastInventoryRefreshUtc = [DateTime]::UtcNow
 Write-SensorDebug "sensor helper ready"
 while ($true) {
@@ -428,5 +428,5 @@ while ($true) {
     } catch {
         [Console]::Error.WriteLine("Hardware sensor sampling failed.")
     }
-    Start-Sleep -Milliseconds 2000
+    Start-Sleep -Milliseconds 5000
 }

@@ -23,11 +23,12 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 ## What it does
 
 - On Windows, discovers hardware exposed through the Windows Energy Metering Interface (EMI) and shows cumulative energy channels with average watts between samples.
+- Samples built-in Windows sensors every five seconds and refreshes device inventory every ten minutes to reduce background work.
 - On Windows, reads the last measured GPU board power from `nvidia-smi` when an NVIDIA driver provides it.
 - Shows per-channel session energy where a sensor provides it; CPU, DRAM, and GPU channels stay separate and are not a whole-PC outlet total.
 - On Windows, optionally reads additional hardware `Power` sensors from the local LibreHardwareMonitor web server.
-- On Windows, automatically looks for compatible Shelly meters advertised on the local network, then reads whole-PC active watts and energy every three seconds. If several meters are found, choose the one connected only to the PC.
-- Refreshes the live sensor dashboard automatically every three seconds while the local app is running.
+- On Windows, automatically looks for compatible Shelly meters advertised on the local network, then reads whole-PC active watts and energy every five seconds. If several meters are found, choose the one connected only to the PC.
+- Refreshes the live sensor dashboard every five seconds while its browser tab is visible, and pauses dashboard polling while the tab is hidden.
 - On Windows, the sidebar toggle registers Power Monitor to start for the current user at sign-in, without administrator access. It runs the local server hidden and opens the dashboard in the default browser unless the app was started with `--no-open`.
 - Saves finite automatic sensor readings every 30 seconds to local daily history files. The dashboard charts live power history and reports per-channel energy for the past hour, 24 hours, 7 days, or 30 days. Energy prefers the outlet meter counter, then per-session energy deltas, and otherwise integrates measured watts between consecutive samples; gaps longer than 60 seconds are excluded. History is kept locally for 35 days.
 - Lists hardware devices Windows can identify, including the processor, graphics, memory, drives, monitors, keyboards, mice, and USB devices; marks devices without live watt telemetry.
@@ -126,7 +127,7 @@ npm start
 
 Package npm chưa được phát hành; hiện có thể chạy từ repo local bằng `npm start`. Yêu cầu Node.js 22 trở lên. Máy chủ tự chọn cổng local, in địa chỉ truy cập và mở trình duyệt. Nhấn **Ctrl+C** để dừng. Có thể dùng `--no-open` để chỉ in địa chỉ hoặc `--port 4317` để yêu cầu cổng cụ thể.
 
-Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng cũng đọc thêm cảm biến `Power` từ LibreHardwareMonitor nếu máy chủ cục bộ đang chạy, và tự tìm đồng hồ Shelly tương thích trong mạng nội bộ để đo điện đầu vào toàn PC. Dashboard tự cập nhật số đo mỗi ba giây khi ứng dụng đang chạy; không có chỗ nhập watt thủ công.
+Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp, đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ, và làm mới danh sách thiết bị mỗi 10 phút để giảm tải nền. Ứng dụng cũng đọc thêm cảm biến `Power` từ LibreHardwareMonitor nếu máy chủ cục bộ đang chạy, và tự tìm đồng hồ Shelly tương thích trong mạng nội bộ để đo điện đầu vào toàn PC. Dashboard tự cập nhật số đo mỗi năm giây khi tab đang hiển thị và tạm dừng hỏi máy chủ khi tab bị ẩn; không có chỗ nhập watt thủ công.
 
 Trên Windows, công tắc **Khởi động cùng Windows** đăng ký ứng dụng chạy khi tài khoản hiện tại đăng nhập, không cần quyền quản trị viên. Ứng dụng chạy máy chủ cục bộ ở chế độ ẩn và mở dashboard bằng trình duyệt mặc định, trừ khi phiên hiện tại được chạy với `--no-open`.
 

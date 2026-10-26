@@ -1822,6 +1822,18 @@ applyLanguage();
 refreshSensors();
 refreshHistory();
 refreshEnergyHistory();
-setInterval(refreshSensors, 3000);
-setInterval(refreshHistory, 30000);
-setInterval(refreshEnergyHistory, 30000);
+setInterval(() => {
+  if (!document.hidden) refreshSensors();
+}, 5000);
+setInterval(() => {
+  if (!document.hidden) refreshHistory();
+}, 30000);
+setInterval(() => {
+  if (!document.hidden) refreshEnergyHistory();
+}, 30000);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  refreshSensors();
+  refreshHistory();
+  refreshEnergyHistory();
+});
