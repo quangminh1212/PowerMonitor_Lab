@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#f3f6f4">
+  <meta name="theme-color" content="#102f28">
   <meta name="description" content="Theo dõi tự động công suất các cảm biến có trên máy tính của bạn.">
   <title data-i18n="documentTitle">Power Monitor · Công suất máy tính</title>
   <link rel="stylesheet" href="/app.css">
@@ -21,15 +21,21 @@
         <span class="brand-copy"><strong>Power Monitor</strong><small data-i18n="localApp">THEO DÕI CỤC BỘ</small></span>
       </a>
       <nav class="main-nav" aria-label="Điều hướng chính" data-i18n-aria-label="mainNavigation">
-        <a href="#overview" data-i18n="overview">Đang đo</a>
-        <a href="#hardware-inventory" data-i18n="deviceNav">Thiết bị</a>
+        <a href="#overview">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h6.5V12H4zM13.5 5.5H20V9h-6.5zM13.5 12H20v6.5h-6.5zM4 15.5h6.5v3H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 8.2h.7M16.5 14.5h.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <span data-i18n="overview">Đang đo</span>
+        </a>
+        <a href="#hardware-inventory">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="4" width="17" height="12" rx="1.8" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8m-4-4v4m-5-9 2.3-3 2 2 2.3-3 2.4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="deviceNav">Thiết bị</span>
+        </a>
       </nav>
       <div class="topbar-actions">
         <div class="language-toggle" role="group" aria-label="Ngôn ngữ" data-i18n-aria-label="language">
           <button type="button" class="language-button" data-language="vi" aria-pressed="true">VI</button>
           <button type="button" class="language-button" data-language="en" aria-pressed="false">EN</button>
         </div>
-        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span><span data-i18n="localHost">Đang chạy trên máy này</span></span>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span><span class="local-status-text" data-i18n="localHost">Đang chạy trên máy này</span></span>
       </div>
     </header>
 
@@ -53,6 +59,7 @@
             <span id="sensor-status" class="sensor-status" data-state="starting" data-i18n="sensorStatusStarting">Đang dò</span>
           </div>
           <p id="sensor-description" class="sensor-description" data-i18n="sensorIntro">Đang tìm cảm biến công suất trên máy tính này.</p>
+          <div class="power-overview-grid">
           <section class="pc-total-card" data-state="missing" aria-labelledby="pc-total-heading">
             <div class="pc-total-copy">
               <p class="eyebrow" data-i18n="pcTotalEyebrow">TOÀN BỘ PC</p>
@@ -77,6 +84,7 @@
               <span id="component-subtotal-state" data-i18n="componentSubtotalMissing">Đang chờ cảm biến</span>
             </div>
           </section>
+          </div>
 
           <section class="meter-connection" aria-label="Automatic meter connection">
             <p id="meter-discovery-status" class="meter-discovery-status" role="status" aria-live="polite" data-state="searching">
@@ -132,6 +140,7 @@
           </details>
         </section>
 
+        <div class="analytics-grid" id="energy-analytics">
         <section class="energy-panel panel" aria-labelledby="energy-heading">
           <div class="panel-heading energy-heading">
             <div>
@@ -198,6 +207,7 @@
             <span id="history-sample-rate">Tự ghi mỗi 30 giây</span>
           </footer>
         </section>
+        </div>
 
         <footer class="page-footer">
           <span data-i18n="footerLeft">POWER MONITOR LAB · LƯU CỤC BỘ</span>
