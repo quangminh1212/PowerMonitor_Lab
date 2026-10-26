@@ -134,7 +134,7 @@ function relaunchHidden(args) {
 }
 
 function parseArguments(args) {
-  const options = { port: 0, noOpen: false, help: false };
+  const options = { port: 62474, noOpen: false, help: false };
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index];
     if (argument === "--help" || argument === "-h") {
@@ -198,7 +198,7 @@ Usage:
   npx power-monitor-lab [options]
 
 Options:
-  --port <0-65535>  Listen on this loopback port (default: choose an available port)
+  --port <0-65535>  Listen on this loopback port (default: 62474)
   --no-open         Print the local URL without opening a browser
   -h, --help        Show this help
 
