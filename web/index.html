@@ -31,6 +31,17 @@
         </a>
       </nav>
       <div class="topbar-actions">
+        <button id="startup-toggle" class="startup-toggle" type="button" aria-pressed="false" data-i18n-aria-label="startupLabel" disabled>
+          <span class="startup-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v8m5.66-5.66a8 8 0 1 1-11.32 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <span class="startup-copy">
+            <strong data-i18n="startupLabel">Khởi động cùng Windows</strong>
+            <small id="startup-status" data-i18n="startupChecking">Đang kiểm tra cài đặt…</small>
+          </span>
+          <span class="startup-switch" aria-hidden="true"><span></span></span>
+        </button>
+        <span id="startup-announcement" class="sr-only" role="status" aria-live="polite"></span>
         <div class="language-toggle" role="group" aria-label="Ngôn ngữ" data-i18n-aria-label="language">
           <button type="button" class="language-button" data-language="vi" aria-pressed="true">VI</button>
           <button type="button" class="language-button" data-language="en" aria-pressed="false">EN</button>

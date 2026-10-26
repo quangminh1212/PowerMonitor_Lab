@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import { execFile, spawn } from "node:child_process";
+import { spawn } from "node:child_process";
 import { Console } from "node:console";
 import fs from "node:fs";
 import path from "node:path";
 import { startLocalApp } from "../lib/server.js";
+import { ensureWindowsLauncherHelper } from "../lib/windows-startup.js";
 
 async function main() {
   const options = parseArguments(process.argv.slice(2));
@@ -15,7 +16,15 @@ async function main() {
   if (process.env.POWER_MONITOR_DETACHED === "1") bindDetachedLog();
   else if (await relaunchHidden(process.argv.slice(2))) return;
 
-  const app = await startLocalApp({ port: options.port });
+  const app = await startLocalApp({
+    port: options.port,
+    autoStart: {
+      entryPoint: path.resolve(process.argv[1]),
+      nodeExecutable: process.execPath,
+      openDashboard: !options.noOpen,
+      workingDirectory: process.cwd()
+    }
+  });
   console.log("Power Monitor Lab is running locally.");
   console.log(`Open: ${app.origin}`);
   console.log("Data stays on this device. Press Ctrl+C to stop the local server.");
@@ -47,48 +56,6 @@ async function main() {
   process.on("SIGTERM", () => { void shutdown(); });
 }
 
-const hiddenHelperSource = [
-  "using System.Diagnostics;",
-  "using System.Management;",
-  "using System.Text;",
-  "static class Program {",
-  "  static int Main(string[] args) {",
-  "    if (args.Length > 0 && args[0] == \"direct\") return StartNode(args);",
-  "    return Schedule(args);",
-  "  }",
-  "  static int Schedule(string[] args) {",
-  "    var command = new StringBuilder();",
-  "    var exe = Process.GetCurrentProcess().MainModule.FileName;",
-  "    command.Append('\"').Append(exe).Append('\"').Append(\" direct\");",
-  "    foreach (var arg in args) command.Append(' ').Append('\"').Append(arg).Append('\"');",
-  "    var processClass = new ManagementClass(\"Win32_Process\");",
-  "    var input = processClass.GetMethodParameters(\"Create\");",
-  "    input[\"CommandLine\"] = command.ToString();",
-  "    var output = processClass.InvokeMethod(\"Create\", input, null);",
-  "    return (uint)output[\"ReturnValue\"] == 0 ? 0 : 1;",
-  "  }",
-  "  static int StartNode(string[] args) {",
-  "    if (args.Length < 4) return 2;",
-  "    var start = new ProcessStartInfo();",
-  "    start.FileName = args[2];",
-  "    start.WorkingDirectory = args[1];",
-  "    start.UseShellExecute = false;",
-  "    start.CreateNoWindow = true;",
-  "    start.WindowStyle = ProcessWindowStyle.Hidden;",
-  "    start.EnvironmentVariables[\"POWER_MONITOR_DETACHED\"] = \"1\";",
-  "    var command = new StringBuilder();",
-  "    for (int index = 3; index < args.Length; index++) {",
-  "      if (index > 3) command.Append(' ');",
-  "      command.Append('\"').Append(args[index]).Append('\"');",
-  "    }",
-  "    start.Arguments = command.ToString();",
-  "    var process = Process.Start(start);",
-  "    return process == null ? 1 : 0;",
-  "  }",
-  "}",
-  ""
-].join("\n");
-
 function bindDetachedLog() {
   const logDir = path.join(process.env.LOCALAPPDATA || process.env.TEMP || ".", "dev-run-logs");
   fs.mkdirSync(logDir, { recursive: true });
@@ -98,20 +65,7 @@ function bindDetachedLog() {
 
 function relaunchHidden(args) {
   if (process.platform !== "win32") return Promise.resolve(false);
-  const helper = path.join(process.env.TEMP || ".", "power-monitor-hidden.exe");
-  const sourcePath = path.join(process.env.TEMP || ".", "power-monitor-hidden.cs");
-  const compile = fs.existsSync(helper) && fs.existsSync(sourcePath) && fs.readFileSync(sourcePath, "utf8") === hiddenHelperSource
-    ? Promise.resolve()
-    : new Promise((resolve, reject) => {
-      fs.mkdirSync(path.dirname(helper), { recursive: true });
-      fs.writeFileSync(sourcePath, hiddenHelperSource);
-      const compiler = path.join(process.env.WINDIR || "C:\\Windows", "Microsoft.NET", "Framework64", "v4.0.30319", "csc.exe");
-      execFile(compiler, ["/nologo", "/target:winexe", "/r:System.Management.dll", `/out:${helper}`, sourcePath], { windowsHide: true }, (error) => {
-        if (error) reject(error);
-        else resolve();
-      });
-    });
-  return compile.then(() => new Promise((resolve, reject) => {
+  return ensureWindowsLauncherHelper().then((helper) => new Promise((resolve, reject) => {
     // Windows-subsystem helper starts the server with CREATE_NO_WINDOW, so Windows Terminal never opens a console.
     const child = spawn(helper, [process.cwd(), process.execPath, process.argv[1], ...args], {
       windowsHide: true,

@@ -11,6 +11,15 @@ const translations = {
     detailsHeading: "Sensors and devices",
     detailsCaption: "Inspect each measured channel, detected device, and data source.",
     language: "Language",
+    startupLabel: "Start with Windows",
+    startupChecking: "Checking startup setting…",
+    startupEnabled: "Opens after you sign in",
+    startupDisabled: "Off · start it when needed",
+    startupUnsupported: "Available on Windows only",
+    startupLoadError: "Could not read startup setting",
+    startupChangeError: "Could not change startup setting",
+    startupEnabledNotice: "Power Monitor will open after you sign in to Windows.",
+    startupDisabledNotice: "Power Monitor will no longer start with Windows.",
     localHost: "Running on this PC",
     privateBody: "Data stays on this computer.",
     footerLeft: "POWER MONITOR LAB · LOCAL ONLY",
@@ -210,6 +219,15 @@ const translations = {
     detailsHeading: "Cảm biến và thiết bị",
     detailsCaption: "Xem từng kênh đo, thiết bị được nhận diện và nguồn dữ liệu.",
     language: "Ngôn ngữ",
+    startupLabel: "Khởi động cùng Windows",
+    startupChecking: "Đang kiểm tra cài đặt…",
+    startupEnabled: "Sẽ mở khi bạn đăng nhập",
+    startupDisabled: "Đang tắt · mở ứng dụng thủ công",
+    startupUnsupported: "Chỉ hỗ trợ trên Windows",
+    startupLoadError: "Không đọc được cài đặt khởi động",
+    startupChangeError: "Không đổi được cài đặt khởi động",
+    startupEnabledNotice: "Power Monitor sẽ mở khi bạn đăng nhập Windows.",
+    startupDisabledNotice: "Power Monitor sẽ không còn tự mở cùng Windows.",
     localHost: "Đang chạy trên máy này",
     privateBody: "Dữ liệu chỉ lưu cục bộ trên máy tính.",
     footerLeft: "POWER MONITOR LAB · LƯU CỤC BỘ",
@@ -499,7 +517,15 @@ const state = {
   history: null,
   historyRange: "1h",
   meterFormOpen: false,
-  meterConnectionErrorUntil: 0
+  meterConnectionErrorUntil: 0,
+  autoStart: {
+    supported: false,
+    enabled: false,
+    loading: true,
+    busy: false,
+    error: "",
+    announcement: ""
+  }
 };
 const $ = (selector) => document.querySelector(selector);
 
@@ -526,6 +552,7 @@ function applyLanguage() {
   renderSensors();
   renderEnergyHistory();
   renderHistory();
+  renderAutoStart();
 }
 
 function activeViewFromHash() {
@@ -561,6 +588,84 @@ async function requestJson(path, options = {}) {
     throw new Error(validation || body.detail || body.title || `HTTP ${response.status}`);
   }
   return body;
+}
+
+function renderAutoStart() {
+  const button = $("#startup-toggle");
+  const status = $("#startup-status");
+  const announcement = $("#startup-announcement");
+  if (!button || !status || !announcement) return;
+
+  const setting = state.autoStart;
+  const statusKey = setting.loading
+    ? "startupChecking"
+    : setting.error === "load"
+      ? "startupLoadError"
+      : !setting.supported
+        ? "startupUnsupported"
+        : setting.error
+          ? "startupChangeError"
+          : setting.enabled
+            ? "startupEnabled"
+            : "startupDisabled";
+  const statusText = tr(statusKey);
+  button.disabled = setting.loading || setting.busy || !setting.supported;
+  button.classList.toggle("is-enabled", setting.supported && setting.enabled);
+  button.setAttribute("aria-pressed", String(setting.enabled));
+  button.setAttribute("aria-label", `${tr("startupLabel")}: ${statusText}`);
+  button.title = `${tr("startupLabel")}: ${statusText}`;
+  status.textContent = setting.busy
+    ? tr("startupChecking")
+    : statusText;
+  announcement.textContent = setting.announcement ? tr(setting.announcement) : "";
+}
+
+async function refreshAutoStart() {
+  state.autoStart.loading = true;
+  state.autoStart.error = "";
+  renderAutoStart();
+  try {
+    const status = await requestJson("/api/startup");
+    state.autoStart.supported = status.supported === true;
+    state.autoStart.enabled = status.enabled === true;
+  } catch {
+    state.autoStart.supported = false;
+    state.autoStart.enabled = false;
+    state.autoStart.error = "load";
+  } finally {
+    state.autoStart.loading = false;
+    renderAutoStart();
+  }
+}
+
+async function toggleAutoStart() {
+  const setting = state.autoStart;
+  if (!setting.supported || setting.loading || setting.busy) return;
+
+  const enabled = !setting.enabled;
+  setting.busy = true;
+  setting.error = "";
+  setting.announcement = "";
+  renderAutoStart();
+  try {
+    const status = await requestJson("/api/startup", {
+      method: "POST",
+      body: JSON.stringify({ enabled })
+    });
+    setting.supported = status.supported === true;
+    setting.enabled = status.enabled === true;
+    setting.announcement = setting.enabled ? "startupEnabledNotice" : "startupDisabledNotice";
+  } catch {
+    setting.error = "change";
+  } finally {
+    setting.busy = false;
+    renderAutoStart();
+  }
+}
+
+function initializeAutoStartControls() {
+  $("#startup-toggle")?.addEventListener("click", () => void toggleAutoStart());
+  void refreshAutoStart();
 }
 
 async function refreshSensors() {
@@ -1711,6 +1816,7 @@ $("#energy-range").addEventListener("change", (event) => {
   void refreshEnergyHistory();
 });
 initializeTariffControls();
+initializeAutoStartControls();
 renderView();
 applyLanguage();
 refreshSensors();
