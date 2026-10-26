@@ -21,7 +21,7 @@ async function main() {
     autoStart: {
       entryPoint: path.resolve(process.argv[1]),
       nodeExecutable: process.execPath,
-      openDashboard: !options.noOpen,
+      openDashboard: false,
       workingDirectory: process.cwd()
     }
   });
