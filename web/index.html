@@ -21,13 +21,13 @@
         <span class="brand-copy"><strong>Power Monitor</strong><small data-i18n="localApp">THEO DÕI CỤC BỘ</small></span>
       </a>
       <nav class="main-nav" aria-label="Điều hướng chính" data-i18n-aria-label="mainNavigation">
-        <a href="#overview">
+        <a href="#overview" data-view-link="overview">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h6.5V12H4zM13.5 5.5H20V9h-6.5zM13.5 12H20v6.5h-6.5zM4 15.5h6.5v3H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 8.2h.7M16.5 14.5h.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <span data-i18n="overview">Đang đo</span>
+          <span data-i18n="overview">Tổng quan</span>
         </a>
-        <a href="#hardware-inventory">
+        <a href="#details" data-view-link="details">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="4" width="17" height="12" rx="1.8" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8m-4-4v4m-5-9 2.3-3 2 2 2.3-3 2.4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-i18n="deviceNav">Thiết bị</span>
+          <span data-i18n="deviceNav">Chi tiết</span>
         </a>
       </nav>
       <div class="topbar-actions">
@@ -41,7 +41,7 @@
 
     <main class="main-content" id="main-content">
       <div class="page-content" id="overview">
-        <section class="page-heading" aria-labelledby="page-title">
+        <section class="page-heading" aria-labelledby="page-title" data-view-panel="overview">
           <div>
             <p class="eyebrow" data-i18n="measurementNotebook">MÁY TÍNH NÀY</p>
             <h1 id="page-title" data-i18n="title">Công suất máy tính</h1>
@@ -50,7 +50,7 @@
           <p class="refresh-caption" id="refresh-caption" data-i18n="autoRefresh">Tự cập nhật mỗi 3 giây</p>
         </section>
 
-        <section class="panel sensor-panel" aria-labelledby="sensor-heading">
+        <section class="panel sensor-panel" aria-labelledby="sensor-heading" data-view-panel="overview">
           <div class="panel-heading sensor-heading">
             <div>
               <p class="eyebrow" data-i18n="sensorEyebrow">SỐ ĐO CẢM BIẾN</p>
@@ -115,6 +115,15 @@
             </form>
           </section>
 
+        </section>
+
+        <section class="panel details-panel" id="details" aria-labelledby="details-heading" data-view-panel="details" hidden>
+          <div class="details-heading">
+            <p class="eyebrow" data-i18n="detailsEyebrow">CHI TIẾT</p>
+            <h2 id="details-heading" data-i18n="detailsHeading">Cảm biến và thiết bị</h2>
+            <p class="history-caption" data-i18n="detailsCaption">Xem từng kênh đo, thiết bị được nhận diện và nguồn dữ liệu.</p>
+          </div>
+
           <section class="component-readings" aria-labelledby="component-readings-heading">
             <h3 id="component-readings-heading" class="component-readings-heading" data-i18n="sensorReadingsHeading">Công suất đo trực tiếp</h3>
             <p class="component-readings-note" data-i18n="sensorReadingsNote">Mỗi số là một kênh riêng; không cộng các kênh để suy ra tổng PC.</p>
@@ -140,8 +149,74 @@
           </details>
         </section>
 
+        <section class="panel cost-panel" aria-labelledby="cost-heading" data-view-panel="overview">
+          <div class="panel-heading cost-heading">
+            <div>
+              <p class="eyebrow" data-i18n="costEyebrow">CHI PHÍ ĐIỆN</p>
+              <h2 id="cost-heading" data-i18n="costHeading">Ước tính tiền điện</h2>
+              <p id="cost-period" class="history-caption" data-i18n="costPeriod">Theo khoảng thời gian đang chọn.</p>
+            </div>
+            <button id="tariff-toggle" class="secondary-button" type="button" aria-expanded="false" aria-controls="tariff-panel" data-i18n="tariffSettings">Cài đặt giá</button>
+          </div>
+          <div class="cost-content">
+            <div class="cost-total">
+              <strong id="cost-value">—</strong>
+              <span id="cost-rate"></span>
+              <p id="cost-energy" class="cost-meta" data-i18n="costWaiting">Đang tải điện năng đã ghi.</p>
+            </div>
+            <div class="cost-channel-field">
+              <label for="cost-channel" data-i18n="costChannelLabel">Kênh tính chi phí</label>
+              <select id="cost-channel" name="cost-channel" disabled></select>
+              <p id="cost-channel-note" class="cost-meta" data-i18n="costChannelNote">Chỉ tính kênh đã chọn.</p>
+            </div>
+          </div>
+          <p id="cost-note" class="cost-note" data-i18n="costNote">Ước tính riêng cho kênh linh kiện đã chọn, chưa phải chi phí cả PC. Chưa gồm VAT và các khoản phí khác.</p>
+          <div id="tariff-panel" class="tariff-panel" hidden>
+            <form id="tariff-form" class="tariff-form">
+              <div class="tariff-field">
+                <label for="tariff-market" data-i18n="tariffMarketLabel">Thị trường giá điện</label>
+                <select id="tariff-market" name="market">
+                  <option value="vn" data-i18n="tariffVietnam">Việt Nam · EVN sinh hoạt</option>
+                  <option value="custom" data-i18n="tariffCustom">Quốc tế / tự nhập</option>
+                </select>
+              </div>
+              <div id="vn-tariff-fields" class="tariff-field">
+                <label for="vn-tier" data-i18n="tariffTierLabel">Bậc giá EVN đang áp dụng</label>
+                <select id="vn-tier" name="tier">
+                  <option value="0" data-i18n="tariffTier1">Bậc 1 · 0–50 kWh</option>
+                  <option value="1" data-i18n="tariffTier2">Bậc 2 · 51–100 kWh</option>
+                  <option value="2" data-i18n="tariffTier3">Bậc 3 · 101–200 kWh</option>
+                  <option value="3" data-i18n="tariffTier4">Bậc 4 · 201–300 kWh</option>
+                  <option value="4" data-i18n="tariffTier5">Bậc 5 · 301–400 kWh</option>
+                  <option value="5" data-i18n="tariffTier6">Bậc 6 · trên 400 kWh</option>
+                </select>
+                <p class="tariff-help" data-i18n="tariffVietnamHelp">Biểu giá EVN sinh hoạt công bố ngày 10/05/2025; chọn bậc cận biên theo hóa đơn hộ gia đình.</p>
+                <a class="tariff-source" href="https://en.evn.com.vn/d/en-US/news/RETAIL%20ELECTRICITY%20TARIFF-60-28-252" target="_blank" rel="noopener noreferrer" data-i18n="tariffVietnamSource">Xem biểu giá EVN</a>
+              </div>
+              <div id="custom-tariff-fields" class="tariff-custom-grid" hidden>
+                <div class="tariff-field">
+                  <label for="tariff-country" data-i18n="tariffCountryLabel">Quốc gia / nhà cung cấp</label>
+                  <input id="tariff-country" name="country" type="text" maxlength="64" autocomplete="country-name" placeholder="e.g. United States">
+                </div>
+                <div class="tariff-field">
+                  <label for="tariff-currency" data-i18n="tariffCurrencyLabel">Mã tiền tệ</label>
+                  <input id="tariff-currency" name="currency" type="text" inputmode="text" maxlength="3" pattern="[A-Za-z]{3}" placeholder="USD" required>
+                </div>
+                <div class="tariff-field">
+                  <label for="tariff-price" data-i18n="tariffPriceLabel">Giá mỗi kWh</label>
+                  <input id="tariff-price" name="price" type="number" min="0" step="any" inputmode="decimal" required>
+                </div>
+                <p class="tariff-help" data-i18n="tariffCustomHelp">Use the price from your local utility bill; international rates vary by country and provider.</p>
+              </div>
+              <p id="tariff-rate-preview" class="tariff-rate-preview" aria-live="polite"></p>
+              <p id="tariff-saved" class="tariff-saved" role="status" aria-live="polite"></p>
+              <button class="primary-button" type="submit" data-i18n="tariffSave">Lưu cài đặt trên máy</button>
+            </form>
+          </div>
+        </section>
+
         <div class="analytics-grid" id="energy-analytics">
-        <section class="energy-panel panel" aria-labelledby="energy-heading">
+        <section class="energy-panel panel" aria-labelledby="energy-heading" data-view-panel="overview">
           <div class="panel-heading energy-heading">
             <div>
               <p class="eyebrow" data-i18n="energyEyebrow">TỔNG NĂNG LƯỢNG</p>
@@ -175,7 +250,7 @@
           </footer>
         </section>
 
-        <section class="history-panel panel" aria-labelledby="history-heading">
+        <section class="history-panel panel" aria-labelledby="history-heading" data-view-panel="details" hidden>
           <div class="panel-heading history-heading">
             <div>
               <p class="eyebrow" data-i18n="historyEyebrow">LỊCH SỬ TỰ ĐỘNG</p>

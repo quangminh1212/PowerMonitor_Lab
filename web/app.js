@@ -4,8 +4,12 @@ const translations = {
     skipToContent: "Skip to content",
     localApp: "LOCAL MONITOR",
     mainNavigation: "Main navigation",
-    deviceNav: "Devices",
-    overview: "Live readings",
+    deviceNav: "Details",
+    overview: "Overview",
+    details: "Details",
+    detailsEyebrow: "DETAILS",
+    detailsHeading: "Sensors and devices",
+    detailsCaption: "Inspect each measured channel, detected device, and data source.",
     language: "Language",
     localHost: "Running on this PC",
     privateBody: "Data stays on this computer.",
@@ -118,6 +122,42 @@ const translations = {
     estimateDetails: "Estimate details · not measured",
     technicalSources: "Sensor sources and details",
     sensorLhmHint: "LibreHardwareMonitor can add any additional live power channels this PC exposes.",
+    costEyebrow: "ELECTRICITY COST",
+    costHeading: "Estimated electricity cost",
+    costPeriod: "Period: {period}",
+    costWaiting: "Loading recorded energy.",
+    costNoEnergy: "No energy data is available for this period.",
+    costNoRate: "Set a price per kWh to calculate cost.",
+    costChannelLabel: "Calculate from channel",
+    costChannelNote: "Only the selected measurement channel is used.",
+    costMeterChannelNote: "Whole-PC input measured by the outlet meter.",
+    costComponentChannelNote: "Partial component reading for {channel}; this is not whole-PC cost.",
+    costEnergyLine: "Recorded energy: {energy}",
+    costPerKwh: "Rate: {rate} / kWh",
+    costNote: "Estimated for the selected component channel only; it is not total PC cost. Taxes and other fees are not included.",
+    costMeterNote: "Whole-PC estimate from the dedicated outlet meter. Taxes and other fees are not included.",
+    tariffSettings: "Set rate",
+    tariffMarketLabel: "Electricity market",
+    tariffVietnam: "Vietnam · EVN residential",
+    tariffCustom: "International / custom",
+    tariffTierLabel: "EVN residential tier",
+    tariffTier1: "Tier 1 · 0–50 kWh",
+    tariffTier2: "Tier 2 · 51–100 kWh",
+    tariffTier3: "Tier 3 · 101–200 kWh",
+    tariffTier4: "Tier 4 · 201–300 kWh",
+    tariffTier5: "Tier 5 · 301–400 kWh",
+    tariffTier6: "Tier 6 · above 400 kWh",
+    tariffTierShort: "EVN tier {tier}",
+    tariffVietnamHelp: "EVN residential schedule published 10 May 2025. Choose the marginal tier shown on your household bill.",
+    tariffVietnamSource: "View EVN tariff table",
+    tariffCountryLabel: "Country / utility",
+    tariffCurrencyLabel: "Currency code",
+    tariffPriceLabel: "Price per kWh",
+    tariffCustomHelp: "Use the price from your local utility bill; international rates vary by country and provider.",
+    tariffSave: "Save on this computer",
+    tariffSaved: "Electricity price saved locally.",
+    tariffSaveError: "Could not save this setting in local storage.",
+    tariffCustomRequired: "Enter the country, a three-letter currency code, and a valid price per kWh.",
     energyEyebrow: "ENERGY USE",
     energyHeading: "Energy consumption",
     energyCaption: "Totals are calculated for the selected period from automatically saved sensor readings.",
@@ -163,8 +203,12 @@ const translations = {
     skipToContent: "Bỏ qua điều hướng",
     localApp: "THEO DÕI CỤC BỘ",
     mainNavigation: "Điều hướng chính",
-    deviceNav: "Thiết bị",
-    overview: "Đang đo",
+    deviceNav: "Chi tiết",
+    overview: "Tổng quan",
+    details: "Chi tiết",
+    detailsEyebrow: "CHI TIẾT",
+    detailsHeading: "Cảm biến và thiết bị",
+    detailsCaption: "Xem từng kênh đo, thiết bị được nhận diện và nguồn dữ liệu.",
     language: "Ngôn ngữ",
     localHost: "Đang chạy trên máy này",
     privateBody: "Dữ liệu chỉ lưu cục bộ trên máy tính.",
@@ -277,6 +321,42 @@ const translations = {
     estimateDetails: "Chi tiết ước tính · không phải số đo",
     technicalSources: "Nguồn cảm biến và chi tiết",
     sensorLhmHint: "LibreHardwareMonitor có thể bổ sung các kênh công suất trực tiếp mà PC này hỗ trợ.",
+    costEyebrow: "CHI PHÍ ĐIỆN",
+    costHeading: "Ước tính tiền điện",
+    costPeriod: "Khoảng: {period}",
+    costWaiting: "Đang tải điện năng đã ghi.",
+    costNoEnergy: "Chưa có dữ liệu điện năng trong khoảng này.",
+    costNoRate: "Hãy cài giá mỗi kWh để tính chi phí.",
+    costChannelLabel: "Kênh dùng để tính",
+    costChannelNote: "Chỉ tính kênh cảm biến đang chọn.",
+    costMeterChannelNote: "Điện đầu vào cả PC đo bằng đồng hồ ổ cắm.",
+    costComponentChannelNote: "Số đo một phần của {channel}; chưa phải chi phí cả PC.",
+    costEnergyLine: "Điện năng đã ghi: {energy}",
+    costPerKwh: "Đơn giá: {rate} / kWh",
+    costNote: "Ước tính riêng cho kênh linh kiện đã chọn, chưa phải chi phí cả PC. Chưa gồm VAT và các khoản phí khác.",
+    costMeterNote: "Ước tính điện cả PC từ đồng hồ ổ cắm riêng. Chưa gồm VAT và các khoản phí khác.",
+    tariffSettings: "Cài giá",
+    tariffMarketLabel: "Thị trường giá điện",
+    tariffVietnam: "Việt Nam · EVN sinh hoạt",
+    tariffCustom: "Quốc tế / tự nhập",
+    tariffTierLabel: "Bậc giá EVN sinh hoạt",
+    tariffTier1: "Bậc 1 · 0–50 kWh",
+    tariffTier2: "Bậc 2 · 51–100 kWh",
+    tariffTier3: "Bậc 3 · 101–200 kWh",
+    tariffTier4: "Bậc 4 · 201–300 kWh",
+    tariffTier5: "Bậc 5 · 301–400 kWh",
+    tariffTier6: "Bậc 6 · trên 400 kWh",
+    tariffTierShort: "Bậc EVN {tier}",
+    tariffVietnamHelp: "Biểu giá sinh hoạt EVN công bố ngày 10/05/2025. Chọn bậc cận biên trên hóa đơn hộ gia đình.",
+    tariffVietnamSource: "Xem biểu giá EVN",
+    tariffCountryLabel: "Quốc gia / nhà cung cấp",
+    tariffCurrencyLabel: "Mã tiền tệ",
+    tariffPriceLabel: "Giá mỗi kWh",
+    tariffCustomHelp: "Nhập giá trên hóa đơn điện của bạn; giá quốc tế thay đổi theo quốc gia và nhà cung cấp.",
+    tariffSave: "Lưu trên máy này",
+    tariffSaved: "Đã lưu giá điện cục bộ trên máy.",
+    tariffSaveError: "Không lưu được cài đặt vào bộ nhớ cục bộ.",
+    tariffCustomRequired: "Nhập quốc gia, mã tiền tệ 3 chữ cái và giá mỗi kWh hợp lệ.",
     energyEyebrow: "TỔNG NĂNG LƯỢNG",
     energyHeading: "Điện năng theo thời gian",
     energyCaption: "Tổng theo khoảng đã chọn, được tính từ dữ liệu cảm biến tự lưu.",
@@ -388,8 +468,31 @@ function getSavedLanguage() {
     return "vi";
   }
 }
+const vietnamResidentialRates = [1984, 2050, 2380, 2998, 3350, 3460];
+function getSavedTariff() {
+  const fallback = { market: "vn", tier: 0, country: "", currency: "USD", price: "" };
+  try {
+    const saved = JSON.parse(localStorage.getItem("power-monitor-lab.tariff") ?? "null");
+    if (!saved || typeof saved !== "object") return fallback;
+    const tier = Number.parseInt(saved.tier, 10);
+    const currency = typeof saved.currency === "string" && /^[A-Za-z]{3}$/.test(saved.currency)
+      ? saved.currency.toUpperCase()
+      : fallback.currency;
+    return {
+      market: saved.market === "custom" ? "custom" : "vn",
+      tier: Number.isInteger(tier) ? Math.min(5, Math.max(0, tier)) : 0,
+      country: typeof saved.country === "string" ? saved.country.slice(0, 64) : "",
+      currency,
+      price: saved.price === "" || saved.price == null ? "" : String(saved.price)
+    };
+  } catch {
+    return fallback;
+  }
+}
 const state = {
   language: getSavedLanguage(),
+  tariff: getSavedTariff(),
+  costChannelId: "",
   sensors: null,
   energyHistory: null,
   energyRange: "24h",
@@ -423,6 +526,30 @@ function applyLanguage() {
   renderSensors();
   renderEnergyHistory();
   renderHistory();
+}
+
+function activeViewFromHash() {
+  const hash = decodeURIComponent(location.hash.slice(1));
+  if (hash === "details") return "details";
+  const target = hash ? document.getElementById(hash) : null;
+  return target?.closest('[data-view-panel="details"]') ? "details" : "overview";
+}
+
+function renderView() {
+  const activeView = activeViewFromHash();
+  document.querySelectorAll("[data-view-panel]").forEach((panel) => {
+    panel.hidden = panel.dataset.viewPanel !== activeView;
+  });
+  document.querySelectorAll("[data-view-link]").forEach((link) => {
+    const active = link.dataset.viewLink === activeView;
+    link.classList.toggle("active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+  const hash = decodeURIComponent(location.hash.slice(1));
+  if (activeView === "details" && hash && hash !== "details") {
+    requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
+  }
 }
 
 async function requestJson(path, options = {}) {
@@ -602,6 +729,7 @@ function renderEnergyHistory() {
   const channels = Array.isArray(state.energyHistory?.channels)
     ? state.energyHistory.channels
     : [];
+  renderCostPanel(channels);
   $("#energy-note").textContent = tr("energyNote");
   $("#energy-retention").textContent = tr("energyRetention", {
     days: state.energyHistory?.retentionDays ?? 35
@@ -742,6 +870,175 @@ function renderEnergyHistory() {
     label.setAttribute("class", "history-axis-label");
     label.textContent = formatEnergyBucketTime(bucket.fromUtc, state.energyRange);
     chart.append(label);
+  });
+}
+
+function selectedTariffPrice() {
+  if (state.tariff.market === "vn") return vietnamResidentialRates[state.tariff.tier] ?? null;
+  if (state.tariff.price === "") return null;
+  const price = Number(state.tariff.price);
+  return Number.isFinite(price) && price >= 0 ? price : null;
+}
+
+function formatCurrency(amount, currency = state.tariff.market === "vn" ? "VND" : state.tariff.currency) {
+  const locale = state.language === "vi" ? "vi-VN" : "en-US";
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      maximumFractionDigits: currency === "VND" ? 2 : 3
+    }).format(amount);
+  } catch {
+    return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(amount)} ${currency}`;
+  }
+}
+
+function renderCostPanel(channels) {
+  const selector = $("#cost-channel");
+  const value = $("#cost-value");
+  if (!selector || !value) return;
+
+  const available = channels.filter((channel) => Number.isFinite(channel.energyWh) && channel.energyWh >= 0);
+  if (!available.some((channel) => channel.sensorId === state.costChannelId)) {
+    const preferred = available.find((channel) => channel.sensorId === "shelly-pc-input") ??
+      available.find((channel) => channel.sensorId === "emi-0-0") ?? available[0];
+    state.costChannelId = preferred?.sensorId ?? "";
+  }
+
+  selector.replaceChildren();
+  for (const channel of available) {
+    const option = document.createElement("option");
+    option.value = channel.sensorId;
+    option.textContent = energyChannelLabel(channel);
+    selector.append(option);
+  }
+  selector.value = state.costChannelId;
+  selector.disabled = available.length === 0;
+
+  const channel = available.find((item) => item.sensorId === state.costChannelId);
+  const price = selectedTariffPrice();
+  const meterChannel = channel?.sensorId === "shelly-pc-input";
+  $("#cost-period").textContent = tr("costPeriod", {
+    period: tr({
+      "1h": "energyRange1h",
+      "24h": "energyRange24h",
+      "7d": "energyRange7d",
+      "30d": "energyRange30d"
+    }[state.energyRange] ?? "energyRange24h")
+  });
+  $("#cost-note").textContent = tr(meterChannel ? "costMeterNote" : "costNote");
+  $("#cost-channel-note").textContent = channel
+    ? tr(meterChannel ? "costMeterChannelNote" : "costComponentChannelNote", {
+      channel: energyChannelLabel(channel)
+    })
+    : tr("costChannelNote");
+  $("#cost-rate").textContent = price == null
+    ? tr("costNoRate")
+    : formatTariffLabel(price, state.tariff.market, state.tariff.tier, state.tariff.country);
+  $("#cost-energy").textContent = channel
+    ? tr("costEnergyLine", { energy: formatEnergyValue(channel.energyWh) })
+    : tr("costNoEnergy");
+  const totalCost = channel && price != null ? channel.energyWh / 1_000 * price : null;
+  value.textContent = Number.isFinite(totalCost) ? formatCurrency(totalCost) : "—";
+  renderTariffRatePreview();
+}
+
+function renderTariffRatePreview() {
+  const preview = $("#tariff-rate-preview");
+  if (!preview) return;
+  const market = $("#tariff-market")?.value ?? state.tariff.market;
+  if (market === "vn") {
+    const tier = Number.parseInt($("#vn-tier")?.value ?? String(state.tariff.tier), 10);
+    const price = vietnamResidentialRates[tier];
+    preview.textContent = Number.isFinite(price)
+      ? formatTariffLabel(price, "vn", tier, "")
+      : "";
+    return;
+  }
+  const priceInput = $("#tariff-price")?.value ?? state.tariff.price;
+  const price = priceInput === "" ? null : Number(priceInput);
+  const currency = ($("#tariff-currency")?.value ?? state.tariff.currency).trim().toUpperCase();
+  const country = $("#tariff-country")?.value.trim() ?? state.tariff.country;
+  preview.textContent = price != null && Number.isFinite(price) && price >= 0 && /^[A-Z]{3}$/.test(currency)
+    ? formatTariffLabel(price, "custom", 0, country, currency)
+    : tr("costNoRate");
+}
+
+function formatTariffLabel(price, market, tier, country, currency) {
+  const unit = formatCurrency(price, currency ?? (market === "vn" ? "VND" : state.tariff.currency));
+  const qualifier = market === "vn"
+    ? ` · ${tr("tariffTierShort", { tier: Number(tier) + 1 })}`
+    : country
+      ? ` · ${country}`
+      : "";
+  return `${tr("costPerKwh", { rate: unit })}${qualifier}`;
+}
+
+function syncTariffForm() {
+  const market = $("#tariff-market").value;
+  const vietnam = market === "vn";
+  $("#vn-tariff-fields").hidden = !vietnam;
+  $("#custom-tariff-fields").hidden = vietnam;
+  $("#tariff-country").required = !vietnam;
+  $("#tariff-currency").required = !vietnam;
+  $("#tariff-price").required = !vietnam;
+  renderTariffRatePreview();
+}
+
+function initializeTariffControls() {
+  $("#tariff-market").value = state.tariff.market;
+  $("#vn-tier").value = String(state.tariff.tier);
+  $("#tariff-country").value = state.tariff.country;
+  $("#tariff-currency").value = state.tariff.currency;
+  $("#tariff-price").value = state.tariff.price;
+  syncTariffForm();
+
+  $("#tariff-toggle").addEventListener("click", (event) => {
+    const button = event.currentTarget;
+    const panel = $("#tariff-panel");
+    panel.hidden = !panel.hidden;
+    button.setAttribute("aria-expanded", String(!panel.hidden));
+    if (!panel.hidden) $("#tariff-market").focus();
+  });
+  $("#tariff-market").addEventListener("change", syncTariffForm);
+  ["#vn-tier", "#tariff-country", "#tariff-currency", "#tariff-price"].forEach((selector) => {
+    $(selector).addEventListener("input", renderTariffRatePreview);
+    $(selector).addEventListener("change", renderTariffRatePreview);
+  });
+  $("#cost-channel").addEventListener("change", (event) => {
+    state.costChannelId = event.currentTarget.value;
+    renderCostPanel(state.energyHistory?.channels ?? []);
+  });
+  $("#tariff-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const market = $("#tariff-market").value;
+    const next = market === "vn"
+      ? { market, tier: Number.parseInt($("#vn-tier").value, 10), country: "", currency: "VND", price: "" }
+      : {
+        market,
+        tier: 0,
+        country: $("#tariff-country").value.trim(),
+        currency: $("#tariff-currency").value.trim().toUpperCase(),
+        price: $("#tariff-price").value
+      };
+    const validPrice = next.price !== "" && Number.isFinite(Number(next.price)) && Number(next.price) >= 0;
+    let validCurrency = false;
+    try {
+      new Intl.NumberFormat("en-US", { style: "currency", currency: next.currency }).format(0);
+      validCurrency = /^[A-Z]{3}$/.test(next.currency);
+    } catch {}
+    if (market === "custom" && (!next.country || !validPrice || !validCurrency)) {
+      $("#tariff-saved").textContent = tr("tariffCustomRequired");
+      return;
+    }
+    try {
+      localStorage.setItem("power-monitor-lab.tariff", JSON.stringify(next));
+      state.tariff = next;
+      $("#tariff-saved").textContent = tr("tariffSaved");
+      renderEnergyHistory();
+    } catch {
+      $("#tariff-saved").textContent = tr("tariffSaveError");
+    }
   });
 }
 
@@ -1337,6 +1634,7 @@ document.querySelectorAll("[data-language]").forEach((button) => button.addEvent
   } catch {}
   applyLanguage();
 }));
+window.addEventListener("hashchange", renderView);
 $("#meter-connect-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
@@ -1412,6 +1710,8 @@ $("#energy-range").addEventListener("change", (event) => {
   state.energyRange = event.currentTarget.value;
   void refreshEnergyHistory();
 });
+initializeTariffControls();
+renderView();
 applyLanguage();
 refreshSensors();
 refreshHistory();
