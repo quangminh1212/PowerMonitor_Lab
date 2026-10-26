@@ -155,6 +155,7 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .device-details { display: grid; min-width: 0; gap: 2px; }
 .device-details strong { overflow: hidden; color: #34473b; font-size: 13px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
 .device-details span { color: #68776f; font-size: 12px; }
+.device-details code { overflow-wrap: anywhere; color: #758178; font-family: ui-monospace, Consolas, monospace; font-size: 10px; }
 .device-capability { display: grid; min-width: 135px; flex: 0 0 auto; gap: 5px; text-align: right; }
 .device-capability > strong { color: #426a52; font-size: 12px; font-weight: 700; }
 .device-capability.is-shared > strong, .device-capability.is-unavailable > strong { color: #795e2d; }
@@ -170,11 +171,13 @@ details[open] > summary::after { transform: rotate(225deg) translate(-2px, -1px)
 .device-estimate > strong { color: #6f5b31; font-size: 11px; font-weight: 750; letter-spacing: .025em; }
 .device-estimate > span, .device-estimate > small { color: #596a5f; font-size: 12px; }
 .device-estimate .device-estimate-method { color: #657269; font-size: 12px; overflow-wrap: anywhere; }
+.device-estimate .device-estimate-energy { color: #526957; font-weight: 600; }
 .device-estimate-sources { display: flex; flex-wrap: wrap; gap: 5px 10px; }
 .device-estimate-sources a { color: #176c4b; font-size: 12px; overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 2px; }
 .estimate-included > span, .estimate-measured > span, .estimate-unavailable > span { color: #657269; }
 .estimate-allocated > strong, .estimate-modelled > strong, .estimate-range > strong { color: #715d2d; }
 .estimate-upper-bound > strong { color: #795a26; }
+.estimate-reference-range > strong { color: #715d2d; }
 .sensor-provider-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .sensor-provider-chip { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 6px 9px; color: #526158; background: #f7faf8; border: 1px solid #e3eae5; border-radius: 7px; font-size: 12px; }
 .sensor-provider-chip strong { color: #775c2d; font-weight: 650; }

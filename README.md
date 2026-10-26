@@ -66,7 +66,7 @@ Discovery sends only a local mDNS service query; it does not scan IP ranges or c
 
 ### Separate device estimate mode
 
-The sensor API attaches a `powerEstimate` object to each detected device without changing the `readings` array. The UI renders estimates in a separate column and labels their type and confidence. They are not persisted, graphed, integrated into watt-hours, or summed into a whole-PC figure.
+The sensor API attaches a `powerEstimate` object to each detected device without changing the `readings` array. The UI renders estimates in a separate column and labels their type and confidence. They are not persisted, graphed, or summed into a whole-PC figure. Windows PnP hardware IDs are shown in sanitized form (monitor model IDs or USB/HID VID/PID only); device instance IDs, which may contain serial numbers, are not exposed in the UI or sent to external services.
 
 The API also exposes `measuredSubtotalWatts` and `measuredSubtotalChannelCount`, which sum only the live CPU package and discrete NVIDIA GPU channels selected by the component energy tracker. This is a partial component subtotal; `totalPowerWatts` stays `null` until a dedicated PC outlet meter measures AC input.
 
@@ -74,10 +74,11 @@ The API also exposes `measuredSubtotalWatts` and `measuredSubtotalChannelCount`,
 - The Kingston A400 range uses the published idle/read/write figures. When Windows exposes physical-disk byte rates, a linear throughput model estimates a point within that specification range. This is a low-confidence model, not a watt sensor.
 - The Hikvision/HIKSEMI E100 shows the manufacturer's maximum-power envelope only because no idle value for this unit was verified.
 - The Dell E2318H shows the manufacturer on-mode and sleep reference range; current state is not read. The HKC MB24V9 entry shows only its family adapter's 24–30 W output rating. A 17.06 W reference is from a comparable model, not this monitor.
-- Components without a device-specific source or live sensor (motherboard, USB HID, network, audio, fans, and unknown models) remain explicitly unavailable instead of receiving invented watt ranges. Integrated NVIDIA audio is linked to the measured GPU board reading.
+- Standalone USB keyboard/mouse endpoints receive very-low-confidence comparison ranges only when Windows identifies a USB power path. They use manufacturer specifications for comparable basic peripherals, not the exact VID/PID device: 0–0.385 W for a simple optical mouse and 0–0.5 W for a basic wired keyboard. A shared keyboard/mouse container is grouped as one unmeasured path and not estimated per function; wireless battery use is excluded. Integrated NVIDIA audio is linked to the measured GPU board reading.
+- For specification and comparison ranges, the UI also shows the energy the upper reference would use if it stayed at that level continuously for 30 days. This is a scenario, not measured or recorded energy, and it is not used by the electricity-cost calculator.
 - An estimate or specification limit is not a measured current draw. Unknown power states, device revisions, peripherals and workloads can move actual use outside these models. No estimated whole-PC total is produced.
 
-Model sources: [Kingston A400 specification](https://www.kingston.com/datasheets/sa400s37_us.pdf), [HIKSEMI E100 specification](https://www.hiksemitech.com/pt/hiksemi/all-products/solid-state-drive/consumer-ssd/hs-ssd-e100.html), [Dell E2318H specification](https://i.dell.com/sites/csdocuments/Product_Docs/en/dell_23_monitor_e2318h_product_spec_sheet.pdf), [comparable HKC ENERGY STAR display](https://www.energystar.gov/productfinder/product/certified-displays/details/4497038/export/pdf), and [HKC MB24V9 family certification](https://www.cqc.com.cn/www/upload/files/upload/resources/file/2025/05/19/63005.pdf).
+Model sources: [Kingston A400 specification](https://www.kingston.com/datasheets/sa400s37_us.pdf), [HIKSEMI E100 specification](https://www.hiksemitech.com/pt/hiksemi/all-products/solid-state-drive/consumer-ssd/hs-ssd-e100.html), [Dell E2318H specification](https://i.dell.com/sites/csdocuments/Product_Docs/en/dell_23_monitor_e2318h_product_spec_sheet.pdf), [comparable HKC ENERGY STAR display](https://www.energystar.gov/productfinder/product/certified-displays/details/4497038/export/pdf), [HKC MB24V9 family certification](https://www.cqc.com.cn/www/upload/files/upload/resources/file/2025/05/19/63005.pdf), [iMicro comparable optical mouse specification](https://www.imicro.com/product/details/MO-205U/), [HP 125 wired keyboard specification](https://h20195.www2.hp.com/v2/GetDocument.aspx?docname=4AA7-9519ENW), and Microsoft's [PnP hardware-ID property](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/devpkey-device-hardwareids) and [device identification strings](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/device-identification-strings).
 
 ### Optional LibreHardwareMonitor source (Windows)
 
@@ -152,16 +153,17 @@ Danh sách thiết bị Windows được dò lại mỗi 10 phút để giảm t
 
 ### Ước tính công suất theo thiết bị
 
-API `/api/sensors` bổ sung trường `powerEstimate` riêng trên từng thiết bị. Trường này không thay đổi danh sách `readings`, không được lưu vào lịch sử, biểu đồ, Wh hay tổng PC. Màn hình gắn nhãn rõ số đo, phân bổ cảm biến dùng chung, mô hình, khoảng tham khảo, giới hạn tài liệu hoặc chưa đủ căn cứ.
+API `/api/sensors` bổ sung trường `powerEstimate` riêng trên từng thiết bị. Trường này không thay đổi danh sách `readings`, không được lưu vào lịch sử, biểu đồ hay tổng PC. Màn hình gắn nhãn rõ số đo, phân bổ cảm biến dùng chung, mô hình, khoảng tham khảo, giới hạn tài liệu hoặc chưa đủ căn cứ. Mã phần cứng Windows chỉ hiển thị dạng rút gọn (mã model màn hình hoặc VID/PID USB/HID); mã instance có thể chứa số serial nên không hiện trên giao diện hay gửi đến dịch vụ bên ngoài.
 
 API cũng trả `measuredSubtotalWatts` và `measuredSubtotalChannelCount`, chỉ cộng các kênh CPU package và GPU NVIDIA rời đang đo trực tiếp. Đây là tổng phụ của một số linh kiện; `totalPowerWatts` vẫn là `null` cho đến khi đồng hồ AC riêng của PC đo điện đầu vào.
 
 - Hai thanh RAM được phân bổ số đo DRAM dùng chung theo dung lượng. Đây không phải số đo từng DIMM và không được cộng lại với kênh DRAM gốc.
 - Kingston A400 dùng thông số nhà sản xuất; khi Windows có bộ đếm I/O ổ đĩa, ứng dụng nội suy một mô hình công suất hoạt động có độ tin cậy thấp. HIKSEMI E100 chỉ hiển thị giới hạn tối đa 2,9 W vì chưa có thông số nhàn rỗi phù hợp.
 - Dell E2318H hiển thị khoảng tham khảo khi bật/ngủ theo tài liệu nhưng không biết trạng thái hiện tại. HKC MB24V9 chỉ hiển thị công suất đầu ra adapter 24–30 W của họ sản phẩm; mức tham khảo 17,06 W thuộc một mẫu khác, không phải màn hình này.
-- Bo mạch, USB, bàn phím, chuột, mạng, âm thanh, quạt và mẫu thiết bị không rõ nguồn vẫn hiện “chưa đủ căn cứ” thay vì gán watt phỏng đoán.
+- Bàn phím/chuột USB đứng riêng chỉ có khoảng tham khảo độ tin cậy rất thấp từ thông số của sản phẩm phổ thông tương đương, không phải thông số của đúng VID/PID: chuột quang đơn giản 0–0,385 W và bàn phím có dây cơ bản 0–0,5 W. Các chức năng bàn phím/chuột chung một container được gom thành một nhánh chưa có số đo và không ước tính riêng từng chức năng; phần dùng pin của thiết bị không dây không được tính. Bo mạch, mạng, âm thanh, quạt và mẫu không có mã USB phù hợp vẫn hiện “chưa đủ căn cứ”.
+- Với khoảng công suất tham khảo hoặc thông số, giao diện quy đổi mốc cao nhất ra điện năng nếu chạy liên tục trong 30 ngày. Đây chỉ là kịch bản, không phải điện năng đo/ghi nhận và không dùng để tính tiền điện.
 
-Các nguồn và giới hạn của từng mô hình được ghi cạnh thiết bị trong ứng dụng và trong mục tiếng Anh phía trên. Không có tổng công suất ước tính cho toàn PC.
+Các nguồn và giới hạn của từng mô hình được ghi cạnh thiết bị trong ứng dụng và trong mục tiếng Anh phía trên. Mã phần cứng PnP nhận diện nhóm thiết bị để khớp driver chứ không cung cấp watt đang dùng. Không có tổng công suất ước tính cho toàn PC.
 
 ### Đồng hồ đo đầu vào toàn PC (Windows)
 

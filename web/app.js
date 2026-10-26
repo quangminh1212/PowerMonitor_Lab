@@ -123,6 +123,7 @@ const translations = {
     sensorMeasured: "Live sensor reading",
     sensorNoLivePower: "No live watt reading",
     sensorNeedsUsbMeter: "Needs a separate meter",
+    sensorModelId: "Device ID: {id}",
     sensorCoverage: "Sensor channels: {channels}",
     sensorNoDevices: "Windows returned no hardware devices.",
     sensorNoReadings: "No live sensor readings are available.",
@@ -331,6 +332,7 @@ const translations = {
     sensorMeasured: "Có số đo trực tiếp",
     sensorNoLivePower: "Chưa có số đo watt",
     sensorNeedsUsbMeter: "Cần đồng hồ đo riêng",
+    sensorModelId: "Mã thiết bị: {id}",
     sensorCoverage: "Kênh cảm biến: {channels}",
     sensorNoDevices: "Windows chưa trả về danh sách thiết bị phần cứng.",
     sensorNoReadings: "Chưa có số đo cảm biến trực tiếp.",
@@ -1421,7 +1423,7 @@ const powerEstimateLabels = {
   en: {
     disclosure: "Estimates are separate from live sensor readings and are never added to measured watts or whole-PC totals.",
     measuredTag: "MEASURED", allocatedTag: "ALLOCATED ESTIMATE", modelledTag: "ACTIVITY MODEL",
-    rangeTag: "ESTIMATE RANGE", boundTag: "SPEC LIMIT", adapterTag: "ADAPTER RATING", includedTag: "INCLUDED ELSEWHERE", unavailableTag: "NO ESTIMATE",
+    rangeTag: "ESTIMATE RANGE", referenceRangeTag: "COMPARABLE DEVICE RANGE", boundTag: "SPEC LIMIT", adapterTag: "ADAPTER RATING", includedTag: "INCLUDED ELSEWHERE", unavailableTag: "NO ESTIMATE",
     measuredValue: "Direct sensor value shown above",
     allocatedValue: "~{watts} W allocated from shared sensor",
     modelledValue: "~{watts} W model estimate · profile {low}–{high} W",
@@ -1429,6 +1431,8 @@ const powerEstimateLabels = {
     rangeTypicalValue: "Model range {low}–{high} W · reference {typical} W",
     boundValue: "Manufacturer maximum {watts} W · not current draw",
     adapterValue: "Family adapter output rating {low}–{high} W · not monitor draw",
+    referenceRangeValue: "Comparable device reference {low}–{high} W · not current draw",
+    continuousEnergy: "At the upper reference continuously: up to {kwh} kWh per 30 days",
     includedValue: "Included in {device}", unavailableValue: "No defensible estimate basis",
     confidenceLow: "low confidence", confidenceMedium: "medium confidence", confidenceVeryLow: "very low confidence",
     sourceLabel: "Source"
@@ -1436,7 +1440,7 @@ const powerEstimateLabels = {
   vi: {
     disclosure: "Ước tính được tách khỏi số đo cảm biến trực tiếp và không bao giờ cộng vào watt đo được hay tổng công suất PC.",
     measuredTag: "ĐO TRỰC TIẾP", allocatedTag: "ƯỚC TÍNH PHÂN BỔ", modelledTag: "MÔ HÌNH HOẠT ĐỘNG",
-    rangeTag: "KHOẢNG ƯỚC TÍNH", boundTag: "GIỚI HẠN TÀI LIỆU", adapterTag: "CÔNG SUẤT ADAPTER", includedTag: "ĐÃ TÍNH Ở MỤC KHÁC", unavailableTag: "CHƯA ƯỚC TÍNH",
+    rangeTag: "KHOẢNG ƯỚC TÍNH", referenceRangeTag: "KHOẢNG THAM KHẢO THIẾT BỊ TƯƠNG ĐƯƠNG", boundTag: "GIỚI HẠN TÀI LIỆU", adapterTag: "CÔNG SUẤT ADAPTER", includedTag: "ĐÃ TÍNH Ở MỤC KHÁC", unavailableTag: "CHƯA ƯỚC TÍNH",
     measuredValue: "Số đo cảm biến trực tiếp ở phía trên",
     allocatedValue: "~{watts} W phân bổ từ cảm biến dùng chung",
     modelledValue: "~{watts} W mô hình · khoảng hồ sơ {low}–{high} W",
@@ -1444,6 +1448,8 @@ const powerEstimateLabels = {
     rangeTypicalValue: "Khoảng mô hình {low}–{high} W · mốc tham khảo {typical} W",
     boundValue: "Công suất tối đa {watts} W theo tài liệu · không phải số đang dùng",
     adapterValue: "Công suất đầu ra adapter của họ mẫu {low}–{high} W · không phải điện tiêu thụ của màn hình",
+    referenceRangeValue: "Mốc thiết bị tương đương {low}–{high} W · không phải số đang dùng",
+    continuousEnergy: "Nếu duy trì ở mốc cao nhất liên tục: tối đa {kwh} kWh trong 30 ngày",
     includedValue: "Đã gộp trong ước tính {device}", unavailableValue: "Chưa có cơ sở ước tính đáng tin",
     confidenceLow: "độ tin cậy thấp", confidenceMedium: "độ tin cậy trung bình", confidenceVeryLow: "độ tin cậy rất thấp",
     sourceLabel: "Nguồn"
@@ -1454,6 +1460,13 @@ function formatEstimateWatts(value) {
   if (!Number.isFinite(value)) return "—";
   if (value === 0) return "0";
   return value < 1 ? value.toFixed(2) : value.toFixed(1);
+}
+
+function formatEstimateKwh(value, language) {
+  return new Intl.NumberFormat(language === "vi" ? "vi-VN" : "en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
 }
 
 function renderPowerEstimate(device, language) {
@@ -1468,7 +1481,7 @@ function renderPowerEstimate(device, language) {
   const tag = document.createElement("strong");
   const tagKey = {
     measured: "measuredTag", allocated: "allocatedTag", modelled: "modelledTag",
-    range: "rangeTag", "upper-bound": "boundTag", "adapter-rating": "adapterTag", included: "includedTag", unavailable: "unavailableTag"
+    range: "rangeTag", "reference-range": "referenceRangeTag", "upper-bound": "boundTag", "adapter-rating": "adapterTag", included: "includedTag", unavailable: "unavailableTag"
   }[estimate.status] ?? "unavailableTag";
   tag.textContent = labels[tagKey];
 
@@ -1489,6 +1502,10 @@ function renderPowerEstimate(device, language) {
     value.textContent = interpolate(key, {
       low: formatEstimateWatts(estimate.lowWatts), high: formatEstimateWatts(estimate.highWatts), typical: formatEstimateWatts(estimate.typicalWatts)
     });
+  } else if (estimate.status === "reference-range") {
+    value.textContent = interpolate("referenceRangeValue", {
+      low: formatEstimateWatts(estimate.lowWatts), high: formatEstimateWatts(estimate.highWatts)
+    });
   } else if (estimate.status === "upper-bound") {
     value.textContent = interpolate("boundValue", { watts: formatEstimateWatts(estimate.highWatts) });
   } else if (estimate.status === "adapter-rating") {
@@ -1502,6 +1519,14 @@ function renderPowerEstimate(device, language) {
   }
 
   container.append(tag, value);
+  if (["range", "upper-bound", "reference-range"].includes(estimate.status) && Number.isFinite(estimate.highWatts)) {
+    const energy = document.createElement("small");
+    energy.className = "device-estimate-energy";
+    energy.textContent = interpolate("continuousEnergy", {
+      kwh: formatEstimateKwh(estimate.highWatts * 24 * 30 / 1000, language)
+    });
+    container.append(energy);
+  }
   if (methodText && estimate.status !== "measured") {
     const method = document.createElement("small");
     method.className = "device-estimate-method";
@@ -1667,6 +1692,11 @@ function renderSensors() {
       ? tr(kindKeys[device.kind])
       : additionalKindLabels[state.language]?.[device.kind] ?? tr("sensorKindOther");
     details.append(name, kind);
+    if (device.modelId) {
+      const modelId = document.createElement("code");
+      modelId.textContent = tr("sensorModelId", { id: device.modelId });
+      details.append(modelId);
+    }
     const capability = document.createElement("div");
     const isMeasured = device.measurementStatus === "measured";
     const isShared = device.measurementStatus === "shared";

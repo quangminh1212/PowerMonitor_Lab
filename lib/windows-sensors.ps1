@@ -299,12 +299,31 @@ function Get-ComputerInventory {
             if ($kind) {
                 if ([string]::IsNullOrWhiteSpace($friendlyName)) { $friendlyName = "$($device.Class) device" }
                 $containerId = $null
+                $modelId = $null
                 if ($kind -in @("keyboard", "mouse", "usb")) {
                     try {
                         $containerId = [string](Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName "DEVPKEY_Device_ContainerId" -ErrorAction Stop).Data
                         if ($containerId -match "(?i)^\{?0{8}-0{4}-0{4}-0{4}-0{12}\}?$") { $containerId = $null }
                     } catch {
                         $containerId = $null
+                    }
+                }
+                if ($kind -in @("keyboard", "mouse", "usb", "monitor")) {
+                    try {
+                        $hardwareIds = @(Get-PnpDeviceProperty -InstanceId $device.InstanceId -KeyName "DEVPKEY_Device_HardwareIds" -ErrorAction Stop).Data
+                        foreach ($hardwareId in $hardwareIds) {
+                            $candidateId = ([string]$hardwareId).Trim()
+                            if ($kind -eq "monitor" -and $candidateId -match "(?i)^DISPLAY\\([A-Z0-9][A-Z0-9_-]{3,23})$") {
+                                $modelId = "DISPLAY\$($Matches[1].ToUpperInvariant())"
+                                break
+                            }
+                            if ($kind -ne "monitor" -and $candidateId -match "(?i)^(USB|HID)\\VID_([0-9A-F]{4})&PID_([0-9A-F]{4})(?:&|$)") {
+                                $modelId = "$($Matches[1].ToUpperInvariant())\VID_$($Matches[2].ToUpperInvariant())&PID_$($Matches[3].ToUpperInvariant())"
+                                break
+                            }
+                        }
+                    } catch {
+                        $modelId = $null
                     }
                 }
                 if ($containerId) {
@@ -317,6 +336,7 @@ function Get-ComputerInventory {
                     kind = $kind
                     name = $friendlyName.Trim()
                     containerId = $containerId
+                    modelId = $modelId
                     capability = "inventory-only"
                 })
             }
