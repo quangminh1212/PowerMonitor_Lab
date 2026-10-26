@@ -1,20 +1,21 @@
 # Power Monitor Lab
 
-Power Monitor Lab is a local-first computer power monitor. The npm CLI starts a small HTTP server on `127.0.0.1` and opens the interface in the default browser. It has no cloud service, account, third-party npm runtime dependency, or native desktop shell.
+Power Monitor Lab is a local-first computer power monitor. Its command-line interface starts a small HTTP server on `127.0.0.1` and opens the interface in the default browser. It has no cloud service, account, third-party npm runtime dependency, or native desktop shell.
 
-## Run from npm
+## Run from source
 
-Requires Node.js 22 or later.
+Requires Node.js 22 or later. The npm package has not been published yet, so `npx power-monitor-lab` and the global install command are not available.
+
+```sh
+git clone https://github.com/quangminh1212/PowerMonitor_Lab.git
+cd PowerMonitor_Lab
+npm start
+```
+
+After the first npm release, the CLI can be run with:
 
 ```sh
 npx power-monitor-lab
-```
-
-Or install the command globally:
-
-```sh
-npm install --global power-monitor-lab
-power-monitor-lab
 ```
 
 The CLI prints the local URL, chooses an available port automatically, and opens the default browser. Stop the server with **Ctrl+C**. Use `--no-open` to print the URL without launching a browser, or `--port 4317` to request a specific loopback port.
@@ -106,7 +107,7 @@ npm test
 npm pack --dry-run
 ```
 
-The package has no npm runtime dependencies. Windows hardware discovery uses the built-in Windows PowerShell helper and supported vendor tools already present on the computer. CI checks syntax and the npm tarball contents on Windows and Linux using Node.js 22 and 24.
+The package has no npm runtime dependencies. Windows hardware discovery uses the built-in Windows PowerShell helper and supported vendor tools already present on the computer. CI checks JavaScript syntax, runs the automated test suite, and inspects the npm tarball on Windows and Linux using Node.js 22 and 24.
 
 ## License
 
@@ -116,13 +117,13 @@ To publish after choosing the package's license, authenticate with `npm login`, 
 
 ## Tiếng Việt
 
-Power Monitor Lab là ứng dụng theo dõi công suất máy tính với số đo cảm biến tự cập nhật. Lệnh npm mở giao diện web trong trình duyệt mặc định và chạy máy chủ chỉ lắng nghe trên `127.0.0.1`.
+Power Monitor Lab là ứng dụng theo dõi công suất máy tính với số đo cảm biến tự cập nhật. Giao diện dòng lệnh mở giao diện web trong trình duyệt mặc định và chạy máy chủ chỉ lắng nghe trên `127.0.0.1`.
 
 ```sh
-npx power-monitor-lab
+npm start
 ```
 
-Yêu cầu Node.js 22 trở lên. Máy chủ tự chọn cổng local, in địa chỉ truy cập và mở trình duyệt. Nhấn **Ctrl+C** để dừng. Có thể dùng `--no-open` để chỉ in địa chỉ hoặc `--port 4317` để yêu cầu cổng cụ thể.
+Package npm chưa được phát hành; hiện có thể chạy từ repo local bằng `npm start`. Yêu cầu Node.js 22 trở lên. Máy chủ tự chọn cổng local, in địa chỉ truy cập và mở trình duyệt. Nhấn **Ctrl+C** để dừng. Có thể dùng `--no-open` để chỉ in địa chỉ hoặc `--port 4317` để yêu cầu cổng cụ thể.
 
 Trên Windows, ứng dụng tự dò các kênh năng lượng mà Windows EMI cung cấp và đọc công suất card NVIDIA qua `nvidia-smi` nếu driver có hỗ trợ. Ứng dụng cũng đọc thêm cảm biến `Power` từ LibreHardwareMonitor nếu máy chủ cục bộ đang chạy, và tự tìm đồng hồ Shelly tương thích trong mạng nội bộ để đo điện đầu vào toàn PC. Dashboard tự cập nhật số đo mỗi ba giây khi ứng dụng đang chạy; không có chỗ nhập watt thủ công.
 

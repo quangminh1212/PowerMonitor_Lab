@@ -26,5 +26,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Check JavaScript syntax
         run: npm run check
+      - name: Run automated tests
+        run: npm test
       - name: Inspect npm package contents
         run: npm pack --dry-run
