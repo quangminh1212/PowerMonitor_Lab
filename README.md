@@ -84,7 +84,7 @@ Model sources: [Kingston A400 specification](https://www.kingston.com/datasheets
 The app polls only `GET http://127.0.0.1:8085/data.json`; it imports finite sensors whose type is `Power` and never calls LibreHardwareMonitor's control endpoints. To enable it, install and run [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), then choose **Options → Remote Web Server → Run**. If you use another local port, set `POWER_MONITOR_LHM_PORT` before starting the app. The app does not install a sensor driver or elevate itself; some motherboard sensors require LibreHardwareMonitor to run with administrator rights. Only power sensors the hardware/driver exposes appear, and a shared CPU/DRAM channel still does not measure each DIMM or USB HID device. On this PC, LibreHardwareMonitor is not installed or running, so this optional provider currently contributes no readings.
 Live sensors refresh automatically while this local app process runs. The dashboard shows energy for each channel since the app started; EMI energy comes from counter deltas, while other providers are integrated from successive readings. Automatic sensor samples are appended every 30 seconds and retained for 35 days. Historical energy prefers the outlet meter cumulative Wh counter, then per-session energy deltas, and falls back to trapezoidal integration of measured watts. Intervals longer than 60 seconds are excluded and shown as reduced data coverage. CPU, DRAM, and GPU channels remain separate because their power domains can overlap; whole-PC energy requires a dedicated AC outlet meter. Session energy still resets when the server stops. Devices without watt sensors may show a separately labeled model estimate; estimates never become sensor readings or history samples.
 
-On Windows, the detected hardware inventory refreshes every 15 seconds so devices added or removed while the app is open appear without restarting it.
+On Windows, the detected hardware inventory refreshes every 10 minutes to reduce background work. Restart the app after adding or removing hardware to refresh it immediately.
 
 ## Local data and privacy
 
@@ -133,7 +133,7 @@ Trên Windows, công tắc **Khởi động cùng Windows** đăng ký ứng d�
 
 **Giới hạn đo:** kênh DRAM là miền bộ nhớ dùng chung, không đo riêng từng thanh RAM. Thiết bị chỉ được đánh dấu có số đo khi dữ liệu cảm biến gắn được với đúng thiết bị. Kênh EMI có thể chồng lấp nên được hiển thị riêng, không cộng thành tổng công suất toàn PC. `nvidia-smi` báo công suất card đồ họa tại lần đo gần nhất, không phải điện đầu vào tại ổ cắm. Windows không cung cấp số watt trực tiếp cho mọi chuột, bàn phím, ổ đĩa, quạt, màn hình hoặc bo mạch. Cần đồng hồ AC cắm riêng PC và cấu hình một lần để tự đọc tổng; nếu chưa có đồng hồ, tổng vẫn để trống. Đồng hồ USB nối tiếp cần thiết để đo riêng thiết bị USB. Trên macOS/Linux, tính năng đo cảm biến tự động chưa được hỗ trợ và dashboard sẽ báo trạng thái này.
 
-Danh sách thiết bị Windows được dò lại mỗi 15 giây để nhận thiết bị vừa cắm hoặc rút mà không cần khởi động lại ứng dụng.
+Danh sách thiết bị Windows được dò lại mỗi 10 phút để giảm tải nền. Hãy khởi động lại ứng dụng sau khi cắm hoặc rút thiết bị nếu cần cập nhật danh sách ngay.
 
 ### Cách đo theo từng phần
 
