@@ -416,11 +416,34 @@ function Get-NvidiaPowerReadings {
 $inventory = if ($IncludeInventory) { Get-ComputerInventory } else { $null }
 $inventoryRefreshInterval = [TimeSpan]::FromMinutes(10)
 $lastInventoryRefreshUtc = [DateTime]::UtcNow
+$inventoryEventSource = "PowerMonitorLab.DeviceChange"
+$inventoryWatcherRegistered = $false
+$inventoryRefreshRequestedAtUtc = $null
+if ($IncludeInventory) {
+    try {
+        Register-WmiEvent -Class Win32_DeviceChangeEvent -SourceIdentifier $inventoryEventSource -ErrorAction Stop | Out-Null
+        $inventoryWatcherRegistered = $true
+    } catch {
+        Write-SensorDebug "device-change watcher unavailable; keeping periodic inventory refresh"
+    }
+}
 Write-SensorDebug "sensor helper ready"
 while ($true) {
     try {
-        if ($IncludeInventory -and ([DateTime]::UtcNow - $lastInventoryRefreshUtc) -ge $inventoryRefreshInterval) {
-            $lastInventoryRefreshUtc = [DateTime]::UtcNow
+        $nowUtc = [DateTime]::UtcNow
+        if ($IncludeInventory -and $inventoryWatcherRegistered) {
+            $pendingDeviceChanges = @(Get-Event -SourceIdentifier $inventoryEventSource -ErrorAction SilentlyContinue)
+            if ($pendingDeviceChanges.Count -gt 0) {
+                Remove-Event -SourceIdentifier $inventoryEventSource -ErrorAction SilentlyContinue
+                $inventoryRefreshRequestedAtUtc = $nowUtc
+            }
+        }
+        $eventRefreshDue = $inventoryRefreshRequestedAtUtc -and
+            (($nowUtc - $inventoryRefreshRequestedAtUtc) -ge [TimeSpan]::FromSeconds(2))
+        $periodicRefreshDue = ($nowUtc - $lastInventoryRefreshUtc) -ge $inventoryRefreshInterval
+        if ($IncludeInventory -and ($eventRefreshDue -or $periodicRefreshDue)) {
+            $lastInventoryRefreshUtc = $nowUtc
+            $inventoryRefreshRequestedAtUtc = $null
             try {
                 $inventory = Get-ComputerInventory
             } catch {

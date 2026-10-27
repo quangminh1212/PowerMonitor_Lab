@@ -23,7 +23,7 @@ The CLI prints the local URL, chooses an available port automatically, and opens
 ## What it does
 
 - On Windows, discovers hardware exposed through the Windows Energy Metering Interface (EMI) and shows cumulative energy channels with average watts between samples.
-- Samples built-in Windows sensors every five seconds and refreshes device inventory every ten minutes to reduce background work.
+- Samples built-in Windows sensors every five seconds. Windows device arrival/removal events refresh the hardware inventory automatically; a ten-minute scan remains as a fallback.
 - On Windows, reads the last measured GPU board power from `nvidia-smi` when an NVIDIA driver provides it.
 - Shows per-channel session energy where a sensor provides it; CPU, DRAM, and GPU channels stay separate and are not a whole-PC outlet total.
 - On Windows, optionally reads additional hardware `Power` sensors from the local LibreHardwareMonitor web server.
@@ -85,7 +85,12 @@ Model sources: [Kingston A400 specification](https://www.kingston.com/datasheets
 The app polls only `GET http://127.0.0.1:8085/data.json`; it imports finite sensors whose type is `Power` and never calls LibreHardwareMonitor's control endpoints. To enable it, install and run [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), then choose **Options → Remote Web Server → Run**. If you use another local port, set `POWER_MONITOR_LHM_PORT` before starting the app. The app does not install a sensor driver or elevate itself; some motherboard sensors require LibreHardwareMonitor to run with administrator rights. Only power sensors the hardware/driver exposes appear, and a shared CPU/DRAM channel still does not measure each DIMM or USB HID device. On this PC, LibreHardwareMonitor is not installed or running, so this optional provider currently contributes no readings.
 Live sensors refresh automatically while this local app process runs. The dashboard shows energy for each channel since the app started; EMI energy comes from counter deltas, while other providers are integrated from successive readings. Automatic sensor samples are appended every 30 seconds and retained for 35 days. Historical energy prefers the outlet meter cumulative Wh counter, then per-session energy deltas, and falls back to trapezoidal integration of measured watts. Intervals longer than 60 seconds are excluded and shown as reduced data coverage. CPU, DRAM, and GPU channels remain separate because their power domains can overlap; whole-PC energy requires a dedicated AC outlet meter. Session energy still resets when the server stops. Devices without watt sensors may show a separately labeled model estimate; estimates never become sensor readings or history samples.
 
-On Windows, the detected hardware inventory refreshes every 10 minutes to reduce background work. Restart the app after adding or removing hardware to refresh it immediately.
+On Windows, adding or removing a device triggers an inventory refresh on the next sensor cycle, with a two-second debounce to group composite USB devices. A ten-minute scan remains as a fallback if Windows does not deliver a device-change event. This refresh only updates device detection; it cannot create watt readings for hardware that exposes no power sensor.
+
+### GitHub calculation and meter references
+
+- [HeatLens](https://github.com/arogorn993-hue/HeatLens) uses trapezoidal integration between watt samples for session energy. This app uses the same method where a source supplies watts only, and prefers cumulative energy counters when a meter exposes them. For each interval, the fallback is `((W₀ + W₁) / 2) × seconds / 3600` Wh; long gaps are excluded.
+- [usb-power-profiling](https://github.com/fqueze/usb-power-profiling) and [FNIRSI-FNB-Web-Server](https://github.com/blakelton/FNIRSI-FNB-Web-Server) read voltage/current from compatible inline USB power meters. That is a path to real watts for one USB branch when the meter is physically placed in that branch. A device's USB descriptor limit and Windows PnP identity do not provide live current; some meter protocols also require a model-specific USB driver setup.
 
 ## Local data and privacy
 
