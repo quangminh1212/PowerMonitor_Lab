@@ -764,6 +764,9 @@ h2 { color: #22372c; font-size: 18px; }
 
 .cost-panel { grid-column: 1; align-self: stretch; margin: 0; padding: 17px; }
 .cost-heading { gap: 10px; align-items: flex-start; }
+.cost-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }
+.cost-actions .select-wrap { min-width: 128px; }
+.cost-actions select { min-height: 34px; padding: 0 28px 0 10px; border: 1px solid #d7e1d8; border-radius: 7px; color: #315943; background: #fff; font: inherit; font-size: 10px; }
 .cost-heading .eyebrow, .energy-heading .eyebrow, .history-heading .eyebrow { margin-bottom: 4px; color: #77847b; font-size: 9px; letter-spacing: .13em; }
 .cost-heading h2 { font-size: 17px; }
 .cost-heading .history-caption { margin-top: 3px; font-size: 10px; }
@@ -782,8 +785,7 @@ h2 { color: #22372c; font-size: 18px; }
 .tariff-field input, .tariff-field select { min-height: 36px; font-size: 11px; }
 .primary-button { min-height: 36px; font-size: 11px; }
 
-#energy-analytics { grid-column: 2; grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: stretch; margin: 0; }
-.page-content[data-view="details"] #energy-analytics { grid-column: 1 / -1; }
+#energy-content { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: stretch; margin: 0; }
 .energy-panel, .history-panel { border-radius: 13px; }
 .energy-heading, .history-heading { min-height: 75px; gap: 14px; padding: 14px 16px 12px; }
 .energy-heading h2, .history-heading h2 { font-size: 17px; }
@@ -809,7 +811,7 @@ h2 { color: #22372c; font-size: 18px; }
 
 @media (max-width: 1240px) {
   .page-content { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
-  .page-content > .cost-panel, .page-content > #energy-analytics { grid-column: 1 / -1; grid-row: auto; }
+  .page-content > .cost-panel, .page-content > #energy-content { grid-column: 1 / -1; grid-row: auto; }
   .cost-panel { margin-bottom: 13px; }
   .cost-content { grid-template-columns: minmax(0, 1.1fr) minmax(220px, .9fr); }
 }
@@ -825,7 +827,7 @@ h2 { color: #22372c; font-size: 18px; }
   .startup-switch { margin-left: 2px; }
   .main-content { margin-left: 0; }
   .page-content { width: min(calc(100% - 40px), 1200px); padding-top: 23px; }
-  .page-content > .cost-panel, .page-content > #energy-analytics { grid-column: 1 / -1; grid-row: auto; }
+  .page-content > .cost-panel, .page-content > #energy-content { grid-column: 1 / -1; grid-row: auto; }
 }
 
 @media (max-width: 620px) {
@@ -885,4 +887,101 @@ h2 { color: #22372c; font-size: 18px; }
   .pc-total-reading > strong, .component-subtotal-reading > strong { font-size: 27px; }
   .energy-heading, .history-heading { flex-direction: column; }
   .energy-actions, .energy-actions .select-wrap, .energy-actions select, .history-actions, .history-actions .select-wrap, .history-actions select { width: 100%; }
+}
+
+/* Keep each dashboard area on its own route so users do not scroll past other panels. */
+.page-content {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0;
+}
+.page-content > .page-heading,
+.page-content > .sensor-panel,
+.page-content > .details-panel,
+.page-content > .cost-panel,
+.page-content > #energy-content,
+.page-content > .page-footer {
+  grid-column: 1 / -1;
+}
+.page-content > .cost-panel,
+.page-content > .details-panel,
+.page-content > #energy-content {
+  margin-bottom: 0;
+}
+#energy-content { grid-template-columns: minmax(0, 1fr); }
+.cost-content { grid-template-columns: minmax(0, 1.1fr) minmax(240px, .9fr); }
+
+@media (max-width: 620px) {
+  .topbar {
+    grid-template-areas: "brand actions";
+    padding-bottom: 10px;
+  }
+  .main-content { min-height: calc(100vh - 60px); }
+  .main-nav {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 5;
+    display: flex;
+    justify-content: stretch;
+    gap: 2px;
+    overflow: visible;
+    margin: 0;
+    padding: 6px 5px calc(6px + env(safe-area-inset-bottom));
+    background: #102d25;
+    border-top: 1px solid rgba(220, 237, 225, .16);
+    box-shadow: 0 -8px 22px rgba(15, 39, 31, .12);
+  }
+  .main-nav a {
+    display: flex;
+    min-width: 0;
+    min-height: 48px;
+    flex: 1 1 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 5px 2px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: clamp(8px, 2.4vw, 10px);
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .nav-icon { width: 17px; height: 17px; }
+  .page-content {
+    width: calc(100% - 28px);
+    padding-bottom: 24px;
+  }
+  .page-content[data-view="history"],
+  .page-content[data-view="cost"]:has(#tariff-panel:not([hidden])) {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+  .page-content[data-view="energy"] > .page-footer { display: none; }
+  .page-content[data-view="devices"] > .page-footer { display: none; }
+  .page-content[data-view="devices"]:has(.details-panel details[open]) {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+  .energy-panel .history-footer {
+    min-height: 34px;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    padding: 5px 12px;
+    font-size: 8px;
+    line-height: 1.1;
+  }
+  .cost-heading { align-items: stretch; flex-direction: column; }
+  .cost-actions { width: 100%; min-width: 0; }
+  .cost-actions .select-wrap { min-width: 0; flex: 1 1 0; }
+  .cost-actions select { width: 100%; min-width: 0; }
+  .cost-content { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 960px) {
+  .topbar { top: 0; }
+}
+
+@media (max-width: 380px) {
+  .main-nav { gap: 0; padding-inline: 3px; }
+  .main-nav a { padding-inline: 1px; font-size: 8px; }
+  .nav-icon { width: 16px; height: 16px; }
+  .page-content { width: calc(100% - 22px); }
 }

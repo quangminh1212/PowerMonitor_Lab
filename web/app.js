@@ -4,8 +4,11 @@ const translations = {
     skipToContent: "Skip to content",
     localApp: "LOCAL MONITOR",
     mainNavigation: "Main navigation",
-    deviceNav: "Details",
+    deviceNav: "Devices",
     overview: "Overview",
+    energyNav: "Energy",
+    historyNav: "History",
+    costNav: "Cost",
     details: "Details",
     detailsEyebrow: "DETAILS",
     detailsHeading: "Sensors and devices",
@@ -28,6 +31,14 @@ const translations = {
     measurementNotebook: "THIS COMPUTER",
     title: "Computer power",
     subtitle: "Live readings from this PC’s sensors.",
+    energyPageTitle: "Energy use",
+    energyPageSubtitle: "Accumulated energy by sensor and selected time range.",
+    historyPageTitle: "Power history",
+    historyPageSubtitle: "Review recent power readings from each sensor channel.",
+    costPageTitle: "Electricity cost",
+    costPageSubtitle: "Estimate usage cost with Vietnam or a custom electricity tariff.",
+    devicesPageTitle: "Devices and sensors",
+    devicesPageSubtitle: "Review measured channels, detected hardware, and data sources.",
     sensorEyebrow: "LIVE SENSOR READINGS",
     sensorHeading: "Live power",
     sensorIntro: "Looking for power sensors on this computer.",
@@ -136,6 +147,7 @@ const translations = {
     costEyebrow: "COST",
     costHeading: "Estimated cost",
     costPeriod: "Period: {period}",
+    costRangeLabel: "Cost period",
     costWaiting: "Loading recorded energy.",
     costNoEnergy: "No energy data is available for this period.",
     costNoRate: "Set a kWh rate to estimate cost.",
@@ -214,8 +226,11 @@ const translations = {
     skipToContent: "Bỏ qua điều hướng",
     localApp: "THEO DÕI CỤC BỘ",
     mainNavigation: "Điều hướng chính",
-    deviceNav: "Chi tiết",
+    deviceNav: "Thiết bị",
     overview: "Tổng quan",
+    energyNav: "Điện năng",
+    historyNav: "Lịch sử",
+    costNav: "Chi phí",
     details: "Chi tiết",
     detailsEyebrow: "CHI TIẾT",
     detailsHeading: "Cảm biến và thiết bị",
@@ -238,6 +253,14 @@ const translations = {
     measurementNotebook: "MÁY TÍNH NÀY",
     title: "Công suất máy tính",
     subtitle: "Số đo trực tiếp từ cảm biến của PC.",
+    energyPageTitle: "Điện năng sử dụng",
+    energyPageSubtitle: "Điện năng tích lũy theo từng cảm biến và khoảng thời gian.",
+    historyPageTitle: "Lịch sử công suất",
+    historyPageSubtitle: "Xem lại số đo công suất gần đây của từng kênh cảm biến.",
+    costPageTitle: "Chi phí điện",
+    costPageSubtitle: "Ước tính tiền điện theo giá Việt Nam hoặc biểu giá tự nhập.",
+    devicesPageTitle: "Thiết bị và cảm biến",
+    devicesPageSubtitle: "Xem kênh đo, phần cứng nhận diện và nguồn dữ liệu.",
     sensorEyebrow: "SỐ ĐO CẢM BIẾN",
     sensorHeading: "Công suất hiện tại",
     sensorIntro: "Đang tìm cảm biến công suất trên máy tính này.",
@@ -346,6 +369,7 @@ const translations = {
     costEyebrow: "CHI PHÍ",
     costHeading: "Chi phí ước tính",
     costPeriod: "Khoảng: {period}",
+    costRangeLabel: "Khoảng tính tiền điện",
     costWaiting: "Đang tải điện năng đã ghi.",
     costNoEnergy: "Chưa có dữ liệu điện năng trong khoảng này.",
     costNoRate: "Cài giá/kWh để ước tính chi phí.",
@@ -553,6 +577,7 @@ function applyLanguage() {
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
+  renderView();
   renderSensors();
   renderEnergyHistory();
   renderHistory();
@@ -561,15 +586,44 @@ function applyLanguage() {
 
 function activeViewFromHash() {
   const hash = decodeURIComponent(location.hash.slice(1));
-  if (hash === "details") return "details";
+  const aliases = {
+    details: "devices",
+    "hardware-inventory": "devices",
+    "energy-analytics": "energy"
+  };
+  const route = aliases[hash] ?? hash;
+  const routes = new Set(["overview", "energy", "history", "cost", "devices"]);
+  if (routes.has(route)) return route;
   const target = hash ? document.getElementById(hash) : null;
-  return target?.closest('[data-view-panel="details"]') ? "details" : "overview";
+  const panelRoute = target?.closest("[data-view-panel]")?.dataset.viewPanel;
+  return routes.has(panelRoute) ? panelRoute : "overview";
 }
 
 function renderView() {
   const activeView = activeViewFromHash();
   const pageContent = document.querySelector(".page-content");
   if (pageContent) pageContent.dataset.view = activeView;
+  const viewCopy = {
+    overview: ["title", "subtitle"],
+    energy: ["energyPageTitle", "energyPageSubtitle"],
+    history: ["historyPageTitle", "historyPageSubtitle"],
+    cost: ["costPageTitle", "costPageSubtitle"],
+    devices: ["devicesPageTitle", "devicesPageSubtitle"]
+  }[activeView] ?? ["title", "subtitle"];
+  const title = tr(viewCopy[0]);
+  const pageTitle = $("#page-title");
+  const pageSubtitle = $(".page-subtitle");
+  if (pageTitle) pageTitle.textContent = title;
+  if (pageSubtitle) pageSubtitle.textContent = tr(viewCopy[1]);
+  const energyRange = $("#energy-range");
+  const costRange = $("#cost-range");
+  if (energyRange && energyRange.value !== state.energyRange) energyRange.value = state.energyRange;
+  if (costRange && costRange.value !== state.energyRange) costRange.value = state.energyRange;
+  document.title = `${title} · Power Monitor`;
+  const caption = $("#refresh-caption");
+  if (caption) caption.hidden = activeView !== "overview";
+  const analytics = $("#energy-content");
+  if (analytics) analytics.hidden = activeView !== "energy" && activeView !== "history";
   document.querySelectorAll("[data-view-panel]").forEach((panel) => {
     panel.hidden = panel.dataset.viewPanel !== activeView;
   });
@@ -579,10 +633,6 @@ function renderView() {
     if (active) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
-  const hash = decodeURIComponent(location.hash.slice(1));
-  if (activeView === "details" && hash && hash !== "details") {
-    requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
-  }
 }
 
 async function requestJson(path, options = {}) {
@@ -1847,6 +1897,12 @@ $("#history-range").addEventListener("change", (event) => {
 });
 $("#energy-range").addEventListener("change", (event) => {
   state.energyRange = event.currentTarget.value;
+  $("#cost-range").value = state.energyRange;
+  void refreshEnergyHistory();
+});
+$("#cost-range").addEventListener("change", (event) => {
+  state.energyRange = event.currentTarget.value;
+  $("#energy-range").value = state.energyRange;
   void refreshEnergyHistory();
 });
 initializeTariffControls();

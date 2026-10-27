@@ -25,9 +25,21 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h6.5V12H4zM13.5 5.5H20V9h-6.5zM13.5 12H20v6.5h-6.5zM4 15.5h6.5v3H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 8.2h.7M16.5 14.5h.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
           <span data-i18n="overview">Tổng quan</span>
         </a>
-        <a href="#details" data-view-link="details">
+        <a href="#energy" data-view-link="energy">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.8 13h5.1l-.4 8.2L18.2 11h-5.1l.1-8.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          <span data-i18n="energyNav">Điện năng</span>
+        </a>
+        <a href="#history" data-view-link="history">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 18.5 9 12l3.6 3.2 7.9-9.1M15.8 6.1h4.7v4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-i18n="historyNav">Lịch sử</span>
+        </a>
+        <a href="#cost" data-view-link="cost">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.7" stroke="currentColor" stroke-width="1.7"/><path d="M15.2 8.8c-.6-.7-1.5-1.1-2.8-1.1-1.5 0-2.5.8-2.5 1.9 0 2.9 5.7 1 5.7 4 0 1.2-1.1 2.1-2.8 2.1-1.2 0-2.3-.4-3.1-1.3M12 5.9v12.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-i18n="costNav">Chi phí</span>
+        </a>
+        <a href="#devices" data-view-link="devices">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="4" width="17" height="12" rx="1.8" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8m-4-4v4m-5-9 2.3-3 2 2 2.3-3 2.4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-i18n="deviceNav">Chi tiết</span>
+          <span data-i18n="deviceNav">Thiết bị</span>
         </a>
       </nav>
       <div class="topbar-actions">
@@ -51,8 +63,8 @@
     </header>
 
     <main class="main-content" id="main-content">
-      <div class="page-content" id="overview">
-        <section class="page-heading" aria-labelledby="page-title" data-view-panel="overview">
+      <div class="page-content" id="page-shell">
+        <section class="page-heading" aria-labelledby="page-title">
           <div>
             <p class="eyebrow" data-i18n="measurementNotebook">MÁY TÍNH NÀY</p>
             <h1 id="page-title" data-i18n="title">Công suất máy tính</h1>
@@ -128,7 +140,7 @@
 
         </section>
 
-        <section class="panel details-panel" id="details" aria-labelledby="details-heading" data-view-panel="details" hidden>
+        <section class="panel details-panel" aria-labelledby="details-heading" data-view-panel="devices" hidden>
           <div class="details-heading">
             <p class="eyebrow" data-i18n="detailsEyebrow">CHI TIẾT</p>
             <h2 id="details-heading" data-i18n="detailsHeading">Cảm biến và thiết bị</h2>
@@ -160,14 +172,25 @@
           </details>
         </section>
 
-        <section class="panel cost-panel" aria-labelledby="cost-heading" data-view-panel="overview">
+        <section class="panel cost-panel" aria-labelledby="cost-heading" data-view-panel="cost" hidden>
           <div class="panel-heading cost-heading">
             <div>
               <p class="eyebrow" data-i18n="costEyebrow">CHI PHÍ ĐIỆN</p>
               <h2 id="cost-heading" data-i18n="costHeading">Ước tính tiền điện</h2>
               <p id="cost-period" class="history-caption" data-i18n="costPeriod">Theo khoảng thời gian đang chọn.</p>
             </div>
-            <button id="tariff-toggle" class="secondary-button" type="button" aria-expanded="false" aria-controls="tariff-panel" data-i18n="tariffSettings">Cài đặt giá</button>
+            <div class="cost-actions">
+              <label class="sr-only" for="cost-range" data-i18n="costRangeLabel">Khoảng tính tiền điện</label>
+              <div class="select-wrap">
+                <select id="cost-range" name="cost-range">
+                  <option value="1h" data-i18n="energyRange1h">1 giờ qua</option>
+                  <option value="24h" data-i18n="energyRange24h">24 giờ qua</option>
+                  <option value="7d" data-i18n="energyRange7d">7 ngày qua</option>
+                  <option value="30d" data-i18n="energyRange30d">30 ngày qua</option>
+                </select>
+              </div>
+              <button id="tariff-toggle" class="secondary-button" type="button" aria-expanded="false" aria-controls="tariff-panel" data-i18n="tariffSettings">Cài đặt giá</button>
+            </div>
           </div>
           <div class="cost-content">
             <div class="cost-total">
@@ -226,8 +249,8 @@
           </div>
         </section>
 
-        <div class="analytics-grid" id="energy-analytics">
-        <section class="energy-panel panel" aria-labelledby="energy-heading" data-view-panel="overview">
+        <div class="analytics-grid" id="energy-content" hidden>
+        <section class="energy-panel panel" aria-labelledby="energy-heading" data-view-panel="energy" hidden>
           <div class="panel-heading energy-heading">
             <div>
               <p class="eyebrow" data-i18n="energyEyebrow">TỔNG NĂNG LƯỢNG</p>
@@ -261,7 +284,7 @@
           </footer>
         </section>
 
-        <section class="history-panel panel" aria-labelledby="history-heading" data-view-panel="details" hidden>
+        <section class="history-panel panel" aria-labelledby="history-heading" data-view-panel="history" hidden>
           <div class="panel-heading history-heading">
             <div>
               <p class="eyebrow" data-i18n="historyEyebrow">LỊCH SỬ TỰ ĐỘNG</p>
