@@ -673,3 +673,216 @@ h2 { color: #203c31; font-size: 19px; letter-spacing: -.025em; }
 @media (prefers-reduced-motion: reduce) {
   .main-nav a, .sensor-card { transition: none; }
 }
+
+/* Clearer hierarchy for the live power dashboard. */
+:root {
+  --ink: #1b2922;
+  --ink-soft: #405148;
+  --muted: #68766d;
+  --line: #e0e6e1;
+  --surface: #ffffff;
+  --surface-soft: #f5f7f4;
+  --canvas: #f2f4f1;
+  --green: #287855;
+  --green-dark: #16392f;
+  --green-pale: #e9f2eb;
+  --rail: #102d25;
+  --rail-soft: #1a4035;
+  --signal: #cde77c;
+}
+
+body { background: var(--canvas); }
+.topbar { width: 230px; padding: 24px 16px 18px; gap: 28px; overflow-y: auto; }
+.brand { gap: 10px; }
+.brand-mark { width: 38px; height: 38px; border-radius: 11px; }
+.main-nav { gap: 5px; }
+.main-nav a { min-height: 42px; border-radius: 8px; font-size: 12px; }
+.main-nav a:first-child { color: #b5c5ba; background: transparent; border-color: transparent; }
+.main-nav a:first-child .nav-icon { color: #b7cf9a; }
+.main-nav a[aria-current="page"] { color: #f2f7ed; background: #1d493d; border-color: rgba(216, 237, 117, .13); }
+.main-nav a[aria-current="page"] .nav-icon { color: var(--signal); }
+.topbar-actions { gap: 10px; }
+.startup-toggle { padding: 8px 9px; }
+.local-badge { padding: 9px 10px; }
+.main-content { margin-left: 230px; }
+
+.page-content {
+  display: grid;
+  width: min(calc(100% - 56px), 1340px);
+  grid-template-columns: minmax(300px, .76fr) minmax(0, 1.24fr);
+  align-content: start;
+  column-gap: 16px;
+  padding: 28px 0 24px;
+}
+.page-heading, .sensor-panel, .details-panel, .page-footer { grid-column: 1 / -1; }
+.page-heading { gap: 18px; margin-bottom: 14px; padding-bottom: 14px; border-color: #dce3dd; }
+.page-heading .eyebrow { margin-bottom: 4px; color: #64746a; font-size: 9px; letter-spacing: .14em; }
+h1 { margin-bottom: 4px; color: #1a2c23; font-size: clamp(28px, 2.8vw, 35px); }
+h2 { color: #22372c; font-size: 18px; }
+.page-subtitle { color: #69766d; font-size: 13px; }
+.refresh-caption { padding: 7px 10px; color: #58675d; background: #fff; border-color: #e0e6e1; font-size: 10px; }
+.refresh-caption::before { width: 6px; height: 6px; box-shadow: 0 0 0 3px #e8f2e9; }
+
+.panel { border-color: #e0e6e1; border-radius: 13px; box-shadow: 0 2px 8px rgba(20, 44, 31, .035); }
+.sensor-panel { margin-bottom: 15px; padding: 18px; }
+.sensor-heading { margin-bottom: 0; }
+.sensor-heading .eyebrow { color: #738077; font-size: 9px; letter-spacing: .12em; }
+.sensor-status { min-height: 27px; padding: 3px 10px; font-size: 10px; }
+.sensor-description { margin: 5px 0 13px; color: #778279; font-size: 11px; }
+.power-overview-grid { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: 10px; margin-bottom: 0; }
+.pc-total-card, .component-subtotal-card { min-height: 116px; gap: 14px; padding: 15px 16px; border-radius: 11px; }
+.pc-total-card { background: #f8f7f1; border: 1px solid #e9e3d3; border-left: 3px solid #bd9650; box-shadow: none; }
+.pc-total-card[data-state="measured"] { color: #f3f7f1; background: #183d32; border-color: #183d32; border-left-color: #8fca95; }
+.pc-total-card[data-state="missing"], .pc-total-card[data-state="disconnected"], .pc-total-card[data-state="selection"], .pc-total-card[data-state="unsupported"] { background: #f8f7f1; border-color: #e9e3d3; border-left-color: #bd9650; }
+.pc-total-copy .eyebrow { margin-bottom: 5px; color: #8a7445; font-size: 9px; }
+.pc-total-card[data-state="measured"] .pc-total-copy .eyebrow { color: #bad29e; }
+.pc-total-copy h3, .component-subtotal-copy h3 { margin-bottom: 4px; font-size: 14px; line-height: 1.25; }
+.pc-total-copy h3 { color: #28382e; }
+.pc-total-card[data-state="measured"] .pc-total-copy h3 { color: #f3f6ef; }
+.pc-total-copy > p:not(.eyebrow), .component-subtotal-copy > p:not(.eyebrow) { margin-bottom: 0; font-size: 11px; line-height: 1.4; }
+.pc-total-copy > p:not(.eyebrow) { color: #6d756b; }
+.pc-total-card[data-state="measured"] .pc-total-copy > p:not(.eyebrow) { color: #c2d0c6; }
+.pc-total-reading { min-width: 92px; gap: 7px; }
+.pc-total-reading > strong { color: #687168; font-size: clamp(30px, 3vw, 40px); }
+.pc-total-card[data-state="measured"] .pc-total-reading > strong { color: #f0f5e8; }
+.pc-total-reading > span { padding: 3px 7px; color: #80642f; background: #f0ead9; border-color: #e7dcc2; font-size: 9px; }
+.pc-total-card[data-state="measured"] .pc-total-reading > span { color: #cbefd2; background: #214b3d; border-color: #3a7256; }
+.component-subtotal-card { background: #edf4ed; border: 1px solid #dae8da; border-left: 3px solid #368360; }
+.component-subtotal-card[data-state="missing"] { background: #f5f7f4; border-color: #e1e7e2; border-left-color: #bdc8be; }
+.component-subtotal-copy .eyebrow { margin-bottom: 5px; color: #4d755c; font-size: 9px; }
+.component-subtotal-copy h3 { color: #263b2f; }
+.component-subtotal-copy > p:not(.eyebrow) { color: #647268; }
+.component-subtotal-reading { min-width: 88px; }
+.component-subtotal-reading > strong { color: #226948; font-size: clamp(30px, 2.8vw, 38px); }
+.component-subtotal-reading > strong[data-state="unavailable"] { color: #879188; }
+.component-subtotal-reading > span { color: #536d59; font-size: 9px; }
+.meter-connection { display: flex; align-items: center; gap: 10px; margin: 12px 0 0; padding: 10px 0 0; background: transparent; border: 0; border-top: 1px solid #e9ede9; border-radius: 0; }
+.meter-discovery-status { display: flex; flex: 1; align-items: center; gap: 8px; margin: 0; color: #6b766e; font-size: 11px; line-height: 1.4; }
+.meter-discovery-status::before { width: 6px; height: 6px; flex: 0 0 auto; background: #d2a74e; border-radius: 50%; content: ""; }
+.meter-discovery-status[data-state="connected"]::before { background: #48a06e; }
+.meter-change-button, .meter-trust-certificate-button { flex: 0 0 auto; }
+
+.cost-panel { grid-column: 1; align-self: stretch; margin: 0; padding: 17px; }
+.cost-heading { gap: 10px; align-items: flex-start; }
+.cost-heading .eyebrow, .energy-heading .eyebrow, .history-heading .eyebrow { margin-bottom: 4px; color: #77847b; font-size: 9px; letter-spacing: .13em; }
+.cost-heading h2 { font-size: 17px; }
+.cost-heading .history-caption { margin-top: 3px; font-size: 10px; }
+.secondary-button { min-height: 34px; padding: 0 10px; color: #315943; border-color: #d7e1d8; font-size: 10px; }
+.cost-content { grid-template-columns: minmax(0, 1fr); gap: 11px; margin-top: 14px; }
+.cost-total { padding: 13px 14px; background: #eff5ef; border-color: #dce8dc; border-radius: 10px; }
+.cost-total > strong { color: #1d563d; font-size: clamp(28px, 3vw, 38px); }
+.cost-total > span, .cost-meta { color: #66746b; font-size: 10px; }
+.cost-meta { margin-top: 5px; }
+.cost-channel-field label { font-size: 10px; }
+.cost-channel-field select { min-height: 36px; font-size: 11px; }
+.cost-note { margin-top: 10px; color: #79847b; font-size: 10px; line-height: 1.4; }
+.tariff-panel { margin-top: 13px; padding-top: 13px; }
+.tariff-form { gap: 11px; }
+.tariff-field label, .tariff-help, .tariff-source { font-size: 10px; }
+.tariff-field input, .tariff-field select { min-height: 36px; font-size: 11px; }
+.primary-button { min-height: 36px; font-size: 11px; }
+
+#energy-analytics { grid-column: 2; grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: stretch; margin: 0; }
+.page-content[data-view="details"] #energy-analytics { grid-column: 1 / -1; }
+.energy-panel, .history-panel { border-radius: 13px; }
+.energy-heading, .history-heading { min-height: 75px; gap: 14px; padding: 14px 16px 12px; }
+.energy-heading h2, .history-heading h2 { font-size: 17px; }
+.history-caption { max-width: 420px; margin-top: 3px; color: #778279; font-size: 10px; }
+.energy-actions select, .history-actions select { min-height: 34px; border-radius: 7px; font-size: 11px; }
+.energy-body, .history-body { padding: 11px 16px 13px; }
+.history-note { color: #778279; font-size: 10px; line-height: 1.45; }
+.energy-summary { grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 7px; margin: 9px 0 5px; }
+.energy-total-card { padding: 10px 11px; background: #f7f9f7; border-color: #e6ebe7; border-radius: 8px; }
+.energy-total-card--whole-pc { background: #eef5ef; border-color: #d5e5d8; }
+.energy-total-label { color: #59695f; font-size: 10px; }
+.energy-total-value { margin-top: 6px; color: #245e43; font-size: clamp(20px, 2vw, 26px); }
+.energy-total-meta { margin-top: 5px; color: #77827a; font-size: 9px; line-height: 1.35; }
+.history-plot { min-height: 165px; margin-top: 8px; }
+.energy-chart { max-height: 255px; }
+.history-chart { max-height: 250px; }
+.history-axis-label { fill: #77827a; font-size: 10px; }
+.history-gridline { stroke: #e8ede9; }
+.chart-legend { gap: 7px 12px; margin-top: 6px; color: #68766d; font-size: 10px; }
+.chart-legend-item { max-width: 170px; }
+.history-footer { min-height: 34px; padding: 6px 16px; color: #77827a; background: #fbfcfb; border-color: #edf0ed; font-size: 9px; }
+.page-footer { margin-top: 14px; padding: 8px 2px 0; color: #7b867e; border-top: 1px solid #e0e6e1; font-size: 10px; }
+
+@media (max-width: 1240px) {
+  .page-content { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .page-content > .cost-panel, .page-content > #energy-analytics { grid-column: 1 / -1; grid-row: auto; }
+  .cost-panel { margin-bottom: 13px; }
+  .cost-content { grid-template-columns: minmax(0, 1.1fr) minmax(220px, .9fr); }
+}
+
+@media (max-width: 960px) {
+  .topbar { position: sticky; inset: auto; display: grid; width: auto; min-height: 0; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand actions" "nav nav"; align-items: center; gap: 10px 16px; padding: 11px 20px 9px; border-right: 0; border-bottom: 1px solid rgba(220, 237, 225, .12); }
+  .brand { grid-area: brand; }
+  .main-nav { grid-area: nav; display: flex; gap: 5px; margin: 0; overflow-x: auto; }
+  .topbar-actions { grid-area: actions; display: flex; align-items: center; gap: 8px; margin: 0; padding: 0; border: 0; }
+  .startup-toggle { width: auto; gap: 0; padding: 4px; background: transparent; border-color: transparent; }
+  .startup-copy { display: none; }
+  .startup-icon { width: 32px; height: 32px; }
+  .startup-switch { margin-left: 2px; }
+  .main-content { margin-left: 0; }
+  .page-content { width: min(calc(100% - 40px), 1200px); padding-top: 23px; }
+  .page-content > .cost-panel, .page-content > #energy-analytics { grid-column: 1 / -1; grid-row: auto; }
+}
+
+@media (max-width: 620px) {
+  .topbar { gap: 9px 10px; padding: 10px 14px 8px; }
+  .brand { gap: 7px; }
+  .brand-mark { width: 33px; height: 33px; }
+  .brand-copy strong { font-size: 12px; }
+  .brand-copy small { font-size: 7px; }
+  .topbar-actions { gap: 3px; }
+  .startup-switch { width: 25px; height: 15px; }
+  .startup-switch > span { width: 9px; height: 9px; }
+  .startup-toggle.is-enabled .startup-switch > span { transform: translateX(10px); }
+  .local-badge { max-width: none; padding: 7px; }
+  .local-status-text { display: none; }
+  .language-toggle { gap: 1px; padding: 2px; }
+  .language-button { min-width: 29px; min-height: 27px; font-size: 9px; }
+  .main-nav a { min-height: 36px; gap: 7px; padding: 6px 9px; font-size: 11px; }
+  .nav-icon { width: 15px; height: 15px; }
+  .page-content { width: calc(100% - 28px); padding-top: 20px; }
+  .page-heading { align-items: flex-start; flex-direction: column; gap: 7px; margin-bottom: 12px; padding-bottom: 12px; }
+  h1 { font-size: 27px; }
+  .sensor-panel { margin-bottom: 12px; padding: 14px; }
+  .power-overview-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .pc-total-card, .component-subtotal-card { min-height: 98px; padding: 12px 13px; }
+  .pc-total-reading { min-width: 80px; }
+  .component-subtotal-reading { min-width: 78px; }
+  .meter-connection { align-items: flex-start; flex-wrap: wrap; }
+  .meter-discovery-status { flex-basis: 100%; }
+  .cost-panel { padding: 14px; }
+  .cost-heading { align-items: center; }
+  .cost-heading h2 { font-size: 16px; }
+  .cost-content { grid-template-columns: minmax(0, 1fr); }
+  .energy-heading, .history-heading { align-items: flex-start; flex-direction: row; gap: 8px; padding: 13px 14px 11px; }
+  .energy-heading > div:first-child, .history-heading > div:first-child { min-width: 0; }
+  .energy-heading h2, .history-heading h2 { font-size: 15px; }
+  .energy-actions select, .history-actions select { min-width: 110px; }
+  .energy-body, .history-body { padding: 10px 13px 11px; }
+  .energy-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .energy-total-card { padding: 9px; }
+  .energy-total-value { font-size: 20px; }
+  .energy-total-meta { font-size: 8px; }
+  .history-plot { min-height: 150px; }
+  .history-footer { padding: 7px 13px; }
+  .page-footer { flex-direction: column; gap: 3px; }
+}
+
+@media (max-width: 380px) {
+  .topbar { grid-template-columns: minmax(0, 1fr) auto; padding-inline: 10px; }
+  .brand-copy small { display: none; }
+  .page-content { width: calc(100% - 22px); }
+  .page-heading { gap: 6px; }
+  .refresh-caption { font-size: 9px; }
+  .sensor-panel { padding: 12px; }
+  .pc-total-card, .component-subtotal-card { gap: 8px; padding: 11px; }
+  .pc-total-reading { min-width: 68px; }
+  .component-subtotal-reading { min-width: 68px; }
+  .pc-total-reading > strong, .component-subtotal-reading > strong { font-size: 27px; }
+  .energy-heading, .history-heading { flex-direction: column; }
+  .energy-actions, .energy-actions .select-wrap, .energy-actions select, .history-actions, .history-actions .select-wrap, .history-actions select { width: 100%; }
+}
